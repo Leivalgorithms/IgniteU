@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignite U - Iniciar Sesión</title>
+    <link rel="stylesheet" href="css/lgInStyle.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h1>Ignite U</h1>
+            <p class="centered-textL">Enciende tu potencial con Ignite U</p>
+        </div>
+        <div class="right-panel">
+            <h2>Iniciar Sesión</h2>
+            <form th:action="@{/login}" th:object="${loginUsuario}" method="post">
+                <input type="text" th:field="*{correo}" placeholder="Correo" required>
+                <input type="password" th:field="*{contrasena}" placeholder="Contraseña" required>
+                <button type="submit">Ingresar</button>
+            </form>
+            <p class="centered-text">¿No tienes cuenta?</p> 
+            <p class="centered-text"><a href="contra.html">Crear Cuenta</a></p>
+            <p th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></p>
+        </div>
+    </div>
+</body>
+</html>
