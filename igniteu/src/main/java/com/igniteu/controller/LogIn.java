@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.igniteu.modelo.UsuarioTO;
@@ -28,13 +29,15 @@ public class LogIn {
     }
 
     @PostMapping("/login")
-    public String ingresar(@ModelAttribute("loginUsuario") UsuarioTO loginUsuario, Model model, RedirectAttributes redirectAttributes, HttpServletRequest request) {
-        UsuarioTO loginUsuarioRetorno = servicioUsuario.validarUsuario(loginUsuario.getCorreo(), String.valueOf(loginUsuario.getContrasena()));
+    public String ingresar(@ModelAttribute("loginUsuario") UsuarioTO loginUsuario, Model model,
+            RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
+        UsuarioTO loginUsuarioRetorno = servicioUsuario.validarUsuario(loginUsuario.getCorreo(),
+                loginUsuario.getContrasena());
         if (loginUsuarioRetorno != null) {
             request.getSession().setAttribute("loginUsuario", loginUsuarioRetorno);
-            List<UsuarioTO> listaUsuarios = servicioUsuario.demeTodos();
-            model.addAttribute("listaUsuarios", listaUsuarios);
+            // List<UsuarioTO> listaUsuarios = servicioUsuario.demeTodos();
+            // model.addAttribute("listaUsuarios", listaUsuarios);
             return "redirect:/home";
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "La clave o correo no son correctos");
@@ -42,13 +45,14 @@ public class LogIn {
         }
     }
 
-    @GetMapping("/home")
-    public String home(Model model, HttpServletRequest request) {
+    @RequestMapping("/home")
+    public String home(HttpServletRequest request, Model model) {
         UsuarioTO loginUsuario = (UsuarioTO) request.getSession().getAttribute("loginUsuario");
-        if (loginUsuario == null) {
+        if (loginUsuario != null) {
+            model.addAttribute("loginUsuario", loginUsuario);
+            return "home";
+        } else {
             return "redirect:/login";
         }
-        model.addAttribute("loginUsuario", loginUsuario);
-        return "home";
     }
 }
