@@ -1,33 +1,34 @@
 package com.igniteu.modelo;
 
-import java.io.Serializable;
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-public class UsuarioTO implements Serializable {
+@Table(name = "usuarios")
+public class UsuarioTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String nombre;
-    private String direccion;
     private String correo;
-    private int contrasena;
+    private String nombreusuario;
+    private String contrasena;
 
     public UsuarioTO() {
     }
 
-    public UsuarioTO(int id, String nombre, String direccion, String correo, int contrasena) {
+    public UsuarioTO(int id, String nombre, String correo, String nombreusuario, String contrasena) {
         this.id = id;
         this.nombre = nombre;
-        this.direccion = direccion;
         this.correo = correo;
+        this.nombreusuario = nombreusuario;
         this.contrasena = contrasena;
     }
 
@@ -47,14 +48,6 @@ public class UsuarioTO implements Serializable {
         this.nombre = nombre;
     }
 
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
     public String getCorreo() {
         return correo;
     }
@@ -63,32 +56,25 @@ public class UsuarioTO implements Serializable {
         this.correo = correo;
     }
 
-    public int getContrasena() {
+    public String getNombreusuario() {
+        return nombreusuario;
+    }
+
+    public void setNombreusuario(String nombreusuario) {
+        this.nombreusuario = nombreusuario;
+    }
+
+    public String getContrasena() {
         return contrasena;
     }
 
-    public void setContrasena(int contrasena) {
+    public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, nombre, direccion, correo, contrasena);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        UsuarioTO usuarioTO = (UsuarioTO) obj;
-        return id == usuarioTO.id &&
-                contrasena == usuarioTO.contrasena &&
-                Objects.equals(nombre, usuarioTO.nombre) &&
-                Objects.equals(direccion, usuarioTO.direccion) &&
-                Objects.equals(correo, usuarioTO.correo);
+    public String toString() {
+        return "UsuarioTO [id=" + id + ", nombre=" + nombre + ", correo=" + correo + ", nombreusuario=" + nombreusuario
+                + ", contrasena=" + contrasena + "]";
     }
 }
