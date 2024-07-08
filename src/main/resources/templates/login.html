@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignite U - Iniciar Sesión</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            max-width: 800px;
+            width: 100%;
+        }
+        .left-panel, .right-panel {
+            padding: 2rem;
+        }
+        .left-panel {
+            background-color: #ffffff;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .right-panel {
+            flex: 1;
+        }
+        .centered-text {
+            margin: 1rem 0;
+            text-align: center; /* Añadido para centrar el texto */
+        }
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h1>Ignite U</h1>
+            <p class="centered-text">Enciende tu potencial con Ignite U</p>
+        </div>
+        <div class="right-panel">
+            <h2>Iniciar Sesión</h2>
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="username" placeholder="Correo" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" name="password" placeholder="Contraseña" required>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Ingresar</button>
+                </div>
+            </form>
+            <p class="centered-text">¿Haz olvidado la Contraseña?</p>
+            <p class="centered-text"><a href="/register" class="text-decoration-none">Cambiar Contraseña</a></p> <!--Se vincula el Cambio de Contraseña aqui-->
+            <p th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
