@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+.wrapper{
+    background-color: #106fde;
+    width: 100%;
+    height: 100vh;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container{
+    width: 500px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    background-color: rgba(0,0,0,0.08) 0px 4px 12px;
+}
+.title-section{
+    margin-bottom: 30px;
+}
+.title{
+    color: #38475a;
+    font-size: 25px;
+    font-weight: 500;
+    text-transform: capitalize;
+    margin-bottom: 10px;
+}
+.para{
+    color: #38475a;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 20px;
+   
+}
+.input-group{
+position: relative;
+}
+.input-group .label-title{
+    color: #38475a;
+    text-transform: capitalize;
+    margin-bottom: 11px;
+    font-size: 14px;
+    display: block;
+    font-weight: 500;
+}
+.input-group input{
+    width: 100%;
+    background-color: none;
+    color: #38475a;
+    height: 50px;
+    font-size: 16px;
+    font-weight: 300;
+    border: 1px solid #EAECF0;
+    padding: 9px 18px 9px 52px;
+    outline: none;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.input-group input::placeholder{
+    color: #38475a;
+    font-size: 16px;
+    font-weight: 400;
+}
+.input-group .icon{
+    position: absolute;
+    color: #38475a;
+    left: 13px;
+    top: calc(50% - 11px);
+    text-align: center;
+    font-size: 23px;
+}
+.submit-btn{
+    width: 100%;
+    background-color: #106fde;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #fff;
+    padding: 13px 24px;
+    font-weight: 500;
+    text-align: center;
+    text-transform: capitalize;
+    cursor: pointer;
+}
+.submit-btn:hover{
+    opacity: 0.95;
+}
+
+.input-group svg{
+    position: absolute;
+    color: #38475a;
+    left: 17px;
+    top: calc(50% - 3px);
+    text-align: center;
+    font-size: 23px;
+}
+</style>
+<body>
+   <div class="wrapper">
+        <div class="container">
+            <div class="title-section">
+                <h2 class="title">Verificacion de OTP</h2>
+                <p class="para">Por favor ingrese el codigo OTP que usted ha recibido a su correo electronico, para asi poder continuar con la actualizacion de contraseña.</p>
+            </div>
+            <form action="#" th:action="@{/verify-otp}" method="post" class="form">
+                <div class="input-group">
+                    <input type="hidden" name="email" id="email">
+                    <label for="" class="label-title">OTP</label>
+                    <input type="otp" name="otp" id="otp" placeholder="Ingrese su OTP">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2M5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1"/>
+                      </svg>
+                </div>
+                <div class="input-group">
+                    <button class="submit-btn" type="submit">Verificar</button>
+
+                </div>
+            </form>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const savedData = localStorage.getItem('savedData');
+                    if (savedData) {
+                        document.getElementById('email').value = savedData;
+                    }
+                });
+            </script>
+
+        </div>
+   </div>
+</body>
+</html>

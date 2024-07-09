@@ -64,9 +64,11 @@
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Ingresar</button>
                 </div>
+                <div>
+                <p><a href="/forgot-password" class="link-underline-primary">Recuperar Contraseña</a></p>
+                <p class="centered-text"><a href="/register" class="text-decoration-none">Cambiar Contraseña</a></p>
+            </div>
             </form>
-            <p class="centered-text">¿Haz olvidado la Contraseña?</p>
-            <p class="centered-text"><a href="/register" class="text-decoration-none">Cambiar Contraseña</a></p> <!--Se vincula el Cambio de Contraseña aqui-->
             <p th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></p>
         </div>
     </div>
