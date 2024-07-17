@@ -22,10 +22,7 @@ public class SecurityConfig {
                         .requestMatchers("/register").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/logout").permitAll()
-                        .requestMatchers("/forgot-password").permitAll()
-                        .requestMatchers("/verify-otp").permitAll()
-                        .requestMatchers("/change-password").permitAll()
-                        .requestMatchers("/send-otp").permitAll()
+                        .requestMatchers("/search").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
