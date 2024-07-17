@@ -1,5 +1,7 @@
 package com.example.igniteu.Services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,10 +28,16 @@ public class UserService implements UserDetailsService {
                     .build();
 
             return springUser;
-
         }
 
-        return null;
+        throw new UsernameNotFoundException("User not found with email: " + correo);
     }
 
+    public List<Usertable> searchUsers(String query) {
+        return repo.findByUsernameContainingIgnoreCase(query);
+    }
+
+    public Usertable findByCorreo(String correo) {
+        return repo.findByCorreo(correo);
+    }
 }
