@@ -12,7 +12,10 @@ import org.springframework.stereotype.Service;
 import com.example.igniteu.Repository.UserRepository;
 import com.example.igniteu.models.Usertable;
 
+import lombok.Data;
+
 @Service
+@Data
 public class UserService implements UserDetailsService {
 
     @Autowired
