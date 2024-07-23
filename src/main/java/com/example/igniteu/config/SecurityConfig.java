@@ -12,34 +12,36 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("contact").permitAll()
-                        .requestMatchers("/igniteu/**").permitAll()
-                        .requestMatchers("/register").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/logout").permitAll()
-                        .requestMatchers("/forgot-password").permitAll()
-                        .requestMatchers("/verify-otp").permitAll()
-                        .requestMatchers("/change-password").permitAll()
-                        .requestMatchers("/send-otp").permitAll()
-                        .requestMatchers("/search").permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
-                        .permitAll())
-                .logout(config -> config
-                        .logoutSuccessUrl("/")
-                        .permitAll())
-                .build();
-    }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                return http
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/").permitAll()
+                                                .requestMatchers("contact").permitAll()
+                                                .requestMatchers("/igniteu/**").permitAll()
+                                                .requestMatchers("/register").permitAll()
+                                                .requestMatchers("/login").permitAll()
+                                                .requestMatchers("/logout").permitAll()
+                                                .requestMatchers("/search").permitAll()
+                                                .requestMatchers("/forgot-password").permitAll()
+                                                .requestMatchers("/verify-otp").permitAll()
+                                                .requestMatchers("/change-password").permitAll()
+                                                .requestMatchers("/send-otp").permitAll()
+                                                .requestMatchers("/home").permitAll()
+                                                .anyRequest().authenticated())
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .defaultSuccessUrl("/home", true)
+                                                .permitAll())
+                                .logout(config -> config
+                                                .logoutSuccessUrl("/")
+                                                .permitAll())
+                                .build();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }

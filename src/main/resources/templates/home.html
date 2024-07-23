@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home Page IgniteU</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body {
+          background-color: #272829;
+          color: #fff;
+      }
+      .sidebar {
+          height: 100vh;
+          background-color: #1c1c1c;
+          padding: 20px;
+      }
+      .content {
+          padding: 20px;
+      }
+      .contacts {
+          height: 100vh;
+          overflow-y: auto;
+          background-color: #1c1c1c;
+          padding: 20px;
+      }
+      .contact {
+          padding: 10px;
+          border-bottom: 1px solid #444;
+      }
+      .contact:last-child {
+          border-bottom: none;
+      }
+      .navbar {
+          background-color: #1c1c1c;
+      }
+      .navbar-brand, .nav-link {
+          color: #fff !important;
+      }
+      .nav-link:hover, .btn:hover {
+          background-color: #5a5a5a !important;
+          color: #fff !important;
+      }
+      .nav-link:active, .btn:active {
+          background-color: blue !important;
+          color: black !important;
+      }
+      .dropdown-menu {
+          background-color: #1c1c1c;
+          border: none;
+      }
+      .dropdown-item {
+          color: #fff !important;
+      }
+      .dropdown-item:hover {
+          background-color: #5a5a5a !important;
+      }
+
+      .toolbar {
+          display: flex;
+          align-items: center;
+          background-color: #f0f0f0;
+          padding: 10px;
+      }
+      .toolbar svg {
+        width: 145px;
+        height: 20px;
+        margin-right: 50px;
+        margin-left: -20px;
+        transform: scale(2);
+        background-color: #1c1c1c;
+      }
+      .post-box {
+            background-color: #242526;
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .time-text {
+            background-color: #3A3B3C;
+            color: #1c1c1c;
+            font-size: 1vh;
+            text-decoration: none;
+            margin-left: auto; 
+        }
+
+        .post-box input {
+            background-color: #3A3B3C;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 20px;
+        }
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .post-actions div {
+            display: flex;
+            align-items: center;
+        }
+        .post-actions div img {
+            width: 20px;
+            margin-right: 10px;
+        }
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .post-button {
+            background-color:rgb(116, 116, 116); 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            font-size: 16px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+
+
+        .comments-section {
+            height: 80vh;
+            overflow-y: scroll;
+            box-sizing: border-box;
+            scrollbar-width: none;
+            background-color: #2a2b2c;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .comment {
+            background-color: #3a3b3c;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .comment:last-child {
+            margin-bottom: 0;
+        }
+        .comment-author {
+            display: flex; 
+            align-items: center;
+            justify-content: space-between; 
+        }
+        .comment-text {
+            margin-top: 5px;
+        }
+        .comment-input {
+            background-color: #3a3b3c;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .post-box textarea {
+            background-color: #3A3B3C;
+            color: white;
+            border: none;
+            width: 100%;
+            height: 100px; /* Ajusta la altura según sea necesario */
+            padding: 10px;
+            border-radius: 20px;
+            resize: none; /* Desactiva el redimensionamiento del textarea */
+            box-sizing: border-box; /* Asegura que el padding y el border se incluyan en el ancho y alto del textarea */
+        }
+
+        .post-box textarea:focus {
+            outline: none; /* Elimina el contorno del textarea cuando está enfocado */
+        }
+  </style>
+
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg">
+      <a class="navbar-brand" href="#"><div class="toolbar"> 
+        <svg version="1.1" viewBox="0 0 2048 778" width="1280" height="1280" xmlns="http://www.w3.org/2000/svg">
+          <path transform="translate(548,295)" d="m0 0 11 1 27 7 6 4-3 12-7 14-5 6-10 8-9 6 2 4 8 10 5 10 3 10 1 8v14l-2 13-6 14-8 11-8 8-14 9-19 7-22 4-37 1-7 4-4 8 1 7 4 6 10 4 73 1 20 4 13 5 11 7 9 10 7 15 2 7 1 10v14l-2 14-7 17-8 11-7 7-14 9-18 8-21 5-24 3h-30l-19-2-17-3-17-5-16-8-9-7-7-7-6-11-4-11v-20l3-9 6-10 7-7 16-8 12-4-4-5-8-7-6-9-3-12v-9l2-11 6-9 10-8 16-7v-3l-13-10-9-9-8-13-3-9-3-13v-17l5-20 7-13 9-10 9-8 15-8 13-4 9-2 9-1h25l15 2 17 5 4 1 8-15 2-7 1-9zm-69 69-10 3-8 6-5 6-4 14v13l4 13 6 7 10 6 7 2h16l11-4 8-6 5-8 3-9v-17l-4-12-6-7-12-6-3-1zm35 192-59 1-11 2-8 6-4 6-1 12 2 7 7 8 14 7 15 3h35l18-4 12-7 6-8 3-8v-9l-4-8-6-5-6-2z" fill="#FEFEFE"/>
+          <path transform="translate(1570,249)" d="m0 0h59l1 204 3 15 8 16 9 9 16 8 12 3 7 1h16l20-4 11-5 10-7 9-13 5-16 3-19v-190l1-2h57l1 1v199l-2 23-6 22-9 19-7 9-8 9-12 9-16 8-14 5-20 4-9 1h-42l-21-3-20-6-16-8-9-6-10-9-9-12-7-12-6-16-4-20-2-18v-197z" fill="#FEFEFE"/>
+          <path transform="translate(757,323)" d="m0 0h25l16 3 13 5 10 6 9 8 6 9 7 16 4 20 1 13v152l-1 1h-58l-1-2-1-156-4-10-8-9-10-4-5-1h-17l-16 4-11 7-7 8-7 14-2 13-1 49-1 86-7 2h-36l-14-1-2-3v-226l1-1h56l1 34 5-3 7-9 10-10 13-8 10-4z" fill="#FEFEFE"/>
+          <path transform="translate(1299,323)" d="m0 0h25l15 2 14 3 13 5 11 6 10 8 7 7 9 14 6 15 3 11 1 11v45l-4 4-137 1h-10v10l6 17 6 9 9 8 13 6 6 2h31l16-6 8-6 7-9 5-7 6 1 16 10 18 12 3 4-10 16-13 14-14 10-15 7-21 5-6 1h-32l-18-3-17-5-16-8-12-8-13-13-10-15-8-19-4-16-3-25v-13l2-19 3-15 5-14 9-17 7-9 6-8 14-11 14-8 16-6 14-3zm-2 34-14 7-10 10-8 16-6 13-1 7 3 5 5 4 3 1h38l6 1h9l7-1v-3h9l1 3 10-1 4-2v-2l4-2 1-1-1-13-3-13-5-10-7-8-7-5-14-5-4-1z" fill="#FEFEFE"/>
+          <path transform="translate(1092,272)" d="m0 0h9v54h66l1 2-1 42-3 2-7 1h-44l-11-1v108l2 11 4 8 6 5 7 3h15l12-4 10-5 3 3 8 23 6 15-1 5-10 6-12 5-19 4h-27l-14-3-13-5-10-6-8-7-9-13-5-12-4-18-1-123h-33l-2-3v-42l1-1h35v-45l4-2 36-6z" fill="#FEFEFE"/>
+          <path transform="translate(267,249)" d="m0 0h59l1 1v306l-2 1h-53l-5-1-1-4v-300z" fill="#FEFEFE"/>
+          <path transform="translate(910,326)" d="m0 0h59v226l-2 4-9 1-48-1-1-1v-228z" fill="#FEFEFE"/>
+          <path transform="translate(938,144)" d="m0 0 4 1 13 12 7 10 6 13 3 13 1 8v13h2l7 11 3 5 4 16-1 14-5 12-8 11-4 5-3 2h-3l-1-7-1-8-4-4-1 5-6 9-3-1 1-5v-12l-4-10-4-9-3-14-4 2-6 5-6 12-4 15v7l2 9v6l-5-2-9-9-7-10-5-12-1-14 3-15 5-10 8-11 16-16 10-14 5-9 2-11-2-8z" fill="#FEFEFE"/>
+          </svg>
+      </div></a>
+
+      
+      <div class="ml-auto dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><div><img src="https://via.placeholder.com/35" class="rounded-circle mr-3" alt="User Profile Picture"></div></a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+              <form sec:authorize="isAuthenticated()" method="post" action="/logout" class="px-4 py-3">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <button type="submit" class="btn btn-danger btn-block">Logout</button>
+              </form>
+          </div>
+      </div>
+      
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2">
+      </div>
+        <div class="col-md-2 sidebar">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="#">Notificaciones</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link text-dark" href="/profile">Perfil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/verpost">Posts</a>
+                </li>
+            </ul>
+            <button class="btn btn-light btn-block mt-4">Crear Post</button>
+            <h6 class="mt-4">Communities</h6>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="#">Crear una comunidad</a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="col-md-4 content">
+            <div class="post-box">
+                <form th:action="@{/createPost}" th:object="${post}" method="post">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="https://via.placeholder.com/50" class="rounded-circle mr-3" alt="User Profile Picture">
+                        <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control"></textarea>
+                        <button type="submit" class="btn btn-primary post-button">Publicar</button>
+                    </div>
+                    <div class="post-actions d-flex justify-content-around">
+                        <div class="action-item">
+                            <img src="https://via.placeholder.com/30" alt="Video en vivo">
+                            <span>Video en vivo</span>
+                        </div>
+                        <div class="action-item">
+                            <img src="https://via.placeholder.com/30" alt="Foto/video">
+                            <span>Foto/video</span>
+                        </div>
+                        <div class="action-item">
+                            <img src="https://via.placeholder.com/30" alt="Sentimiento/actividad">
+                            <span>Sentimiento/actividad</span>
+                        </div>
+                    </div>
+                </form> 
+            </div>
+
+          <!-- Nueva sección de posts -->
+    <div class="container my-4">
+            <div class="row" th:if="${userposts}">
+                <div class="col-12" th:each="post : ${userposts}">
+                    <div class="comments-section rounded p-3" id="comments-section">   
+                        <div class="comment mb-3">
+                            <div class="d-flex align-items-start mb-1">
+                                <img src="https://via.placeholder.com/25" class="rounded-circle mr-2" alt="User Profile Picture">
+                            <div>
+                                <strong th:text="${username}">Nombre de Usuario</strong> 
+                            </div>
+                        </div>
+                            <div class="comment-text" th:text="${post.contenido}">Contenido del post</div>   
+                        </div>       
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+       
+        <div class="col-md-2 contacts">
+          <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
+            <form class="d-flex" action="/search" method="get">
+              <div class="input-group">
+                <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="query">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </div>
+            </form>
+          </li>
+            <div class="contact">Contactos</div>
+            <div class="contact">
+              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 1</div>
+            <div class="contact">
+              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 2</div>
+            <div class="contact">
+              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 3</div>
+            <div class="contact">
+              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 4</div>
+            <div class="contact">
+              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 5</div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        function showPostButton() {
+            document.getElementById('post-button').style.display = 'block';
+        }
+    </script>    
+    <script src="/src/main/resources/static/commentsSection.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+
+</html>
