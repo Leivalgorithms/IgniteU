@@ -1,6 +1,7 @@
 package com.example.igniteu.Services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -10,9 +11,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.igniteu.Repository.UserRepository;
+import com.example.igniteu.config.CustomUserDetails;
 import com.example.igniteu.models.Usertable;
 
+import lombok.Data;
+
 @Service
+@Data
 public class UserService implements UserDetailsService {
 
     @Autowired
@@ -39,5 +44,10 @@ public class UserService implements UserDetailsService {
 
     public Usertable findByCorreo(String correo) {
         return repo.findByCorreo(correo);
+    }
+
+    public Integer getUserIdByUsername(String username) {
+        Optional<Usertable> userOptional = repo.findByUsername(username);
+        return userOptional.map(Usertable::getId).orElse(null);
     }
 }
