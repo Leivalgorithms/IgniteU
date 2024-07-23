@@ -23,6 +23,10 @@ public class SecurityConfig {
                                                 .requestMatchers("/login").permitAll()
                                                 .requestMatchers("/logout").permitAll()
                                                 .requestMatchers("/search").permitAll()
+                                                .requestMatchers("/forgot-password").permitAll()
+                                                .requestMatchers("/verify-otp").permitAll()
+                                                .requestMatchers("/change-password").permitAll()
+                                                .requestMatchers("/send-otp").permitAll()
                                                 .requestMatchers("/home").permitAll()
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
