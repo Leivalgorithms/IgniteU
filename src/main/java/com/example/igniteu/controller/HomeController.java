@@ -1,5 +1,6 @@
 package com.example.igniteu.controller;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.example.igniteu.models.Usertable;
 
 @Controller
 public class HomeController {
+
 
     UserRepository repo;
 
@@ -55,7 +57,13 @@ public class HomeController {
     }
 
     @GetMapping("/profile")
-    public String profile() {
+    public String profileinitString(Model model) {
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Usertable usertable = userService.findByCorreo(username);
+        model.addAttribute("username",
+                usertable.getUsername());
+        model.addAttribute("correo",
+                usertable.getCorreo());
         return "profile";
     }
 
