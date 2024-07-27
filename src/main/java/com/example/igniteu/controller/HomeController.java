@@ -1,6 +1,7 @@
 package com.example.igniteu.controller;
 
-import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +15,11 @@ import com.example.igniteu.Services.UserService;
 import com.example.igniteu.models.Amistades;
 import com.example.igniteu.Repository.UserRepository;
 import com.example.igniteu.Services.PostService;
-import com.example.igniteu.Services.UserService;
 import com.example.igniteu.models.Post;
 import com.example.igniteu.models.Usertable;
 
 @Controller
 public class HomeController {
-   
     @Autowired
     private AmistadesService amistadesService;
     UserRepository repo;
@@ -66,14 +65,27 @@ public class HomeController {
         model.addAttribute("correo",
                 usertable.getCorreo());
 
+        // Obtener el user_id del usuario autenticado
+        Integer userId = usertable.getId();
+
+        List<Post> posts = postService.getPostUserId(userId);
+
+        // Imprimir los valores de los posts en la consola
+        for (Post post : posts) {
+            System.out.println("Post ID: " + post.getIdpost());
+            System.out.println("Contenido: " + post.getContenido());
+            System.out.println("Fecha de Publicación: " + post.getFecha_publicacion());
+        }
+
+        model.addAttribute("userposts", posts);
+
         Optional<Usertable> currentUserOpt = amistadesService.findUserBycorreo(username);
-               
-        
+
         List<Amistades> requests = amistadesService.getFriendRequests(currentUserOpt.get());
         System.out.println(requests);
-        model.addAttribute("requests", requests);  
+        model.addAttribute("requests", requests);
 
         return "profile";
     }
-    
+
 }
