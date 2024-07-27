@@ -14,6 +14,9 @@ public class Usertable {
 
     private String username;
 
+    @Column(unique = false, nullable = false)
+    private boolean TieneSolicitud;
+
     @Column(unique = true, nullable = false)
     private String correo;
     private String contrasena;

@@ -46,6 +46,7 @@
             background-color: rgb(255, 255, 255) !important;
             color: rgb(32, 29, 29) !important;
         }
+
         .dropdown-menu {
             background-color: #1c1c1c;
             border: none;
@@ -53,19 +54,17 @@
         .dropdown-item {
             color: #fff !important;
         }
+
         .dropdown-item:hover {
             background-color: #5a5a5a !important;
         }
+
         .hr {
-        border: 0;
-        height: 1px;
-        background: white;
+            border: 0;
+            height: 1px;
+            background: white;
         }
-        .placeholder-image {
-        width: 850px;
-        height: 200px;
-        background: linear-gradient(135deg, #efa3a3 0%, #0019fb 100%);
-        }
+
 
         .post-profile-pic {
             width: 25px;
@@ -113,9 +112,64 @@
             margin-left: 4px;
             margin-top: -4px;
         }
+        .placeholder-image {
+            width: 850px;
+            height: 200px;
+            background: linear-gradient(135deg, #efa3a3 0%, #0019fb 100%);
+        }
 
+        /* Estilos para el modal */
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background-color: #1c1c1c;
+            border-bottom: 1px solid #1c1c1c;
+            padding: 15px 20px;
+        }
+
+        .modal-title {
+            font-weight: bold;
+        }
+
+        .close {
+            font-size: 1.5rem;
+            color: #ffffff44;
+            opacity: 0.5;
+        }
+
+        .close:hover {
+            opacity: 0.65;
+        }
+
+        .modal-body {
+            background-color: #272829;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #1c1c1c;
+            padding: 15px 20px;
+            background-color: #1c1c1c;
+        }
+        .modal-body .btn{
+            background-color: #28a745;
+            color: white;
+        }
+        
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg">
         <div class="toolbar"> 
@@ -148,7 +202,49 @@
                         <a class="nav-link text-dark" href="/home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" href="#" data-toggle="modal" data-target="#notificaciones">Notificaciones</a>
+                        <a class="nav-link text-dark" data-toggle="modal" data-target="#notificaciones">Notificaciones</a>
+                        <!--Modal para editar Perfil-->
+                        <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
+                            aria-labelledby="notificationLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="notificationLabel">Solicitudes de amistad</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div th:if="${#lists.isEmpty(requests)}">
+                                                <p>No tienes solicitudes de amistad pendientes.</p>
+                                            </div>
+                                            <div>
+                                                <ul>
+                                                    <li th:each="request : ${requests}">
+                                                        <p>Sender: <span th:text="${request.usuario.username}">Username</span></p>
+                                                        <p>Friend: <span th:text="${request.amistad.username}">Username</span></p>
+                                                        <p>Date: <span th:text="${request.fechaAmistad}">Date</span></p>
+                                                        <p>Status: <span th:text="${request.estado}">Status</span></p>
+                                                        
+                                                            <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
+                                                                <input type="hidden" name="requestId" th:value="${request.id}">
+                                                                <button type="button" class="btn btn-aceptar btn-sm accept-request-button">Aceptar</button>
+                                                            </div>
+
+                                                            <div class="Denegar" th:data-send-request-url="@{/deny-request}" th:data-csrf-token="${_csrf.token}">
+                                                                <input type="hidden" name="requestId" th:value="${request.id}">
+                                                                <button type="button" class="btn btn-denegar btn-sm deny-request-button">Denegar</button>
+                                                            </div>
+                                                        
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                 </ul>
                 <button class="btn btn-light btn-block mt-4">Crear Post</button>
@@ -339,5 +435,64 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('accept-request-button') || event.target.classList.contains('deny-request-button')) {
+                    event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
+    
+                    // Determinar si es una solicitud de aceptación o de denegación
+                    const isAccept = event.target.classList.contains('accept-request-button');
+                    const sendRequestUrl = isAccept ? event.target.closest('.Aceptar').getAttribute('data-send-request-url') 
+                                                    : event.target.closest('.Denegar').getAttribute('data-send-request-url');
+    
+                    // Obtener el ID de solicitud, URL y token CSRF desde los atributos data-* del elemento padre
+                    const cardBody = event.target.closest(isAccept ? '.Aceptar' : '.Denegar');
+                    if (!cardBody) {
+                        console.error('Elemento correspondiente no encontrado');
+                        return;
+                    }
+    
+                    const requestId = cardBody.querySelector('input[name="requestId"]').value;
+                    const csrfToken = cardBody.getAttribute('data-csrf-token');
+                    
+                    if (!requestId || !sendRequestUrl || !csrfToken) {
+                        console.error('Faltan datos necesarios para enviar la solicitud');
+                        return;
+                    }
+    
+                    // Crear los parámetros del formulario
+                    var formData = new URLSearchParams();
+                    formData.append('requestId', requestId);
+                    formData.append('_csrf', csrfToken);
+    
+                    // Enviar la solicitud POST
+                    fetch(sendRequestUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: formData.toString()
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert(isAccept ? 'Solicitud de amistad aceptada' : 'Solicitud de amistad denegada');
+                            // Eliminar la solicitud del DOM
+                            const listItem = cardBody.closest('li');
+                            if (listItem) {
+                                listItem.remove();
+                            }
+                        } else {
+                            alert('Error al procesar la solicitud de amistad');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>

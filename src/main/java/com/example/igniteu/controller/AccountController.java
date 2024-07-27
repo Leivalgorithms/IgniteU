@@ -15,7 +15,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 @Controller
 public class AccountController {
@@ -60,7 +60,7 @@ public class AccountController {
             model.addAttribute("registro", new Registro());
             model.addAttribute("Satisfactoriamente", true);
         } catch (Exception e) {
-            // TODO: handle exception
+            
         }
 
         return "register";
