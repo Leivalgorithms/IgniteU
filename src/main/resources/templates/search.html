@@ -1,3 +1,5 @@
+search.hmtl
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
@@ -107,6 +109,9 @@
                         <a class="nav-link active" href="/">Home</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="/profile">Perfil</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#">Notificaciones</a>
                     </li>
                     <li class="nav-item">
@@ -154,7 +159,7 @@
                             <div class="card-body">
                                 <h5 class="card-title" th:text="${user.username}">Nombre</h5>
                                 <p class="card-text" th:text="${user.correo}">Correo</p>
-                                <button class="btn btn-edit btn-sm">Ver perfil</button>
+                                <a th:href="@{/profile-search/{username}(username=${user.username})}" class="btn btn-edit btn-sm">Ver perfil</a>
                             </div>
                         </div>
                     </div>

@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.igniteu.Repository.UserRepository;
-import com.example.igniteu.config.CustomUserDetails;
 import com.example.igniteu.models.Usertable;
 
 import lombok.Data;
@@ -46,8 +45,21 @@ public class UserService implements UserDetailsService {
         return repo.findByCorreo(correo);
     }
 
+    public Usertable findByUsername(String username) {
+        Optional<Usertable> userOptional = repo.findByUsername(username);
+        return userOptional.orElse(null);
+    }
+
     public Integer getUserIdByUsername(String username) {
         Optional<Usertable> userOptional = repo.findByUsername(username);
         return userOptional.map(Usertable::getId).orElse(null);
+    }
+
+    public Usertable findBybio(String bio) {
+        return repo.findBybio(bio);
+    }
+
+    public void save(Usertable usertable) {
+        repo.save(usertable);
     }
 }

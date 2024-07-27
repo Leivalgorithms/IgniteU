@@ -29,6 +29,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/change-password").permitAll()
                                                 .requestMatchers("/send-otp").permitAll()
                                                 .requestMatchers("/home").permitAll()
+                                                .requestMatchers("/profile").permitAll()
+                                                .requestMatchers("/profile-search").permitAll()
+                                                .requestMatchers("/prueba").permitAll()
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
