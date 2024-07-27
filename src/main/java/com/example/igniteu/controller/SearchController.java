@@ -1,8 +1,8 @@
 package com.example.igniteu.controller;
 
 import java.util.List;
-import java.util.Optional;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.example.igniteu.Services.AmistadesService;
 import com.example.igniteu.Services.UserService;
 import com.example.igniteu.models.Amistades;
@@ -20,6 +19,7 @@ import com.example.igniteu.models.Usertable;
 public class SearchController {
 
     @Autowired
+
     private AmistadesService amistadesService;
     
     @Autowired
@@ -29,6 +29,8 @@ public class SearchController {
     @GetMapping("/search")
     public String searchUsers(@RequestParam("query") String query, Model model) {
         List<Usertable> searchResults = userService.searchUsers(query);
+        model.addAttribute("searchResults", searchResults);
+        model.addAttribute("query", query);
         
         
         String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
@@ -47,10 +49,6 @@ public class SearchController {
             user.setTieneSolicitud(isFriend || isPending);
         }
         
-        
-        model.addAttribute("searchResults", searchResults);
-        model.addAttribute("query", query);
         return "search";
     }
-
 }

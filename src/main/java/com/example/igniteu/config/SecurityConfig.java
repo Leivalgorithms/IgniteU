@@ -26,6 +26,7 @@ public class SecurityConfig {
                         .requestMatchers("/verify-otp").permitAll()
                         .requestMatchers("/change-password").permitAll()
                         .requestMatchers("/send-otp").permitAll()
+                        .requestMatchers("/home").permitAll()
                         .requestMatchers("/search").permitAll()
                         .requestMatchers("/send-request").permitAll()
                         .requestMatchers("/profile").permitAll()
@@ -34,16 +35,16 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/home", true)
                         .permitAll())
                 .logout(config -> config
                         .logoutSuccessUrl("/")
                         .permitAll())
                 .build();
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+       
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }
