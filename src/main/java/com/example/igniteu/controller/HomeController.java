@@ -1,6 +1,7 @@
 package com.example.igniteu.controller;
 
-
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import com.example.igniteu.models.Usertable;
 
 @Controller
 public class HomeController {
-
 
     UserRepository repo;
 
@@ -64,6 +64,20 @@ public class HomeController {
                 usertable.getUsername());
         model.addAttribute("correo",
                 usertable.getCorreo());
+
+        // Obtener el user_id del usuario autenticado
+        Integer userId = usertable.getId();
+
+        List<Post> posts = postService.getPostUserId(userId);
+
+        // Imprimir los valores de los posts en la consola
+        for (Post post : posts) {
+            System.out.println("Post ID: " + post.getIdpost());
+            System.out.println("Contenido: " + post.getContenido());
+            System.out.println("Fecha de Publicación: " + post.getFecha_publicacion());
+        }
+
+        model.addAttribute("userposts", posts);
         return "profile";
     }
 
