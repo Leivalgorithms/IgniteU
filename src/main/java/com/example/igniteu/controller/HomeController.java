@@ -15,7 +15,6 @@ import com.example.igniteu.Services.UserService;
 import com.example.igniteu.models.Amistades;
 import com.example.igniteu.Repository.UserRepository;
 import com.example.igniteu.Services.PostService;
-import com.example.igniteu.Services.UserService;
 import com.example.igniteu.models.Post;
 import com.example.igniteu.models.Usertable;
 
