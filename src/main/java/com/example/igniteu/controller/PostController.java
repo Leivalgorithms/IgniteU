@@ -56,6 +56,11 @@ public class PostController {
         // Guardar el post en la base de datos
         postService.savePost(post);
 
-        return "home";
+        // Obtener la lista actualizada de posts
+        List<Post> userPosts = postService.getPostUserId(userId);
+        model.addAttribute("userposts", userPosts);
+
+        // Devuelve el fragmento de posts actualizado
+        return "redirect:/home";
     }
 }

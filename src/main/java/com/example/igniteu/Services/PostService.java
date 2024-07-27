@@ -1,18 +1,13 @@
 package com.example.igniteu.Services;
 
-import com.example.igniteu.models.Post;
-import com.example.igniteu.models.Usertable;
-import com.example.igniteu.Repository.PostRepository;
 
+import com.example.igniteu.models.Post;
+import com.example.igniteu.Repository.PostRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Service
 public class PostService {

@@ -1,6 +1,11 @@
 package com.example.igniteu.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
@@ -14,8 +19,15 @@ public class Usertable {
 
     private String username;
 
+    @Column(unique = false, nullable = false)
+    private boolean TieneSolicitud;
+
     @Column(unique = true, nullable = false)
     private String correo;
     private String contrasena;
 
+    @Column(nullable = true)
+    private String bio;
+
+    private String pfp;
 }
