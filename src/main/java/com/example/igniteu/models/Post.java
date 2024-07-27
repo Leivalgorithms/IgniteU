@@ -22,6 +22,9 @@ public class Post {
 
     private Integer usuario_id;
 
+    // Campo adicional para la fecha formateada
+    private String formattedFechaPublicacion;
+
     @NotEmpty(message = "El contenido no puede estar vacío")
     @Column(name = "contenido")
     private String contenido;

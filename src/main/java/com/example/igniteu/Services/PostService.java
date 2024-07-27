@@ -1,13 +1,13 @@
 package com.example.igniteu.Services;
 
+
+import com.example.igniteu.models.Post;
+import com.example.igniteu.Repository.PostRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.example.igniteu.Repository.PostRepository;
-import com.example.igniteu.models.Post;
 
 @Service
 public class PostService {

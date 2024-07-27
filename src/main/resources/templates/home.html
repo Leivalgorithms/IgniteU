@@ -84,10 +84,12 @@ home.html
 
         .time-text {
             background-color: #3A3B3C;
-            color: #1c1c1c;
-            font-size: 1vh;
+            color:#D8D9DA;
+            font-size: 10px;
             text-decoration: none;
-            margin-left: auto; 
+            position: relative;
+            margin-left: 4px;
+            margin-top: -4px;
         }
 
         .post-box input {
@@ -140,16 +142,24 @@ home.html
             padding: 15px;
             margin-top: 20px;
         }
+
+        .ignite-comment{
+            display: flex;
+        }
+
         .comment {
             background-color: #3a3b3c;
             border-radius: 5px;
             padding: 10px;
             margin-bottom: 10px;
+            height: auto;
+            overflow: auto;
         }
         .comment:last-child {
             margin-bottom: 0;
         }
         .comment-author {
+            color: #61677A;
             display: flex; 
             align-items: center;
             justify-content: space-between; 
@@ -181,7 +191,53 @@ home.html
         .post-box textarea:focus {
             outline: none; /* Elimina el contorno del textarea cuando está enfocado */
         }
-        /*CSS para el boton del like*/
+
+        textarea.form-control {
+            width: 100%;
+            box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
+        }
+
+        .comments-container {
+        max-height: 200px; /* Ajusta según tus necesidades */
+        overflow-y: hidden;
+        position: relative;
+        }
+
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        .comment-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        .svg-button-bubble {
+            background-image: url('data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%202000%202000%22%20width%3D%2250%22%20height%3D%2250%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20transform%3D%22translate(701%2C700)%22%20d%3D%22m0%200h598l1%201v458l-1%201-257%201-11%206-23%2014-24%2015-20%2012-22%2014-26%2016-18%2011-24%2015-42%2026-14%208-2-2v-136h-115l-1-1v-458z%22%20fill%3D%22%23FEFEFE%22/%3E%3C/svg%3E');
+            background-size: cover; 
+            background-position: center;
+            border: none; 
+            width: 50px; 
+            height: 50px; 
+            color: white; 
+            font-size: 16px; 
+            text-align: center; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .svg-button-bubble:hover ,.svg-button-bubble:focus, .svg-button-bubble:active{
+            outline: none;
+            box-shadow: none;
+            background-color: transparent !important;
+            color: inherit !important;
+            
+        }
+
         .flame-btn {
             background: none;
             border: none;
@@ -192,9 +248,9 @@ home.html
             color: #333;
         }
         .flame {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
+            width: 50px;
+            height: 50px;
+            margin-right: -20px;
         }
         .flame path {
             fill: #ccc;
@@ -212,6 +268,12 @@ home.html
         @keyframes flicker {
             0% { transform: scale(1) rotate(-1deg); }
             100% { transform: scale(1.05) rotate(1deg); }
+        }
+
+        .flame-btn:focus, .flame:focus {
+            outline: none;
+            box-shadow: none;
+            box-shadow: none;
         }
   </style>
 
@@ -275,9 +337,9 @@ home.html
         
         <div class="col-md-4 content">
             <div class="post-box">
-                <form th:action="@{/createPost}" th:object="${post}" method="post">
+                <form id="post-form" th:action="@{/createPost}" th:object="${post}" method="post">
                     <div class="d-flex align-items-center mb-3">
-                        <img src="https://via.placeholder.com/50" class="rounded-circle mr-3" alt="User Profile Picture">
+                        <img src="https://www.mmaweekly.com/.image/t_share/MTk4NTIzNjA5MTE5Nzk0NjI3/hasbulla-magomedov.png" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
                         <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control"></textarea>
                         <button type="submit" class="btn btn-primary post-button">Publicar</button>
                     </div>
@@ -298,28 +360,34 @@ home.html
                 </form> 
             </div>
 
-          <!-- Nueva sección de posts -->
+          <!-- Posts -->
     <div class="container my-4">
-            <div class="row" th:if="${userposts}">
-                <div class="col-12" th:each="post : ${userposts}">
+            <div class="row">
+                <div class="col-12">
                     <div class="comments-section rounded p-3" id="comments-section">   
-                        <div class="comment mb-3">
+                        <div  th:each="post : ${userposts}" class="comment mb-3">
                             <div class="d-flex align-items-start mb-1">
                                 <img src="https://via.placeholder.com/25" class="rounded-circle mr-2" alt="User Profile Picture">
-                            <div>
-                                <strong th:text="${username}">Nombre de Usuario</strong> 
-                            </div>
-                        </div>
-                            <div class="comment-text" th:text="${post.contenido}">Contenido del post</div>
-                            <!-- Nuevo boton de like-->
-                            <button class="flame-btn" onclick="this.classList.toggle('active')">
+                                <div>
+                                    <strong class="comment-author" th:text="${username}">Autor</strong>
+                                    <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
+                                </div>
+                            </div> 
+                            <div class="comment-text" th:text="${post.contenido}"></div>
+                            <button class="flame-btn d-inline" onclick="this.classList.toggle('active')">
                                 <svg class="flame" viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
                                     <path transform="translate(987,603)" d="m0 0 10 5 17 12 15 13 11 9 8 7v2l4 2 12 12 7 8 9 10 10 13 12 17 13 20 9 16 11 22 11 27 6 18 8 33 4 23 3 31v37l-4 40-5 26-7 27-12 35-10 25-12 25-1 2 7-4 13-11 10-10 9-11 10-14 10-19 8-20 7-23 4-1 8 9 13 18 10 16 10 19 10 25 6 20 5 24 3 22 1 12v23l-4 29-6 25-6 18-9 20-9 17-8 12-12 17-13 16-7 7-7 8-8 7-12 11-18 13-5 2v-28l-2-22-5-20-6-15-8-15-13-17-7-6v17l-3 17-6 17-9 16-9 12-9 9-6 4h-2l4-20 3-23v-28l-5-25-6-18-9-20-16-31-7-16-7-19-5-19-3-18-1-11v-21l2-22 2-14-15 9-14 10-11 9-15 14-11 11-11 14-14 19-9 15-11 21-9 24-6 21-5 27-3 30v18l3 29 5 26 7 25 4 11v3l-6-2-13-9-15-12-11-9-10-9-12-12-7-6-7-8-9-10-14-19-9-13-9-15-8-16-10-25-5-16-4-21-3-23v-28l4-29 6-25 8-22 10-23 10-19 13-21 12-17 11-14 9-11 9-10 12-13 63-63 7-8 15-16 18-22 11-14 13-17 19-29 9-15 10-22 6-20 2-13v-19l-3-21-5-18-8-19-9-17z"/>
                                 </svg>
                             </button>
-                        </div>       
+                            <button class="comment-btn btn btn-link btn-sm svg-button-bubble d-inline">      
+                            </button>
+                                <div class="comment-form mt-2 " style="display: none;">
+                                    <textarea class="form-control" rows="2" placeholder="Escribe tu comentario"></textarea>
+                                    <button class="btn btn-primary btn-sm submit-comment-btn">Enviar</button>
+                                </div>                                  
+                        </div>
                     </div>
-                </div>
+                </div>  
             </div>
     </div>
 </div>
@@ -348,13 +416,123 @@ home.html
     </div>
 </div>
 
+
+    
+
+
     <script>
-        function showPostButton() {
-            document.getElementById('post-button').style.display = 'block';
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            var button = document.querySelector('.bubble-btn');
+            button.addEventListener('click', function() {
+                console.log('SVG clickeado!');
+                // Tu código aquí
+            });
+        });
     </script>
+    <!-- Función timeAgo en JavaScript -->
+    <script>
+        function timeAgo(dateString) {
+            const now = new Date();
+            const date = new Date(dateString);
+            const diff = Math.floor((now - date) / 1000); // Diferencia en segundos
+
+            if (diff < 60) return `hace ${diff} segundo${diff === 1 ? '' : 's'}`;
+            if (diff < 3600) return `hace ${Math.floor(diff / 60)} minuto${Math.floor(diff / 60) === 1 ? '' : 's'}`;
+            if (diff < 7200) return `hace ${Math.floor(diff / 3600)} hora${Math.floor(diff / 3600) === 1 ? '' : 's'}`;
+            if (diff < 604800) return `hace ${Math.floor(diff / 86400)} día${Math.floor(diff / 86400) === 1 ? '' : 's'}`;
+            if (diff < 2419200) return `hace ${Math.floor(diff / 604800)} semana${Math.floor(diff / 604800) === 1 ? '' : 's'}`;
+            if (diff < 29030400) return `hace ${Math.floor(diff / 2419200)} mes${Math.floor(diff / 2419200) === 1 ? '' : 'es'}`;
+            return `hace ${Math.floor(diff / 29030400)} año${Math.floor(diff / 29030400) === 1 ? '' : 's'}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.comment-time').forEach(function(element) {
+                const dateTime = element.getAttribute('data-time');
+                const timeAgoText = timeAgo(dateTime);
+                element.textContent = timeAgoText;
+            });     
+         });
+        
+         document.addEventListener('DOMContentLoaded', function() {
+             document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('comment-btn')) {
+                const commentForm = event.target.nextElementSibling;
+                commentForm.style.display = commentForm.style.display === 'none' ? 'block' : 'none';
+            
+            }
+        });
+        
+        // Manejar el envío del comentario
+        document.addEventListener('click', async function(event) {
+            if (event.target.classList.contains('submit-comment-btn')) {
+                const commentForm = event.target.closest('.comment-form');
+                const textarea = commentForm.querySelector('textarea');
+                const commentContent = textarea.value;
+                const postElement = commentForm.closest('.comment');
+
+                // Aquí deberías enviar el comentario al servidor
+                // Por ejemplo:
+                // const response = await fetch('/comment', {
+                //     method: 'POST',
+                //     body: JSON.stringify({ postId, content: commentContent }),
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                //     }
+                // });
+
+                const newComment = document.createElement('div');
+                newComment.className = 'comment mb-3';
+                newComment.innerHTML = `
+                    <div class="d-flex align-items-start mb-1">
+                        <img src="https://via.placeholder.com/25" class="rounded-circle mr-2" alt="User Profile Picture">
+                        <div>
+                            <strong class="comment-author">Tú</strong>
+                            <span class="comment-time" data-time="${new Date().toISOString()}"></span>
+                        </div>
+                    </div>
+                    <div class="comment-text">${commentContent}</div>
+                `;
+                postElement.appendChild(newComment);
+
+                // Si la respuesta es exitosa, puedes agregar el comentario al DOM
+                // Aquí sólo estamos simulando la adición del comentario
+
+                // Ocultar el formulario de comentarios
+                commentForm.style.display = 'none';
+
+                // Limpiar el textarea
+                textarea.value = '';
+            }
+        });
+    });
+
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#post-form').on('submit', function(event) {
+                event.preventDefault(); // Previene el envío normal del formulario
+        
+                $.ajax({
+                    type: $(this).attr('method'),
+                    url: $(this).attr('action'),
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        // Actualiza la lista de posts con la respuesta del servidor
+                        $('#comments-section').html(response);
+                        $('#contenido').val(''); // Limpia el textarea después de publicar
+                    },
+                    error: function(xhr, status, error) {
+                    console.error('Error al publicar el post:', error);
+                }
+                });
+            });
+        });
+        </script>
+
     <script src="/src/main/resources/static/commentsSection.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
