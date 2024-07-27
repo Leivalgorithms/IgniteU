@@ -26,14 +26,11 @@ public class SecurityConfig {
                         .requestMatchers("/verify-otp").permitAll()
                         .requestMatchers("/change-password").permitAll()
                         .requestMatchers("/send-otp").permitAll()
-<<<<<<< Updated upstream
-=======
                         .requestMatchers("/search").permitAll()
                         .requestMatchers("/send-request").permitAll()
                         .requestMatchers("/profile").permitAll()
                         .requestMatchers("/accept-request").permitAll()
                         .requestMatchers("/deny-request").permitAll()
->>>>>>> Stashed changes
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
