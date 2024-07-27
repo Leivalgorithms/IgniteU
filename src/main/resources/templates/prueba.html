@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Perfil</title>
+</head>
+<body>
+    <h1>Actualizar Perfil</h1>
+    <form action="/profile/update" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="username">Nombre de usuario:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="bio">Biografía:</label>
+            <textarea id="bio" name="bio"></textarea>
+        </div>
+        <div>
+            <label for="pfp">Foto de perfil:</label>
+            <input type="file" id="pfp" name="pfp" accept="image/*">
+        </div>
+        <button type="submit">Actualizar perfil</button>
+    </form>
+
+    <h2>Imagen de perfil actual</h2>
+    <div>
+        <img src="/images/${usertable.pfp}" alt="Foto de perfil" style="max-width: 200px; max-height: 200px;">
+    </div>
+</body>
+</html>

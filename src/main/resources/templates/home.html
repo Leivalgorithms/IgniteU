@@ -1,3 +1,5 @@
+home.html
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
                 xmlns:sec="http://www.thymeleaf.org">
@@ -189,6 +191,7 @@
         .post-box textarea:focus {
             outline: none; /* Elimina el contorno del textarea cuando está enfocado */
         }
+
         textarea.form-control {
             width: 100%;
             box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
@@ -272,7 +275,6 @@
             box-shadow: none;
             box-shadow: none;
         }
-
   </style>
 
   </head>
@@ -382,8 +384,7 @@
                                 <div class="comment-form mt-2 " style="display: none;">
                                     <textarea class="form-control" rows="2" placeholder="Escribe tu comentario"></textarea>
                                     <button class="btn btn-primary btn-sm submit-comment-btn">Enviar</button>
-                                </div> 
-                                                  
+                                </div>                                  
                         </div>
                     </div>
                 </div>  
@@ -529,6 +530,7 @@
             });
         });
         </script>
+
     <script src="/src/main/resources/static/commentsSection.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
