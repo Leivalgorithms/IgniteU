@@ -37,6 +37,7 @@ public class PasswordRecoveryController {
         // Verificar si el correo existe en la base de datos
         
         String sql = "SELECT * FROM usuarios WHERE correo = ?";
+        @SuppressWarnings("unused")
         Usertable usuario;
         
         try {
@@ -84,6 +85,7 @@ public class PasswordRecoveryController {
     @PostMapping("/verify-otp")
     public String verifyOTP(@RequestParam("otp") int otp, @RequestParam("email") String email, Model model) {
         String sql = "SELECT otp FROM otp_table WHERE correo = ?";
+        @SuppressWarnings("unused")
         Integer storedOtp;
        
         try {
