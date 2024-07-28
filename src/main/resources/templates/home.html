@@ -207,6 +207,12 @@
             object-fit: cover;
         }
 
+        .profile-pict{
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+        }
+
         .comment-icon {
             width: 50px;
             height: 50px;
@@ -291,7 +297,8 @@
                 </svg>
           </div>
         <div class="ml-auto dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://www.mmaweekly.com/.image/t_share/MTk4NTIzNjA5MTE5Nzk0NjI3/hasbulla-magomedov.png" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture"></a>
+            <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture"></a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                 <form sec:authorize="isAuthenticated()" method="post" action="/logout" class="px-4 py-3">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -328,7 +335,7 @@
             </ul>
         </div>
         
-        <!--Modal para editar Perfil-->
+        <!--Modal para mandar Solicitudes-->
         <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
         aria-labelledby="notificationLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -375,7 +382,7 @@
             <div class="post-box">
                 <form id="post-form" th:action="@{/createPost}" th:object="${post}" method="post">
                     <div class="d-flex align-items-center mb-3">
-                        <img src="https://www.mmaweekly.com/.image/t_share/MTk4NTIzNjA5MTE5Nzk0NjI3/hasbulla-magomedov.png" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
+                        <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pict" alt="User Profile Picture">
                         <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control"></textarea>
                         <button type="submit" class="btn btn-primary post-button">Publicar</button>
                     </div>
@@ -403,7 +410,7 @@
                     <div class="comments-section rounded p-3" id="comments-section">   
                         <div  th:each="post : ${userposts}" class="comment mb-3">
                             <div class="d-flex align-items-start mb-1">
-                                <img src="https://via.placeholder.com/25" class="rounded-circle mr-2" alt="User Profile Picture">
+                                <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
                                 <div>
                                     <strong class="comment-author" th:text="${username}">Autor</strong>
                                     <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
@@ -428,27 +435,32 @@
     </div>
 </div>
        
-        <div class="col-md-2 contacts">
-          <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
-            <form class="d-flex" action="/search" method="get">
-              <div class="input-group">
-                <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="query">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </div>
-            </form>
-          </li>
-            <div class="contact">Contactos</div>
-            <div class="contact">
-              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 1</div>
-            <div class="contact">
-              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 2</div>
-            <div class="contact">
-              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 3</div>
-            <div class="contact">
-              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 4</div>
-            <div class="contact">
-              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 5</div>
-        </div>
+            <div class="col-md-2 contacts">
+                <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
+                    <form class="d-flex" action="/search" method="get">
+                        <div class="input-group">
+                            <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="query">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </div>
+                    </form>
+                </li>
+                <h5 class="mt-3">Contactos</h5>
+                <div th:if="${#lists.isEmpty(amistades)}">
+                    <p>Aún no tienes contactos.</p>
+                </div>
+                <div th:if="${not #lists.isEmpty(amistades)}">
+                    <div th:each="amistad, iterStat : ${amistades}" class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}" 
+                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
+                            <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25" 
+                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
+                            <span th:text="${amistad.username}">Nombre del contacto</span>
+                        </div>
+                        <hr th:if="${!iterStat.last}" class="my-2">
+                    </div>
+                </div>
+            </div>
     </div>
 </div>
 

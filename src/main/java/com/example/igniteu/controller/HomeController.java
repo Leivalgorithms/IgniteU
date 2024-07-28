@@ -6,12 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,17 +21,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-
-
 import com.example.igniteu.Repository.UserRepository;
-//services
-import com.example.igniteu.Services.PostService;
 import com.example.igniteu.Services.AmistadesService;
+import com.example.igniteu.Services.PostService;
 import com.example.igniteu.Services.UserService;
-//models
+import com.example.igniteu.models.Amistades;
 import com.example.igniteu.models.Post;
 import com.example.igniteu.models.Usertable;
-import com.example.igniteu.models.Amistades;
 
 @Controller
 public class HomeController {
@@ -58,6 +51,8 @@ public class HomeController {
         Usertable usertable = userService.findByCorreo(username);
         model.addAttribute("username",
                 usertable.getUsername());
+        model.addAttribute("pfp", 
+                usertable.getPfp());
 
         // Obtener el user_id del usuario autenticado
         Integer userId = usertable.getId();
@@ -72,6 +67,10 @@ public class HomeController {
         }
 
         model.addAttribute("userposts", posts);
+
+        List<Usertable> amistades = amistadesService.getAmistadesAceptadas(usertable);
+        model.addAttribute("amistades", amistades);
+        
         return "home";
     }
 
@@ -109,6 +108,9 @@ public class HomeController {
         List<Amistades> requests = amistadesService.getFriendRequests(currentUserOpt.get());
         System.out.println(requests);
         model.addAttribute("requests", requests);
+
+        List<Usertable> amistades = amistadesService.getAmistadesAceptadas(usertable);
+        model.addAttribute("amistades", amistades);
 
         return "profile";
     }
@@ -156,12 +158,20 @@ public class HomeController {
 
     @GetMapping("/profile-search/{username}")
     public String viewProfile(@PathVariable String username, Model model, Authentication authentication) {
-        Usertable usertable = userService.findByUsername(username);
-        
-        if (usertable != null) {
-            model.addAttribute("profileUser", usertable);
+        Usertable profileUser = userService.findByUsername(username);
+
+        if (profileUser != null) {
+            model.addAttribute("profileUser", profileUser);
+            
+            if (authentication != null) {
+                String loggedInUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+                Usertable loggedInUser = userService.findByCorreo(loggedInUsername);
+                List<Usertable> amistades = amistadesService.getAmistadesAceptadas(loggedInUser);
+                model.addAttribute("amistades", amistades);
+            }
+
             boolean isOwnProfile = authentication != null && 
-                authentication.getName().equals(usertable.getCorreo());
+                authentication.getName().equals(profileUser.getCorreo());
             model.addAttribute("isOwnProfile", isOwnProfile);
             return "profile-search";
         } else {
