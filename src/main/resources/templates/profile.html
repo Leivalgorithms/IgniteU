@@ -436,19 +436,20 @@
                     </form>
                 </li>
                 <h5 class="mt-3">Contactos</h5>
-                <div th:if="${#lists.isEmpty(amistades)}">
-                    <p>Aún no tienes contactos.</p>
-                </div>
-                <div th:if="${not #lists.isEmpty(amistades)}">
-                    <div th:each="amistad, iterStat : ${amistades}" class="contact-item mb-3">
-                        <div class="d-flex align-items-center">
-                            <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}" 
-                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
-                            <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25" 
-                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
-                            <span th:text="${amistad.username}">Nombre del contacto</span>
+                    <div th:if="${#lists.isEmpty(amistades)}">
+                        <p>Aún no tienes contactos.</p>
+                    </div>
+                    <div th:if="${not #lists.isEmpty(amistades)}">
+                        <div th:each="amistad, iterStat : ${amistades}" class="contact-item mb-3">
+                            <a th:href="@{'/profile-search/' + ${amistad.username}}" class="d-flex align-items-center text-decoration-none">
+                                <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}" 
+                                    class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
+                                <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25" 
+                                    class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
+                                <span th:text="${amistad.username}" style="color: white;">Nombre del contacto</span>
+                            </a>
+                            <hr th:if="${!iterStat.last}" class="my-2">
                         </div>
-                        <hr th:if="${!iterStat.last}" class="my-2">
                     </div>
                 </div>
             </div>
