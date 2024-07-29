@@ -180,6 +180,11 @@ public class HomeController {
             boolean isOwnProfile = authentication != null &&
                     authentication.getName().equals(usertable.getCorreo());
             model.addAttribute("isOwnProfile", isOwnProfile);
+
+            String currentUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Usertable usertable2 = userService.findByCorreo(currentUsername);
+            boolean sonAmigos = amistadesService.sonAmigos(usertable2, usertable);
+            model.addAttribute("profileUserTieneSolicitud", sonAmigos);
             return "profile-search";
         } else {
             return "error";

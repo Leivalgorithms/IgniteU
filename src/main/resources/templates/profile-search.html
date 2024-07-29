@@ -121,7 +121,7 @@
                 <br/>
                 <button class="btn btn-light btn-block mt-3">Crear una comunidad</button>
             </div>
-            <div class="col-md-7 content">
+            <div class="col-md-7 content" th:data-remove-friend-url="@{/remove-friend}" th:data-csrf-token="${_csrf.token}">
                 <div style="position: relative; width: 900px; height: 200px; overflow: hidden;">
                     <div class="mr-3">
                         <div class="placeholder-image"></div>
@@ -133,10 +133,11 @@
                              alt="Foto de perfil actual">
                     </div>
                   </div>
-                
                   <h3 th:text="${profileUser.username}">Nombre</h3>
                   <p th:text="${profileUser.correo}">Correo</p>
                   <p th:text="${profileUser.bio}">Bio</p>
+                  <button th:if="${profileUserTieneSolicitud}" class="btn btn-danger btn-sm remove-friend-button">Eliminar amistad</button>
+                
                 <br/>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
@@ -196,5 +197,45 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+
+    <script>
+       document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('remove-friend-button')) {
+        const cardBody = event.target.closest('.content');
+        const username = document.querySelector('h3').innerText.trim();
+        const removeFriendUrl = cardBody.getAttribute('data-remove-friend-url');
+        const csrfToken = cardBody.getAttribute('data-csrf-token');
+
+        var formData = new URLSearchParams();
+        formData.append('friendUsername', username);
+        formData.append('_csrf', csrfToken);
+
+        fetch(removeFriendUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData.toString()
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Amistad eliminada');
+                event.target.remove();
+            } else {
+                alert('Error al eliminar amistad');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+});
+    </script>
+
+
+
 </body>
 </html>
