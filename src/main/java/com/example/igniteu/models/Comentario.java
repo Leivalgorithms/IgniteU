@@ -13,13 +13,14 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "comentarios")
-public class comentarios {
+public class Comentario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idcomentario;
 
-    private Integer post_id;
+    @Column(name = "post_id")
+    private Integer postId;
     private Integer usuario_id;
     private String contenido;
     private LocalDateTime fecha_comentario;
