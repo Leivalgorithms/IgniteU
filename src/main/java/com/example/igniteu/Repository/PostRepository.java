@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.igniteu.models.Post;
+import com.example.igniteu.models.Usertable;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "SELECT * FROM posts WHERE usuario_id = :userId order by fecha_publicacion desc ", nativeQuery = true)
     List<Post> findPostsByUserIdNative(@Param("userId") Integer userId);
 
+    @Query(value = "SELECT * FROM posts WHERE usuario_id IN (:userIds) order by fecha_publicacion desc ", nativeQuery = true)
+    List<Post> findPostsByUserIds(@Param("userIds") List<Integer> userIds);
 }
