@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers("/profile").permitAll()
                         .requestMatchers("/accept-request").permitAll()
                         .requestMatchers("/deny-request").permitAll()
+                        .requestMatchers("/remove-friend").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
