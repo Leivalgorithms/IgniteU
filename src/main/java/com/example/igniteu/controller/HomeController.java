@@ -32,7 +32,6 @@ import com.example.igniteu.models.Post;
 import com.example.igniteu.models.Usertable;
 import com.example.igniteu.models.Comentario;
 
-
 @Controller
 public class HomeController {
     @Autowired
@@ -58,9 +57,7 @@ public class HomeController {
     public String homeinitString(Model model) {
         String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Usertable usertable = userService.findByCorreo(username);
-        model.addAttribute("username",
-                usertable.getUsername());
-        model.addAttribute("pfp", 
+        model.addAttribute("pfp",
                 usertable.getPfp());
 
         // Obtener el user_id del usuario autenticado
@@ -73,14 +70,15 @@ public class HomeController {
 
         // Obtener los posts de los amigos
         List<Post> friendPosts = postService.getPostsByUserIds(friendIds);
-      
+
         List<Usertable> amistades = amistadesService.getAmistadesAceptadas(usertable);
+
+        model.addAttribute("username", usertable.getUsername());
 
         model.addAttribute("userposts", posts);
 
         model.addAttribute("friendPosts", friendPosts);
-      
-      
+
         model.addAttribute("amistades", amistades);
 
         // Imprimir los valores de los posts en la consola
@@ -175,28 +173,12 @@ public class HomeController {
 
     @GetMapping("/profile-search/{username}")
     public String viewProfile(@PathVariable String username, Model model, Authentication authentication) {
-        Usertable profileUser = userService.findByUsername(username);
-
-        if (profileUser != null) {
-            model.addAttribute("profileUser", profileUser);
-            
-            if (authentication != null) {
-                String loggedInUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-                Usertable loggedInUser = userService.findByCorreo(loggedInUsername);
-                List<Usertable> amistades = amistadesService.getAmistadesAceptadas(loggedInUser);
-                model.addAttribute("amistades", amistades);
-            }
-
-            boolean isOwnProfile = authentication != null && 
-                authentication.getName().equals(profileUser.getCorreo());
-
         Usertable usertable = userService.findByUsername(username);
 
         if (usertable != null) {
             model.addAttribute("profileUser", usertable);
             boolean isOwnProfile = authentication != null &&
                     authentication.getName().equals(usertable.getCorreo());
-
             model.addAttribute("isOwnProfile", isOwnProfile);
 
             String currentUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
