@@ -207,6 +207,12 @@
             object-fit: cover;
         }
 
+        .profile-pict{
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+        }
+
         .comment-icon {
             width: 50px;
             height: 50px;
@@ -273,6 +279,32 @@
             box-shadow: none;
             box-shadow: none;
         }
+
+        /* Estilos para el modal */
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background-color: #1c1c1c;
+            border-bottom: 1px solid #1c1c1c;
+            padding: 15px 20px;
+        }
+
+        .modal-title {
+            font-weight: bold;
+        }
+
+        .modal-body {
+            background-color: #272829;
+            padding: 20px;
+        }
+        .modal-footer {
+            border-top: 1px solid #1c1c1c;
+            padding: 15px 20px;
+            background-color: #1c1c1c;
+        }
   </style>
 
   </head>
@@ -291,7 +323,8 @@
                 </svg>
           </div>
         <div class="ml-auto dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="https://www.mmaweekly.com/.image/t_share/MTk4NTIzNjA5MTE5Nzk0NjI3/hasbulla-magomedov.png" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture"></a>
+            <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture"></a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                 <form sec:authorize="isAuthenticated()" method="post" action="/logout" class="px-4 py-3">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -328,7 +361,7 @@
             </ul>
         </div>
         
-        <!--Modal para editar Perfil-->
+        <!--Modal para mandar Solicitudes-->
         <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
         aria-labelledby="notificationLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -375,22 +408,18 @@
             <div class="post-box">
                 <form id="post-form" th:action="@{/createPost}" th:object="${post}" method="post">
                     <div class="d-flex align-items-center mb-3">
-                        <img src="https://www.mmaweekly.com/.image/t_share/MTk4NTIzNjA5MTE5Nzk0NjI3/hasbulla-magomedov.png" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
+                        <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pict" alt="User Profile Picture">
                         <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control"></textarea>
                         <button type="submit" class="btn btn-primary post-button">Publicar</button>
                     </div>
                     <div class="post-actions d-flex justify-content-around">
                         <div class="action-item">
-                            <img src="https://via.placeholder.com/30" alt="Video en vivo">
-                            <span>Video en vivo</span>
+                            <img src="https://via.placeholder.com/30" alt="Video">
+                            <span>Subir Video</span>
                         </div>
                         <div class="action-item">
-                            <img src="https://via.placeholder.com/30" alt="Foto/video">
-                            <span>Foto/video</span>
-                        </div>
-                        <div class="action-item">
-                            <img src="https://via.placeholder.com/30" alt="Sentimiento/actividad">
-                            <span>Sentimiento/actividad</span>
+                            <img src="https://via.placeholder.com/30" alt="Foto">
+                            <span>Subir Foto</span>
                         </div>
                     </div>
                 </form> 
@@ -401,11 +430,13 @@
             <div class="row">
                 <div class="col-12">
                     <div class="comments-section rounded p-3" id="comments-section">   
-                        <div  th:each="post : ${userposts}" class="comment mb-3">
+                        <div  th:each="post : ${friendPosts}" class="comment mb-3">
                             <div class="d-flex align-items-start mb-1">
-                                <img src="https://via.placeholder.com/25" class="rounded-circle mr-2" alt="User Profile Picture">
+                                <img th:if="${post.usuario.pfp != null}" th:src="@{'/images/' + ${post.usuario.pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
+                                <img th:if="${post.usuario.pfp == null}" src="https://via.placeholder.com/25" 
+                                class="rounded-circle mr-3 profile-pic" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
                                 <div>
-                                    <strong class="comment-author" th:text="${username}">Autor</strong>
+                                    <strong class="comment-author" th:text="${post.usuario.username}">Autor</strong>
                                     <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
                                 </div>
                             </div> 
@@ -415,47 +446,84 @@
                                     <path transform="translate(987,603)" d="m0 0 10 5 17 12 15 13 11 9 8 7v2l4 2 12 12 7 8 9 10 10 13 12 17 13 20 9 16 11 22 11 27 6 18 8 33 4 23 3 31v37l-4 40-5 26-7 27-12 35-10 25-12 25-1 2 7-4 13-11 10-10 9-11 10-14 10-19 8-20 7-23 4-1 8 9 13 18 10 16 10 19 10 25 6 20 5 24 3 22 1 12v23l-4 29-6 25-6 18-9 20-9 17-8 12-12 17-13 16-7 7-7 8-8 7-12 11-18 13-5 2v-28l-2-22-5-20-6-15-8-15-13-17-7-6v17l-3 17-6 17-9 16-9 12-9 9-6 4h-2l4-20 3-23v-28l-5-25-6-18-9-20-16-31-7-16-7-19-5-19-3-18-1-11v-21l2-22 2-14-15 9-14 10-11 9-15 14-11 11-11 14-14 19-9 15-11 21-9 24-6 21-5 27-3 30v18l3 29 5 26 7 25 4 11v3l-6-2-13-9-15-12-11-9-10-9-12-12-7-6-7-8-9-10-14-19-9-13-9-15-8-16-10-25-5-16-4-21-3-23v-28l4-29 6-25 8-22 10-23 10-19 13-21 12-17 11-14 9-11 9-10 12-13 63-63 7-8 15-16 18-22 11-14 13-17 19-29 9-15 10-22 6-20 2-13v-19l-3-21-5-18-8-19-9-17z"/>
                                 </svg>
                             </button>
-                            <button class="comment-btn btn btn-link btn-sm svg-button-bubble d-inline">      
+                        
+                            <button class="btn btn-link btn-sm svg-button-bubble d-inline"
+                                data-toggle="modal" 
+                                th:data-target="${'#postModal-' + post.idpost}">   
                             </button>
-                                <div class="comment-form mt-2 " style="display: none;">
-                                    <textarea class="form-control" rows="2" placeholder="Escribe tu comentario"></textarea>
-                                    <button class="btn btn-primary btn-sm submit-comment-btn">Enviar</button>
-                                </div>                                  
+
+                            <!-- Modal para post específico -->
+                            <div class="modal fade" th:id="${'postModal-' + post.idpost}" tabindex="-1" role="dialog"
+                                th:aria-labelledby="${'postModalLabel-' + post.idpost}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title comment-author" th:id="${'postModalLabel-' + post.idpost}"
+                                                th:text="'Post de ' + ${post.usuario.username}">Post Title</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
+                                            <p class="comment-text" th:text="${post.contenido}">Post content goes here.</p>
+                                            <!-- Sección de comentarios -->
+                                            <div class="comment mb-3 mt-4">
+                                                <h6>Comentarios</h6>
+                                                <div class="comments-list">
+                                                    <!-- Los comentarios se insertarán aquí dinámicamente -->
+                                                </div>
+                                            </div>
+                                                <div class="comment-form mt-2 ">
+                                                    <textarea class="form-control" rows="2" placeholder="Escribe tu comentario"></textarea>
+                                                    <button class="btn btn-primary btn-sm submit-comment-btn">Enviar</button>
+                                                </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                                
                         </div>
                     </div>
+              
                 </div>  
             </div>
     </div>
 </div>
        
-        <div class="col-md-2 contacts">
-          <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
-            <form class="d-flex" action="/search" method="get">
-              <div class="input-group">
-                <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="query">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </div>
-            </form>
-          </li>
-            <div class="contact">Contactos</div>
-            <div class="contact">
-              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 1</div>
-            <div class="contact">
-              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 2</div>
-            <div class="contact">
-              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 3</div>
-            <div class="contact">
-              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 4</div>
-            <div class="contact">
-              <img src="https://via.placeholder.com/25" class="rounded-circle mr-3" alt="User Profile Picture">Contact 5</div>
-        </div>
+            <div class="col-md-2 contacts">
+                <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
+                    <form class="d-flex" action="/search" method="get">
+                        <div class="input-group">
+                            <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="query">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </div>
+                    </form>
+                </li>
+                <h5 class="mt-3">Contactos</h5>
+                <div th:if="${#lists.isEmpty(amistades)}">
+                    <p>Aún no tienes contactos.</p>
+                </div>
+                <div th:if="${not #lists.isEmpty(amistades)}">
+                    <div th:each="amistad, iterStat : ${amistades}" class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}" 
+                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
+                            <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25" 
+                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
+                            <span th:text="${amistad.username}">Nombre del contacto</span>
+                        </div>
+                        <hr th:if="${!iterStat.last}" class="my-2">
+                    </div>
+                </div>
+            </div>
     </div>
 </div>
 
-
     
-
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var button = document.querySelector('.bubble-btn');
@@ -481,33 +549,39 @@
             return `hace ${Math.floor(diff / 29030400)} año${Math.floor(diff / 29030400) === 1 ? '' : 's'}`;
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.comment-time').forEach(function(element) {
-                const dateTime = element.getAttribute('data-time');
-                const timeAgoText = timeAgo(dateTime);
-                element.textContent = timeAgoText;
-            });     
-         });
-        
-         document.addEventListener('DOMContentLoaded', function() {
-             document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('comment-btn')) {
-                const commentForm = event.target.nextElementSibling;
-                commentForm.style.display = commentForm.style.display === 'none' ? 'block' : 'none';
-            
-            }
+        function updateTimestamps() {
+    document.querySelectorAll('.comment-time').forEach(function(element) {
+        const dateTime = element.getAttribute('data-time');
+        const timeAgoText = timeAgo(dateTime);
+        element.textContent = timeAgoText;
         });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    updateTimestamps();
+    setInterval(updateTimestamps, 60000); // Actualizar cada minuto
+
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('comment-btn')) {
+            const commentForm = event.target.nextElementSibling;
+            commentForm.style.display = commentForm.style.display === 'none' ? 'block' : 'none';
+        }
+    });
         
-        // Manejar el envío del comentario
-        document.addEventListener('click', async function(event) {
-            if (event.target.classList.contains('submit-comment-btn')) {
-                const commentForm = event.target.closest('.comment-form');
-                const textarea = commentForm.querySelector('textarea');
-                const commentContent = textarea.value;
-                const postElement = commentForm.closest('.comment');
+        
+    document.addEventListener('click', async function(event) {
+        if (event.target.classList.contains('submit-comment-btn')) {
+            const commentForm = event.target.closest('.comment-form');
+            const textarea = commentForm.querySelector('textarea');
+            const commentContent = textarea.value.trim();
+
+            if (commentContent) {
+                const modal = event.target.closest('.modal');
+                const postElement = modal ? modal.querySelector('.comments-list') : commentForm.closest('.comment');
 
                 // Aquí deberías enviar el comentario al servidor
                 // Por ejemplo:
+                // const postId = event.target.getAttribute('data-post-id');
                 // const response = await fetch('/comment', {
                 //     method: 'POST',
                 //     body: JSON.stringify({ postId, content: commentContent }),
@@ -524,24 +598,25 @@
                         <img src="https://via.placeholder.com/25" class="rounded-circle mr-2" alt="User Profile Picture">
                         <div>
                             <strong class="comment-author">Tú</strong>
-                            <span class="comment-time" data-time="${new Date().toISOString()}"></span>
+                            <span class="comment-time time-text" data-time="${new Date().toISOString()}"></span>
                         </div>
                     </div>
                     <div class="comment-text">${commentContent}</div>
                 `;
-                postElement.appendChild(newComment);
 
-                // Si la respuesta es exitosa, puedes agregar el comentario al DOM
-                // Aquí sólo estamos simulando la adición del comentario
+                if (modal) {
+                    postElement.insertBefore(newComment, postElement.firstChild);
+                } else {
+                    postElement.appendChild(newComment);
+                    commentForm.style.display = 'none';
+                }
 
-                // Ocultar el formulario de comentarios
-                commentForm.style.display = 'none';
-
-                // Limpiar el textarea
                 textarea.value = '';
+                updateTimestamps();
             }
-        });
+        }
     });
+});
 
     </script>
 
@@ -566,6 +641,28 @@
             });
         });
         </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var commentModal = document.getElementById('commentModal');
+                commentModal.addEventListener('show.bs.modal', function (event) {
+                    // Botón que activó el modal
+                    var button = event.relatedTarget;
+                    // Extraer información de los atributos data-bs-*
+                    var content = button.getAttribute('data-bs-content');
+                    var title = button.getAttribute('data-bs-title');
+
+                    // Actualizar el contenido del modal
+                    var modalTitle = commentModal.querySelector('.modal-title');
+                    var modalBody = commentModal.querySelector('.modal-body');
+
+                    modalTitle.textContent = title;
+                    modalBody.textContent = content;
+                });
+            });
+        </script>
+
+            
 
     <script src="/src/main/resources/static/commentsSection.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

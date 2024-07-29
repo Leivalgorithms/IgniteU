@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,15 +36,21 @@
             height: 50px;
         }
         .navbar-brand, .nav-link {
-            color: #fff !important;
+            color: #ffffff43 !important;
         }
         .nav-link:hover, .btn:hover {
             background-color: #5a5a5a !important;
-            color: #fff !important;
+            color: #000000 !important;
         }
         .nav-link:active, .btn:active {
-            background-color: blue !important;
-            color: black !important;
+            background-color: rgb(255, 255, 255) !important;
+            color: rgb(32, 29, 29) !important;
+        }
+        .nav-link:focus, .btn:focus {
+            background-color: #5a5a5a !important;
+            color: #000000 !important;
+            box-shadow: none;
+
         }
         .dropdown-menu {
             background-color: #1c1c1c;
@@ -67,6 +72,17 @@
             height: 200px;
             background: linear-gradient(135deg, #efa3a3 0%, #0019fb 100%);
         }
+
+        .custom-left-align {
+            display: flex;
+            justify-content: flex-start;
+            float: right;
+        }
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
@@ -84,7 +100,7 @@
                 </svg>
           </div>
         <div class="ml-auto dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">User</a>
+            <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture"></a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                 <form sec:authorize="isAuthenticated()" method="post" action="/logout" class="px-4 py-3">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -101,7 +117,7 @@
                         <a class="nav-link text-dark" href="/home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" href="/profile">perfil</a>
+                        <a class="nav-link text-dark" href="/profile">Perfil</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" href="#">Notificaciones</a>
@@ -121,10 +137,10 @@
                 <br/>
                 <button class="btn btn-light btn-block mt-3">Crear una comunidad</button>
             </div>
-            <div class="col-md-7 content">
-                <div style="position: relative; width: 900px; height: 200px; overflow: hidden;">
-                    <div class="mr-3">
-                        <div class="placeholder-image"></div>
+            <div class="col-md-7 content" th:data-remove-friend-url="@{/remove-friend}" th:data-csrf-token="${_csrf.token}">
+                <div style="position: relative; width: 100%; max-width: 2000px; height: 200px; overflow: hidden;">
+                    <div class="mr-3" style="width: 100%; height: 100%;">
+                        <div class="placeholder-image" style="width: 100%; height: 100%; background-color: #ddd;"></div>
                     </div>                       
                     <div class="mr-3" style="position: absolute; bottom: 10px; left: 10px; width: 90px; height: 90px; overflow: hidden;">
                         <img th:if="${profileUser.pfp != null}" th:src="@{'/images/' + ${profileUser.pfp}}" 
@@ -133,10 +149,11 @@
                              alt="Foto de perfil actual">
                     </div>
                   </div>
-                
                   <h3 th:text="${profileUser.username}">Nombre</h3>
                   <p th:text="${profileUser.correo}">Correo</p>
                   <p th:text="${profileUser.bio}">Bio</p>
+                  <button th:if="${profileUserTieneSolicitud}" class="btn btn-danger btn-sm remove-friend-button custom-left-align">Eliminar contacto</button>
+                
                 <br/>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
@@ -164,42 +181,77 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 contacts">
-                <li class="nav-item d-flex align-items-center">
+            <div class="col-md-3 contacts container-fluid">
+                <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
                     <form class="d-flex" action="/search" method="get">
-                      <div class="input-group">
-                        <input class="form-control" type="search" placeholder="Búsqueda" aria-label="Search" name="query">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                      </div>
+                        <div class="input-group">
+                            <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="query">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </div>
                     </form>
-                  </li>
-                <div class="contact">Contactos</div>
-                <br />
-                <div class="mr-3">
-                    <img src="https://via.placeholder.com/25" class="rounded-circle" alt="Video en vivo">
-                    <span>Sticks</span>
+                </li>
+                <h5 class="mt-3">Contactos</h5>
+                <div th:if="${#lists.isEmpty(amistades)}">
+                    <p>Aún no tienes contactos.</p>
                 </div>
-                <hr class="hr" />
-                <div class="mr-3">
-                    <img src="https://via.placeholder.com/25" class="rounded-circle" alt="Video en vivo">
-                    <span>Sticks</span>
-                </div>
-                <hr class="hr" />
-                <div class="mr-3">
-                    <img src="https://via.placeholder.com/25" class="rounded-circle" alt="Video en vivo">
-                    <span>Sticks</span>
-                </div>
-                <hr class="hr" />
-                <div class="mr-3">
-                    <img src="https://via.placeholder.com/25" class="rounded-circle" alt="Video en vivo">
-                    <span>Sticks</span>
+                <div th:if="${not #lists.isEmpty(amistades)}">
+                    <div th:each="amistad, iterStat : ${amistades}" class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}" 
+                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
+                            <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25" 
+                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
+                            <span th:text="${amistad.username}">Nombre del contacto</span>
+                        </div>
+                        <hr th:if="${!iterStat.last}" class="my-2">
+                    </div>
                 </div>
             </div>
+            </div>
         </div>
-    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+
+    <script>
+       document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('remove-friend-button')) {
+        const cardBody = event.target.closest('.content');
+        const username = document.querySelector('h3').innerText.trim();
+        const removeFriendUrl = cardBody.getAttribute('data-remove-friend-url');
+        const csrfToken = cardBody.getAttribute('data-csrf-token');
+
+        var formData = new URLSearchParams();
+        formData.append('friendUsername', username);
+        formData.append('_csrf', csrfToken);
+
+        fetch(removeFriendUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData.toString()
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Amistad eliminada');
+                event.target.remove();
+            } else {
+                alert('Error al eliminar amistad');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+});
+    </script>
+
+
+
 </body>
 </html>
