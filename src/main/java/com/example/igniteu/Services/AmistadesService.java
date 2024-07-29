@@ -92,5 +92,22 @@ public class AmistadesService {
                 .collect(Collectors.toList());
     }
 
+
+    public void eliminarAmistad(Usertable currentUser, Usertable amistadUser) {
+        Optional<Amistades> amistadOpt = amistadesRepository.findByUsuarioAndAmistad(currentUser, amistadUser);
+        if (!amistadOpt.isPresent()) {
+            amistadOpt = amistadesRepository.findByAmistadAndUsuario(currentUser, amistadUser);
+        }
+        amistadOpt.ifPresent(amistad -> amistadesRepository.delete(amistad));
+    }
+
+    public boolean sonAmigos(Usertable usuario, Usertable amigo) {
+        Optional<Amistades> amistadOpt = amistadesRepository.findByUsuarioAndAmistad(usuario, amigo);
+        if (!amistadOpt.isPresent()) {
+            amistadOpt = amistadesRepository.findByAmistadAndUsuario(usuario, amigo);
+        }
+        return amistadOpt.isPresent();
+    }
+
 }
 

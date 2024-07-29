@@ -414,16 +414,12 @@
                     </div>
                     <div class="post-actions d-flex justify-content-around">
                         <div class="action-item">
-                            <img src="https://via.placeholder.com/30" alt="Video en vivo">
-                            <span>Video en vivo</span>
+                            <img src="https://via.placeholder.com/30" alt="Video">
+                            <span>Subir Video</span>
                         </div>
                         <div class="action-item">
-                            <img src="https://via.placeholder.com/30" alt="Foto/video">
-                            <span>Foto/video</span>
-                        </div>
-                        <div class="action-item">
-                            <img src="https://via.placeholder.com/30" alt="Sentimiento/actividad">
-                            <span>Sentimiento/actividad</span>
+                            <img src="https://via.placeholder.com/30" alt="Foto">
+                            <span>Subir Foto</span>
                         </div>
                     </div>
                 </form> 
@@ -436,7 +432,9 @@
                     <div class="comments-section rounded p-3" id="comments-section">   
                         <div  th:each="post : ${friendPosts}" class="comment mb-3">
                             <div class="d-flex align-items-start mb-1">
-                                <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
+                                <img th:if="${post.usuario.pfp != null}" th:src="@{'/images/' + ${post.usuario.pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
+                                <img th:if="${post.usuario.pfp == null}" src="https://via.placeholder.com/25" 
+                                class="rounded-circle mr-3 profile-pic" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
                                 <div>
                                     <strong class="comment-author" th:text="${post.usuario.username}">Autor</strong>
                                     <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
@@ -601,7 +599,7 @@
                         <img src="https://via.placeholder.com/25" class="rounded-circle mr-2" alt="User Profile Picture">
                         <div>
                             <strong class="comment-author">Tú</strong>
-                            <span class="comment-time" data-time="${new Date().toISOString()}"></span>
+                            <span class="comment-time time-text" data-time="${new Date().toISOString()}"></span>
                         </div>
                     </div>
                     <div class="comment-text">${commentContent}</div>

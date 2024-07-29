@@ -1,5 +1,8 @@
 package com.example.igniteu.Repository;
 
+
+import jakarta.transaction.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +21,20 @@ public interface AmistadesRepository extends JpaRepository<Amistades, Long> {
 
     List<Amistades> findByUsuario(Usertable usuario);
 
-    Optional<Amistades> findByUsuarioAndAmistadAndEstado(Usertable usuario, Usertable amistad,
-            Amistades.EstadoAmistad estado);
+    Optional<Amistades> findByUsuarioAndAmistad(Usertable usuario, Usertable amistad);
+    Optional<Amistades> findByAmistadAndUsuario(Usertable amistad, Usertable usuario);
+
+
+
+    Optional<Amistades> findByUsuarioAndAmistadAndEstado(Usertable usuario, Usertable amistad, Amistades.EstadoAmistad estado);
+    Optional<Amistades> findByAmistadAndUsuarioAndEstado(Usertable amistad, Usertable usuario, Amistades.EstadoAmistad estado);
+
     List<Amistades> findByUsuarioAndEstado(Usertable usuario, Amistades.EstadoAmistad estado);
 
-    Optional<Amistades> findByAmistadAndUsuarioAndEstado(Usertable amistad, Usertable usuario,
-            Amistades.EstadoAmistad estado);
+    @Transactional
+    void deleteByUsuarioAndAmistad(Usertable usuario, Usertable amistad);
+
+    @Transactional
+    void deleteByAmistadAndUsuario(Usertable amistad, Usertable usuario);
 
 }

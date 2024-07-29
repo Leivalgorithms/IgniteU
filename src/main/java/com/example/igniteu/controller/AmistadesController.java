@@ -61,4 +61,25 @@ public class AmistadesController {
         amistadesService.DeniedFriendRequest(requestId);
         return "index";
     }
+
+
+
+
+    @PostMapping("/remove-friend")
+    @ResponseBody
+    public ResponseEntity<Void> removeFriend(@RequestParam String friendUsername) {
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Optional<Usertable> currentUserOpt = amistadesService.findUserBycorreo(username);
+        Optional<Usertable> friendOpt = amistadesService.findUserByUsername(friendUsername);
+
+        if (currentUserOpt.isPresent() && friendOpt.isPresent()) {
+            amistadesService.eliminarAmistad(currentUserOpt.get(), friendOpt.get());
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+
+
 }
