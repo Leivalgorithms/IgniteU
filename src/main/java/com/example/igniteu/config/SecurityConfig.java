@@ -28,11 +28,13 @@ public class SecurityConfig {
                                                 .requestMatchers("/send-otp").permitAll()
                                                 .requestMatchers("/home").permitAll()
                                                 .requestMatchers("/search").permitAll()
+                                                .requestMatchers("/profile-search/**").permitAll()
                                                 .requestMatchers("/send-request").permitAll()
                                                 .requestMatchers("/profile").permitAll()
                                                 .requestMatchers("/accept-request").permitAll()
                                                 .requestMatchers("/deny-request").permitAll()
                                                 .requestMatchers("/remove-friend").permitAll()
+                                                .requestMatchers("/profile-search/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
