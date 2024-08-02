@@ -196,9 +196,8 @@
         }
 
         .comments-container {
-        max-height: 200px; /* Ajusta según tus necesidades */
-        overflow-y: hidden;
-        position: relative;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         .profile-pic {
@@ -283,27 +282,70 @@
         /* Estilos para el modal */
         .modal-content {
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-
         .modal-header {
             background-color: #1c1c1c;
             border-bottom: 1px solid #1c1c1c;
             padding: 15px 20px;
         }
-
         .modal-title {
             font-weight: bold;
+        }
+        .close {
+            font-size: 1.5rem;
+            color: #ffffff44;
+            opacity: 0.5;
+        }
+        .close:hover {
+            opacity: 0.65;
         }
 
         .modal-body {
             background-color: #272829;
             padding: 20px;
         }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+
         .modal-footer {
             border-top: 1px solid #1c1c1c;
             padding: 15px 20px;
             background-color: #1c1c1c;
+
+            display: flex;
+            justify-content: flex-end;
+        }
+        .bttn {
+            border-radius: 5px;
+            padding: 10px 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .btn-secondary:hover, .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .modal-body .btn{
+            background-color: #28a745;
+            color: white;
         }
   </style>
 
@@ -343,6 +385,48 @@
 
                 <li class="nav-item">
                     <a class="nav-link text-dark" data-toggle="modal" data-target="#notificaciones" href="#">Notificaciones</a>
+                        <!--Modal para solicitudes de Amistad-->
+                        <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
+                            aria-labelledby="notificationLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="notificationLabel">Solicitudes de amistad</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div th:if="${#lists.isEmpty(requests)}">
+                                                <p>No tienes solicitudes de amistad pendientes.</p>
+                                            </div>
+                                            <div>
+                                                <ul>
+                                                    <li th:each="request : ${requests}">
+                                                        <p>Enviado por: <span th:text="${request.usuario.username}">Username</span></p>
+                                                        <p>Fecha: <span th:text="${request.fechaAmistad}">Date</span></p>
+                                                        <p>Estado: <span th:text="${request.estado}">Status</span></p>
+                                                        
+                                                            <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
+                                                                <input type="hidden" name="requestId" th:value="${request.id}">
+                                                                <button type="button" class="btn btn-aceptar btn-sm accept-request-button">Aceptar</button>
+                                                            </div>
+
+                                                            <div class="Denegar" th:data-send-request-url="@{/deny-request}" th:data-csrf-token="${_csrf.token}">
+                                                                <input type="hidden" name="requestId" th:value="${request.id}">
+                                                                <button type="button" class="btn btn-denegar btn-sm deny-request-button">Denegar</button>
+                                                            </div>
+                                                        
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                 </li>
 
                 <li class="nav-item">
@@ -352,57 +436,14 @@
                     <a class="nav-link text-dark" href="/verpost">Posts</a>
                 </li>
             </ul>
-            <button class="btn btn-light btn-block mt-4">Crear Post</button>
-            <h6 class="mt-4">Communities</h6>
+            <h6 class="mt-4">Comunidades</h6>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">Crear una comunidad</a>
+                    <button class="btn btn-light btn-block mt-4">Crear Post</button>
                 </li>
             </ul>
         </div>
-        
-        <!--Modal para mandar Solicitudes-->
-        <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
-        aria-labelledby="notificationLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="notificationLabel">Solicitudes de amistad</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div th:if="${#lists.isEmpty(requests)}">
-                            <p>No tienes solicitudes de amistad pendientes.</p>
-                        </div>
-                        <div>
-                            <ul>
-                                <li th:each="request : ${requests}">
-                                    <p>Sender: <span th:text="${request.usuario.username}">Username</span></p>
-                                    <p>Friend: <span th:text="${request.amistad.username}">Username</span></p>
-                                    <p>Date: <span th:text="${request.fechaAmistad}">Date</span></p>
-                                    <p>Status: <span th:text="${request.estado}">Status</span></p>
-                                    
-                                        <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
-                                            <input type="hidden" name="requestId" th:value="${request.id}">
-                                            <button type="button" class="btn btn-aceptar btn-sm accept-request-button">Aceptar</button>
-                                        </div>
-
-                                        <div class="Denegar" th:data-send-request-url="@{/deny-request}" th:data-csrf-token="${_csrf.token}">
-                                            <input type="hidden" name="requestId" th:value="${request.id}">
-                                            <button type="button" class="btn btn-denegar btn-sm deny-request-button">Denegar</button>
-                                        </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        </div>
-
+         
 
         <div class="col-md-4 content">
             <div class="post-box">
@@ -430,7 +471,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="comments-section rounded p-3" id="comments-section">   
-                        <div  th:each="post : ${friendPosts}" class="comment mb-3">
+                        <div  th:each="post : ${combinedPosts}" class="comment mb-3">
                             <div class="d-flex align-items-start mb-1">
                                 <img th:if="${post.usuario.pfp != null}" th:src="@{'/images/' + ${post.usuario.pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
                                 <img th:if="${post.usuario.pfp == null}" src="https://via.placeholder.com/25" 
@@ -472,12 +513,23 @@
                                                 <h6>Comentarios</h6>
                                                 <div class="comments-list">
                                                     <!-- Los comentarios se insertarán aquí dinámicamente -->
+                                                    <div class="comments-list comments-container" th:each="comentario : ${postCommentsMap[post.idpost]}">
+                                                        <!-- Los comentarios se insertarán aquí dinámicamente -->
+                                                        <strong th:text="${comentario.usuario.username}"></strong>:
+                                                        <span th:text="${comentario.contenido}"></span>
+                                                        <span class="comment-time time-text" th:data-time="${comentario.fecha_comentario}"></span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                                <div class="comment-form mt-2 ">
-                                                    <textarea class="form-control" rows="2" placeholder="Escribe tu comentario"></textarea>
-                                                    <button class="btn btn-primary btn-sm submit-comment-btn">Enviar</button>
+                                            <form id="comment-form" th:action="@{/createComment}" th:object="${comentario}" method="post">
+                                                <input type="hidden" name="postId" th:value="${post.idpost}" />
+                                                <div class="d-flex align-items-center mb-3 comment-form mt-2">
+                                                    <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pict" alt="User Profile Picture">
+                                                    <textarea id="contenido" name="contenido" th:placeholder="'¿Comenta aqui, ' + ${username}" class="form-control"></textarea>
+                                                    <button type="submit" class="btn btn-primary post-button">Publicar</button>
                                                 </div>
+                                            </form>
+                                                
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -660,6 +712,80 @@
                     modalBody.textContent = content;
                 });
             });
+        </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('accept-request-button') || event.target.classList.contains('deny-request-button')) {
+                        event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
+
+                        // Determinar si es una solicitud de aceptación o de denegación
+                        const isAccept = event.target.classList.contains('accept-request-button');
+                        const sendRequestUrl = isAccept ? event.target.closest('.Aceptar').getAttribute('data-send-request-url') 
+                                                        : event.target.closest('.Denegar').getAttribute('data-send-request-url');
+
+                        // Obtener el ID de solicitud, URL y token CSRF desde los atributos data-* del elemento padre
+                        const cardBody = event.target.closest(isAccept ? '.Aceptar' : '.Denegar');
+                        if (!cardBody) {
+                            console.error('Elemento correspondiente no encontrado');
+                            return;
+                        }
+
+                        const requestId = cardBody.querySelector('input[name="requestId"]').value;
+                        const csrfToken = cardBody.getAttribute('data-csrf-token');
+                        
+                        if (!requestId || !sendRequestUrl || !csrfToken) {
+                            console.error('Faltan datos necesarios para enviar la solicitud');
+                            return;
+                        }
+
+                        // Crear los parámetros del formulario
+                        var formData = new URLSearchParams();
+                        formData.append('requestId', requestId);
+                        formData.append('_csrf', csrfToken);
+
+                        // Enviar la solicitud POST
+                        fetch(sendRequestUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: formData.toString()
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                alert(isAccept ? 'Solicitud de amistad aceptada' : 'Solicitud de amistad denegada');
+                                // Eliminar la solicitud del DOM
+                                const listItem = cardBody.closest('li');
+                                if (listItem) {
+                                    listItem.remove();
+                                }
+                            } else {
+                                alert('Error al procesar la solicitud de amistad');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+                });
+            });
+
+            function updatePostsSection() {
+                fetch('/home')
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newPostsSection = doc.querySelector('#comments-section');
+                        const currentPostsSection = document.querySelector('#comments-section');
+                        if (newPostsSection && currentPostsSection) {
+                            currentPostsSection.innerHTML = newPostsSection.innerHTML;
+                        }
+                    })
+                    .catch(error => console.error('Error updating posts section:', error));
+            }
         </script>
 
             
