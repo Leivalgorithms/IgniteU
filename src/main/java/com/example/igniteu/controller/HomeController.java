@@ -64,6 +64,7 @@ public class HomeController {
         model.addAttribute("pfp",
                 usertable.getPfp());
 
+        Post postx = new Post();
         // Obtener el user_id del usuario autenticado
         Integer userId = usertable.getId();
 
@@ -106,6 +107,8 @@ public class HomeController {
         model.addAttribute("combinedPosts", combinedPosts);
 
         model.addAttribute("amistades", amistades);
+
+        model.addAttribute("postimage", postx.getImageURL());
 
         // Imprimir los valores de los posts en la consola
         for (Post post : friendPosts) {

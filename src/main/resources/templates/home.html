@@ -347,10 +347,17 @@
             background-color: #28a745;
             color: white;
         }
+
+        .post-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
   </style>
 
   </head>
-  <body>
     <nav class="navbar navbar-expand-lg">
         <div class="toolbar"> 
             <svg version="1.1" viewBox="0 0 2048 778" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
@@ -447,10 +454,10 @@
 
         <div class="col-md-4 content">
             <div class="post-box">
-                <form id="post-form" th:action="@{/createPost}" th:object="${post}" method="post">
+                <form id="post-form" th:action="@{/createPost}" th:object="${post}" method="post" enctype="multipart/form-data">
                     <div class="d-flex align-items-center mb-3">
                         <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pict" alt="User Profile Picture">
-                        <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control"></textarea>
+                        <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control" th:required="true" title="Por favor, escribe algo antes de publicar."></textarea>
                         <button type="submit" class="btn btn-primary post-button">Publicar</button>
                     </div>
                     <div class="post-actions d-flex justify-content-around">
@@ -458,12 +465,16 @@
                             <img src="https://via.placeholder.com/30" alt="Video">
                             <span>Subir Video</span>
                         </div>
-                        <div class="action-item">
+                        <div class="action-item" onclick="triggerFileUpload();">
                             <img src="https://via.placeholder.com/30" alt="Foto">
                             <span>Subir Foto</span>
                         </div>
+                        <input type="file" id="pfp-upload" name="pfp" accept="image/*" style="display: none;" onchange="previewImage(event)">            
                     </div>
-                </form> 
+                    <div class="preview-box mt-3">
+                        <img id="preview-img" src="" alt="Image Preview" style="max-width: 100%; display: none;">
+                    </div>
+                </form>
             </div>
 
           <!-- Posts -->
@@ -482,6 +493,9 @@
                                 </div>
                             </div> 
                             <div class="comment-text" th:text="${post.contenido}"></div>
+                            <div>
+                                    <img th:if="${post.imageURL != null}" th:src="@{'/images/' + ${post.imageURL}}" class="post-image" alt="Post Image">  
+                            </div>
                             <button class="flame-btn d-inline" onclick="this.classList.toggle('active')">
                                 <svg class="flame" viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
                                     <path transform="translate(987,603)" d="m0 0 10 5 17 12 15 13 11 9 8 7v2l4 2 12 12 7 8 9 10 10 13 12 17 13 20 9 16 11 22 11 27 6 18 8 33 4 23 3 31v37l-4 40-5 26-7 27-12 35-10 25-12 25-1 2 7-4 13-11 10-10 9-11 10-14 10-19 8-20 7-23 4-1 8 9 13 18 10 16 10 19 10 25 6 20 5 24 3 22 1 12v23l-4 29-6 25-6 18-9 20-9 17-8 12-12 17-13 16-7 7-7 8-8 7-12 11-18 13-5 2v-28l-2-22-5-20-6-15-8-15-13-17-7-6v17l-3 17-6 17-9 16-9 12-9 9-6 4h-2l4-20 3-23v-28l-5-25-6-18-9-20-16-31-7-16-7-19-5-19-3-18-1-11v-21l2-22 2-14-15 9-14 10-11 9-15 14-11 11-11 14-14 19-9 15-11 21-9 24-6 21-5 27-3 30v18l3 29 5 26 7 25 4 11v3l-6-2-13-9-15-12-11-9-10-9-12-12-7-6-7-8-9-10-14-19-9-13-9-15-8-16-10-25-5-16-4-21-3-23v-28l4-29 6-25 8-22 10-23 10-19 13-21 12-17 11-14 9-11 9-10 12-13 63-63 7-8 15-16 18-22 11-14 13-17 19-29 9-15 10-22 6-20 2-13v-19l-3-21-5-18-8-19-9-17z"/>
@@ -575,17 +589,30 @@
     </div>
 </div>
 
-    
+
+    <!-- Función subir foto y vista previa -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var button = document.querySelector('.bubble-btn');
-            button.addEventListener('click', function() {
-                console.log('SVG clickeado!');
-                // Tu código aquí
-            });
-        });
+                function triggerFileUpload() {
+            document.getElementById('pfp-upload').click();
+        }
+
+        function previewImage(event) {
+            const previewBox = document.getElementById('preview-img');
+            const reader = new FileReader();
+            
+            reader.onload = function() {
+                if (reader.readyState === 2) {
+                    previewBox.src = reader.result;
+                    previewBox.style.display = 'block';
+                }
+            }
+            
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
     </script>
-    <!-- Función timeAgo en JavaScript -->
+
+    <!-- Función timeAgo y comentarios en JavaScript -->
     <script>
         function timeAgo(dateString) {
             const now = new Date();
@@ -672,28 +699,8 @@
 
     </script>
 
-    <script>
-        $(document).ready(function() {
-            $('#post-form').on('submit', function(event) {
-                event.preventDefault(); // Previene el envío normal del formulario
-        
-                $.ajax({
-                    type: $(this).attr('method'),
-                    url: $(this).attr('action'),
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        // Actualiza la lista de posts con la respuesta del servidor
-                        $('#comments-section').html(response);
-                        $('#contenido').val(''); // Limpia el textarea después de publicar
-                    },
-                    error: function(xhr, status, error) {
-                    console.error('Error al publicar el post:', error);
-                }
-                });
-            });
-        });
-        </script>
-
+    
+    <!--COMMENT MODAL-->
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 var commentModal = document.getElementById('commentModal');
@@ -714,6 +721,7 @@
             });
         </script>
 
+    <!--FRIEND REQUEST MODAL-->
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 document.addEventListener('click', function(event) {
@@ -789,9 +797,8 @@
         </script>
 
             
-
-    <script src="/src/main/resources/static/commentsSection.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/src/main/resources/static/commentsSection.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>

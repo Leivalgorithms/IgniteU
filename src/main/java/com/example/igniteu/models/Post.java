@@ -42,4 +42,6 @@ public class Post {
 
     @OneToMany(mappedBy = "postId", fetch = FetchType.LAZY)
     private List<Comentario> comentarios;
+
+    private String imageURL;
 }
