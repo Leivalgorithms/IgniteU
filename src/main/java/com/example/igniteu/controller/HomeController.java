@@ -4,13 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +24,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.igniteu.Repository.UserRepository;
 import com.example.igniteu.Services.AmistadesService;
-import com.example.igniteu.Services.ComentarioService;
 import com.example.igniteu.Services.PostService;
+import com.example.igniteu.Services.ComentarioService;
 import com.example.igniteu.Services.UserService;
 import com.example.igniteu.models.Amistades;
-import com.example.igniteu.models.Comentario;
 import com.example.igniteu.models.Post;
 import com.example.igniteu.models.Usertable;
+import com.example.igniteu.models.Comentario;
 
 @Controller
 public class HomeController {
@@ -47,7 +43,7 @@ public class HomeController {
     @Autowired
     PostService postService;
     @Autowired
-    ComentarioService comentarioService;
+    private ComentarioService comentarioService;
 
     @Autowired
     AmistadesService amistadService;
@@ -64,39 +60,18 @@ public class HomeController {
         model.addAttribute("pfp",
                 usertable.getPfp());
 
-        Post postx = new Post();
         // Obtener el user_id del usuario autenticado
         Integer userId = usertable.getId();
 
         List<Post> posts = postService.getPostUserId(userId);
 
-        List<Usertable> amistades = amistadesService.getAmistadesAceptadas(usertable);
-
-        // Obtener los IDs de los amigos
-        List<Integer> friendIds = amistades.stream()
-                .map(Usertable::getId)
-                .collect(Collectors.toList());
+        // Obtener la lista de identificadores de los amigos del usuario autenticado
+        List<Integer> friendIds = amistadService.getFriendIdsByUserId(usertable);
 
         // Obtener los posts de los amigos
         List<Post> friendPosts = postService.getPostsByUserIds(friendIds);
 
-        // Combinar las listas
-        List<Post> combinedPosts = new ArrayList<>();
-        combinedPosts.addAll(posts);
-        combinedPosts.addAll(friendPosts);
-
-        Map<Integer, List<Comentario>> postCommentsMap = new HashMap<>();
-        for (Post post : combinedPosts) {
-            List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
-            postCommentsMap.put(post.getIdpost(), comentarios);
-        }
-
-        Optional<Usertable> currentUserOpt = amistadesService.findUserBycorreo(username);
-        List<Amistades> requests = amistadesService.getFriendRequests(currentUserOpt.get());
-
-        model.addAttribute("postCommentsMap", postCommentsMap);
-
-        model.addAttribute("requests", requests);
+        List<Usertable> amistades = amistadesService.getAmistadesAceptadas(usertable);
 
         model.addAttribute("username", usertable.getUsername());
 
@@ -104,11 +79,7 @@ public class HomeController {
 
         model.addAttribute("friendPosts", friendPosts);
 
-        model.addAttribute("combinedPosts", combinedPosts);
-
         model.addAttribute("amistades", amistades);
-
-        model.addAttribute("postimage", postx.getImageURL());
 
         // Imprimir los valores de los posts en la consola
         for (Post post : friendPosts) {
@@ -116,7 +87,6 @@ public class HomeController {
             System.out.println("Contenido: " + post.getContenido());
             System.out.println("Fecha de Publicación: " + post.getFecha_publicacion());
         }
-
         return "home";
     }
 
@@ -204,34 +174,18 @@ public class HomeController {
     @GetMapping("/profile-search/{username}")
     public String viewProfile(@PathVariable String username, Model model, Authentication authentication) {
         Usertable usertable = userService.findByUsername(username);
-        Usertable profileUser = userService.findByUsername(username);
 
-        if (profileUser != null) {
-            model.addAttribute("profileUser", profileUser);
-
-            if (usertable != null) {
-                String loggedInUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                        .getUsername();
-                Usertable loggedInUser = userService.findByCorreo(loggedInUsername);
-                List<Usertable> amistades = amistadesService.getAmistadesAceptadas(loggedInUser);
-                model.addAttribute("amistades", amistades);
-
-                model.addAttribute("profileUser", usertable);
-                boolean isOwnProfile = authentication != null &&
-                        authentication.getName().equals(usertable.getCorreo());
-                model.addAttribute("isOwnProfile", isOwnProfile);
-
-                String currentUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                        .getUsername();
-                Usertable usertable2 = userService.findByCorreo(currentUsername);
-                boolean sonAmigos = amistadesService.sonAmigos(usertable2, usertable);
-                model.addAttribute("profileUserTieneSolicitud", sonAmigos);
-                return "profile-search";
-            }
-
+        if (usertable != null) {
+            model.addAttribute("profileUser", usertable);
             boolean isOwnProfile = authentication != null &&
-                    authentication.getName().equals(profileUser.getCorreo());
+                    authentication.getName().equals(usertable.getCorreo());
             model.addAttribute("isOwnProfile", isOwnProfile);
+
+            String currentUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                    .getUsername();
+            Usertable usertable2 = userService.findByCorreo(currentUsername);
+            boolean sonAmigos = amistadesService.sonAmigos(usertable2, usertable);
+            model.addAttribute("profileUserTieneSolicitud", sonAmigos);
             return "profile-search";
         } else {
             return "error";
