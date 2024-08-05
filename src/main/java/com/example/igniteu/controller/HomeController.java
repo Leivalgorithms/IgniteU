@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.igniteu.Repository.UserRepository;
 import com.example.igniteu.Services.AmistadesService;
 import com.example.igniteu.Services.ComentarioService;
+import com.example.igniteu.Services.LikeService;
 import com.example.igniteu.Services.PostService;
 import com.example.igniteu.Services.UserService;
 import com.example.igniteu.models.Amistades;
@@ -51,6 +52,9 @@ public class HomeController {
 
     @Autowired
     AmistadesService amistadService;
+
+    @Autowired
+    private LikeService likeService;
 
     @GetMapping({ "", "/" })
     public String home() {
@@ -103,6 +107,26 @@ public class HomeController {
         Optional<Usertable> currentUserOpt = amistadesService.findUserBycorreo(username);
         List<Amistades> requests = amistadesService.getFriendRequests(currentUserOpt.get());
 
+        // Manejo de likes
+        Map<Integer, Boolean> likesMap = new HashMap<>();
+        Map<Integer, Integer> likesCountMap = new HashMap<>();
+        Map<Integer, Integer> commentsCountMap = new HashMap<>();
+
+        for (Post post : combinedPosts) {
+            boolean isLiked = likeService.isLikedByUser(post, usertable);
+            likesMap.put(post.getIdpost(), isLiked);
+
+            Integer likesCount = likeService.countLikesByPost(post);
+            likesCountMap.put(post.getIdpost(), likesCount);
+
+            Integer commentsCount = comentarioService.countCommentsByPostId(post.getIdpost());
+            commentsCountMap.put(post.getIdpost(), commentsCount);
+        }
+
+        // Añadir el mapa al modelo para usarlo en la vista
+        model.addAttribute("likesMap", likesMap);
+        model.addAttribute("likesCountMap", likesCountMap);
+        model.addAttribute("commentsCountMap", commentsCountMap);
         model.addAttribute("postCommentsMap", postCommentsMap);
 
         model.addAttribute("userpostCommentsMap", userpostCommentsMap);

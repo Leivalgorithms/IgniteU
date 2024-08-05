@@ -1,15 +1,14 @@
 package com.example.igniteu.Services;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.igniteu.Repository.CommentaryRepository;
 import com.example.igniteu.Repository.PostRepository;
 import com.example.igniteu.models.Comentario;
-import com.example.igniteu.models.Post;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class ComentarioService {
@@ -30,5 +29,9 @@ public class ComentarioService {
 
     public List<Comentario> getCommentsByPostId(Integer postId) {
         return comentarioRepository.findByPostId(postId);
+    }
+
+    public Integer countCommentsByPostId(Integer postId) {
+        return comentarioRepository.countCommentsByPostId(postId);
     }
 }

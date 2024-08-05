@@ -12,4 +12,7 @@ import java.util.List;
 public interface CommentaryRepository extends JpaRepository<Comentario, Integer> {
 
     List<Comentario> findByPostId(Integer postId);
+
+    @Query("SELECT COUNT(c) FROM Comentario c WHERE c.postId = :postId")
+    Integer countCommentsByPostId(@Param("postId") Integer postId);
 }
