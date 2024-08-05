@@ -44,4 +44,6 @@ public class Post {
     private List<Comentario> comentarios;
 
     private String imageURL;
+
+    private Integer isShared;
 }

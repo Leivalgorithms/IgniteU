@@ -94,4 +94,20 @@ public class PostController {
         // Devuelve el fragmento de posts actualizado
         return "redirect:/home";
     }
+
+    @PostMapping("/sharePost")
+    public String sharePost(@RequestParam("postId") Integer postId) {
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Usertable usertable = userService.findByCorreo(username);
+        // Obtener el user_id del usuario autenticado
+        Integer userId = usertable.getId();
+
+        Post sharedPost = postService.sharePost(postId, userId);
+
+        if (sharedPost != null) {
+            return "redirect:/home"; // Redirige al perfil del usuario o a una vista de posts compartidos
+        } else {
+            return "error"; // Maneja el error si el post no se pudo compartir
+        }
+    }
 }
