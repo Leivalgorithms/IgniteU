@@ -197,9 +197,8 @@
         }
 
         .comments-container {
-        max-height: 200px; /* Ajusta según tus necesidades */
-        overflow-y: hidden;
-        position: relative;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         .profile-pic {
@@ -323,27 +322,58 @@
         /* Estilos para el modal */
         .modal-content {
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-
         .modal-header {
             background-color: #1c1c1c;
             border-bottom: 1px solid #1c1c1c;
             padding: 15px 20px;
         }
-
         .modal-title {
             font-weight: bold;
+        }
+        .close {
+            font-size: 1.5rem;
+            color: #ffffff44;
+            opacity: 0.5;
+        }
+        .close:hover {
+            opacity: 0.65;
         }
 
         .modal-body {
             background-color: #272829;
             padding: 20px;
         }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+
         .modal-footer {
             border-top: 1px solid #1c1c1c;
             padding: 5px 10px;
             background-color: #1c1c1c;
+
+            display: flex;
+            justify-content: flex-end;
+        }
+        .bttn {
+            border-radius: 5px;
+            padding: 10px 20px;
         }
         .btn-primary {
             background-color: #272829;
@@ -369,11 +399,9 @@
             border-radius: 8px;
         }
 
-
   </style>
 
   </head>
-  <body>
     <nav class="navbar navbar-expand-lg">
         <div class="toolbar"> 
             <svg version="1.1" viewBox="0 0 2048 778" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
@@ -408,6 +436,48 @@
 
                 <li class="nav-item">
                     <a class="nav-link text-dark" data-toggle="modal" data-target="#notificaciones" href="#">Notificaciones</a>
+                        <!--Modal para solicitudes de Amistad-->
+                        <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
+                            aria-labelledby="notificationLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="notificationLabel">Solicitudes de amistad</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div th:if="${#lists.isEmpty(requests)}">
+                                                <p>No tienes solicitudes de amistad pendientes.</p>
+                                            </div>
+                                            <div>
+                                                <ul>
+                                                    <li th:each="request : ${requests}">
+                                                        <p>Enviado por: <span th:text="${request.usuario.username}">Username</span></p>
+                                                        <p>Fecha: <span th:text="${request.fechaAmistad}">Date</span></p>
+                                                        <p>Estado: <span th:text="${request.estado}">Status</span></p>
+                                                        
+                                                            <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
+                                                                <input type="hidden" name="requestId" th:value="${request.id}">
+                                                                <button type="button" class="btn btn-aceptar btn-sm accept-request-button">Aceptar</button>
+                                                            </div>
+
+                                                            <div class="Denegar" th:data-send-request-url="@{/deny-request}" th:data-csrf-token="${_csrf.token}">
+                                                                <input type="hidden" name="requestId" th:value="${request.id}">
+                                                                <button type="button" class="btn btn-denegar btn-sm deny-request-button">Denegar</button>
+                                                            </div>
+                                                        
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                 </li>
 
                 <li class="nav-item">
@@ -417,64 +487,21 @@
                     <a class="nav-link text-dark" href="/verpost">Posts</a>
                 </li>
             </ul>
-            <button class="btn btn-light btn-block mt-4">Crear Post</button>
-            <h6 class="mt-4">Communities</h6>
+            <h6 class="mt-4">Comunidades</h6>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">Crear una comunidad</a>
+                    <button class="btn btn-light btn-block mt-4">Crear Post</button>
                 </li>
             </ul>
         </div>
-        
-        <!--Modal para mandar Solicitudes-->
-        <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
-        aria-labelledby="notificationLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="notificationLabel">Solicitudes de amistad</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div th:if="${#lists.isEmpty(requests)}">
-                            <p>No tienes solicitudes de amistad pendientes.</p>
-                        </div>
-                        <div>
-                            <ul>
-                                <li th:each="request : ${requests}">
-                                    <p>Sender: <span th:text="${request.usuario.username}">Username</span></p>
-                                    <p>Friend: <span th:text="${request.amistad.username}">Username</span></p>
-                                    <p>Date: <span th:text="${request.fechaAmistad}">Date</span></p>
-                                    <p>Status: <span th:text="${request.estado}">Status</span></p>
-                                    
-                                        <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
-                                            <input type="hidden" name="requestId" th:value="${request.id}">
-                                            <button type="button" class="btn btn-aceptar btn-sm accept-request-button">Aceptar</button>
-                                        </div>
-
-                                        <div class="Denegar" th:data-send-request-url="@{/deny-request}" th:data-csrf-token="${_csrf.token}">
-                                            <input type="hidden" name="requestId" th:value="${request.id}">
-                                            <button type="button" class="btn btn-denegar btn-sm deny-request-button">Denegar</button>
-                                        </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        </div>
-
+         
 
         <div class="col-md-4 content">
             <div class="post-box">
-                <form id="post-form" th:action="@{/createPost}" th:object="${post}" method="post">
+                <form id="post-form" th:action="@{/createPost}" th:object="${post}" method="post" enctype="multipart/form-data">
                     <div class="d-flex align-items-center mb-3">
                         <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pict" alt="User Profile Picture">
-                        <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control"></textarea>
+                        <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control" th:required="true" title="Por favor, escribe algo antes de publicar."></textarea>
                         <button type="submit" class="btn btn-primary post-button">Publicar</button>
                     </div>
                     <div class="post-actions d-flex justify-content-around">
@@ -482,86 +509,79 @@
                             <img src="https://via.placeholder.com/30" alt="Video">
                             <span>Subir Video</span>
                         </div>
-                        <div class="action-item">
+                        <div class="action-item" onclick="triggerFileUpload();">
                             <img src="https://via.placeholder.com/30" alt="Foto">
                             <span>Subir Foto</span>
                         </div>
+                        <input type="file" id="pfp-upload" name="pfp" accept="image/*" style="display: none;" onchange="previewImage(event)">            
                     </div>
-                </form> 
+                    <div class="preview-box mt-3">
+                        <img id="preview-img" src="" alt="Image Preview" style="max-width: 100%; display: none;">
+                    </div>
+                </form>
             </div>
-            
-        <!-- VER Posts -->
+
+          <!-- VER Posts -->
     <div class="container my-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="comments-section rounded p-3" id="comments-section">   
-                    <div  th:each="post : ${combinedPosts}" class="comment mb-3">
-                        <div class="d-flex align-items-start mb-1">
-                            <img th:if="${post.usuario.pfp != null}" th:src="@{'/images/' + ${post.usuario.pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
-                            <img th:if="${post.usuario.pfp == null}" src="https://via.placeholder.com/25" 
-                            class="rounded-circle mr-3 profile-pic" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
+            <div class="row">
+                <div class="col-12">
+                    <div class="comments-section rounded p-3" id="comments-section">   
+                        <div  th:each="post : ${combinedPosts}" class="comment mb-3">
+                            <div class="d-flex align-items-start mb-1">
+                                <img th:if="${post.usuario.pfp != null}" th:src="@{'/images/' + ${post.usuario.pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
+                                <img th:if="${post.usuario.pfp == null}" src="https://via.placeholder.com/25" 
+                                class="rounded-circle mr-3 profile-pic" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
+                                <div>
+                                    <strong class="comment-author" th:text="${post.usuario.username}">Autor</strong>
+                                    <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
+                                </div>
+                            </div> 
+                            <div class="comment-text" th:text="${post.contenido}"></div>
                             <div>
-                                <strong class="comment-author" th:text="${post.usuario.username}">Autor</strong>
-                                <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
+                                    <img th:if="${post.imageURL != null}" th:src="@{'/images/' + ${post.imageURL}}" class="post-image" alt="Post Image">  
                             </div>
-                        </div> 
-                        <div class="comment-text" th:text="${post.contenido}"></div>
-                        <div>
-                                <img th:if="${post.imageURL != null}" th:src="@{'/images/' + ${post.imageURL}}" class="post-image" alt="Post Image">  
-                        </div>
-                        <div class="d-flex align-items-center">
-                        <form th:action="@{/like}" method="post" class="mr-3">
-                            <input type="hidden" name="postId" th:value="${post.idpost}">
-                            <button type="submit" class="flame-btn d-inline" th:classappend="${likesMap[post.idpost]} ? 'active' : ''">
+                            <button class="flame-btn d-inline" onclick="this.classList.toggle('active')">
                                 <svg class="flame" viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
                                     <path transform="translate(987,603)" d="m0 0 10 5 17 12 15 13 11 9 8 7v2l4 2 12 12 7 8 9 10 10 13 12 17 13 20 9 16 11 22 11 27 6 18 8 33 4 23 3 31v37l-4 40-5 26-7 27-12 35-10 25-12 25-1 2 7-4 13-11 10-10 9-11 10-14 10-19 8-20 7-23 4-1 8 9 13 18 10 16 10 19 10 25 6 20 5 24 3 22 1 12v23l-4 29-6 25-6 18-9 20-9 17-8 12-12 17-13 16-7 7-7 8-8 7-12 11-18 13-5 2v-28l-2-22-5-20-6-15-8-15-13-17-7-6v17l-3 17-6 17-9 16-9 12-9 9-6 4h-2l4-20 3-23v-28l-5-25-6-18-9-20-16-31-7-16-7-19-5-19-3-18-1-11v-21l2-22 2-14-15 9-14 10-11 9-15 14-11 11-11 14-14 19-9 15-11 21-9 24-6 21-5 27-3 30v18l3 29 5 26 7 25 4 11v3l-6-2-13-9-15-12-11-9-10-9-12-12-7-6-7-8-9-10-14-19-9-13-9-15-8-16-10-25-5-16-4-21-3-23v-28l4-29 6-25 8-22 10-23 10-19 13-21 12-17 11-14 9-11 9-10 12-13 63-63 7-8 15-16 18-22 11-14 13-17 19-29 9-15 10-22 6-20 2-13v-19l-3-21-5-18-8-19-9-17z"/>
                                 </svg>
                             </button>
-
-                            <span th:text="${likesCountMap[post.idpost]}"></span>
-                        </form>
-                    
-                        <button class="btn btn-link btn-sm svg-button-bubble d-inline"
-                            data-toggle="modal" 
-                            th:data-target="${'#postModal-' + post.idpost}">   
-                        </button>
-                        <span th:text="${commentsCountMap[post.idpost]}"></span>
-                        <button class="btn btn-link btn-sm svg-button-share d-inline"
+                            <button class="btn btn-link btn-sm svg-button-bubble d-inline"
+                                data-toggle="modal" 
+                                th:data-target="${'#postModal-' + post.idpost}">   
+                            </button>
+                                <button class="btn btn-link btn-sm svg-button-share d-inline"
                                 data-toggle="modal" 
                                 th:data-target="${'#shareModal-' + post.idpost}">
-                        </button>
-                        </div>
+                                </button>
 
-
-                        <!-- Modal para post específico -->
-                        <div class="modal fade" th:id="${'postModal-' + post.idpost}" tabindex="-1" role="dialog"
-                            th:aria-labelledby="${'postModalLabel-' + post.idpost}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title comment-author" th:id="${'postModalLabel-' + post.idpost}"
-                                            th:text="'Post de ' + ${post.usuario.username}">Post Title</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
-                                        <p class="comment-text" th:text="${post.contenido}">Post content goes here.</p>
-                                        <!-- Sección de comentarios -->
-                                        <div class="comment mb-3 mt-4">
-                                            <h6>Comentarios</h6>
-                                            <div class="comments-list">
-                                                <!-- Los comentarios se insertarán aquí dinámicamente -->
-                                                <div class="comments-list comments-container" th:each="comentario : ${postCommentsMap[post.idpost]}">
+                            <!-- Modal para post específico -->
+                            <div class="modal fade" th:id="${'postModal-' + post.idpost}" tabindex="-1" role="dialog"
+                                th:aria-labelledby="${'postModalLabel-' + post.idpost}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title comment-author" th:id="${'postModalLabel-' + post.idpost}"
+                                                th:text="'Post de ' + ${post.usuario.username}">Post Title</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
+                                            <p class="comment-text" th:text="${post.contenido}">Post content goes here.</p>
+                                            <!-- Sección de comentarios -->
+                                            <div class="comment mb-3 mt-4">
+                                                <h6>Comentarios</h6>
+                                                <div class="comments-list">
                                                     <!-- Los comentarios se insertarán aquí dinámicamente -->
-                                                    <strong th:text="${comentario.usuario.username}"></strong>:
-                                                    <span th:text="${comentario.contenido}"></span>
-                                                    <span class="comment-time time-text" th:data-time="${comentario.fecha_comentario}"></span>
+                                                    <div class="comments-list comments-container" th:each="comentario : ${postCommentsMap[post.idpost]}">
+                                                        <!-- Los comentarios se insertarán aquí dinámicamente -->
+                                                        <strong th:text="${comentario.usuario.username}"></strong>:
+                                                        <span th:text="${comentario.contenido}"></span>
+                                                        <span class="comment-time time-text" th:data-time="${comentario.fecha_comentario}"></span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-
                                             <form id="comment-form" th:action="@{/createComment}" th:object="${comentario}" method="post">
                                                 <input type="hidden" name="postId" th:value="${post.idpost}" />
                                                 <div class="d-flex align-items-center mb-3 comment-form mt-2">
@@ -611,15 +631,13 @@
                                     </div>
                                 </div>
                             </div>
+                                                                
                         </div>
-                                                            
                     </div>
-                </div>
-          
-            </div>  
-        </div>
-</div>
-     
+              
+                </div>  
+            </div>
+    </div>
 </div>
        
             <div class="col-md-2 contacts">
@@ -632,36 +650,46 @@
                     </form>
                 </li>
                 <h5 class="mt-3">Contactos</h5>
-                    <div th:if="${#lists.isEmpty(amistades)}">
-                        <p>Aún no tienes contactos.</p>
-                    </div>
-                    <div th:if="${not #lists.isEmpty(amistades)}">
-                        <div th:each="amistad, iterStat : ${amistades}" class="contact-item mb-3">
-                            <a th:href="@{'/profile-search/' + ${amistad.username}}" class="d-flex align-items-center text-decoration-none">
-                                <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}" 
-                                    class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
-                                <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25" 
-                                    class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
-                                <span th:text="${amistad.username}" style="color: white;">Nombre del contacto</span>
-                            </a>
-                            <hr th:if="${!iterStat.last}" class="my-2">
+                <div th:if="${#lists.isEmpty(amistades)}">
+                    <p>Aún no tienes contactos.</p>
+                </div>
+                <div th:if="${not #lists.isEmpty(amistades)}">
+                    <div th:each="amistad, iterStat : ${amistades}" class="contact-item mb-3">
+                        <div class="d-flex align-items-center">
+                            <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}" 
+                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
+                            <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25" 
+                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
+                            <span th:text="${amistad.username}">Nombre del contacto</span>
                         </div>
+                        <hr th:if="${!iterStat.last}" class="my-2">
                     </div>
                 </div>
             </div>
     </div>
 </div>
 
-    
+
+    <!-- Función subir foto y vista previa -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var button = document.querySelector('.bubble-btn');
-            button.addEventListener('click', function() {
-                console.log('SVG clickeado!');
-                // Tu código aquí
-            });
-        });
-    </script>
+                function triggerFileUpload() {
+            document.getElementById('pfp-upload').click();
+        }
+
+        function previewImage(event) {
+            const previewBox = document.getElementById('preview-img');
+            const reader = new FileReader();
+            
+            reader.onload = function() {
+                if (reader.readyState === 2) {
+                    previewBox.src = reader.result;
+                    previewBox.style.display = 'block';
+                }
+            }
+            
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
     </script>
 
     <!-- Función timeAgo y comentarios en JavaScript -->
@@ -751,29 +779,8 @@
 
     </script>
 
-
-    <script>
-        $(document).ready(function() {
-            $('#post-form').on('submit', function(event) {
-                event.preventDefault(); // Previene el envío normal del formulario
-        
-                $.ajax({
-                    type: $(this).attr('method'),
-                    url: $(this).attr('action'),
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        // Actualiza la lista de posts con la respuesta del servidor
-                        $('#comments-section').html(response);
-                        $('#contenido').val(''); // Limpia el textarea después de publicar
-                    },
-                    error: function(xhr, status, error) {
-                    console.error('Error al publicar el post:', error);
-                }
-                });
-            });
-        });
-        </script>
-
+    
+    <!--COMMENT MODAL-->
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 var commentModal = document.getElementById('commentModal');
@@ -794,21 +801,84 @@
             });
         </script>
 
+    <!--FRIEND REQUEST MODAL-->
         <script>
-            function toggleLike(postId, username) {
-                fetch('/toggleLike?postId=' + postId + '&username=' + username, {
-                    method: 'POST'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Actualiza la interfaz según la respuesta
-                })
-                .catch(error => console.error('Error:', error));
+            document.addEventListener('DOMContentLoaded', function() {
+                document.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('accept-request-button') || event.target.classList.contains('deny-request-button')) {
+                        event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
+
+                        // Determinar si es una solicitud de aceptación o de denegación
+                        const isAccept = event.target.classList.contains('accept-request-button');
+                        const sendRequestUrl = isAccept ? event.target.closest('.Aceptar').getAttribute('data-send-request-url') 
+                                                        : event.target.closest('.Denegar').getAttribute('data-send-request-url');
+
+                        // Obtener el ID de solicitud, URL y token CSRF desde los atributos data-* del elemento padre
+                        const cardBody = event.target.closest(isAccept ? '.Aceptar' : '.Denegar');
+                        if (!cardBody) {
+                            console.error('Elemento correspondiente no encontrado');
+                            return;
+                        }
+
+                        const requestId = cardBody.querySelector('input[name="requestId"]').value;
+                        const csrfToken = cardBody.getAttribute('data-csrf-token');
+                        
+                        if (!requestId || !sendRequestUrl || !csrfToken) {
+                            console.error('Faltan datos necesarios para enviar la solicitud');
+                            return;
+                        }
+
+                        // Crear los parámetros del formulario
+                        var formData = new URLSearchParams();
+                        formData.append('requestId', requestId);
+                        formData.append('_csrf', csrfToken);
+
+                        // Enviar la solicitud POST
+                        fetch(sendRequestUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: formData.toString()
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                alert(isAccept ? 'Solicitud de amistad aceptada' : 'Solicitud de amistad denegada');
+                                // Eliminar la solicitud del DOM
+                                const listItem = cardBody.closest('li');
+                                if (listItem) {
+                                    listItem.remove();
+                                }
+                            } else {
+                                alert('Error al procesar la solicitud de amistad');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+                });
+            });
+
+            function updatePostsSection() {
+                fetch('/home')
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newPostsSection = doc.querySelector('#comments-section');
+                        const currentPostsSection = document.querySelector('#comments-section');
+                        if (newPostsSection && currentPostsSection) {
+                            currentPostsSection.innerHTML = newPostsSection.innerHTML;
+                        }
+                    })
+                    .catch(error => console.error('Error updating posts section:', error));
             }
         </script>
 
-    <script src="/src/main/resources/static/commentsSection.js"></script>
+            
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/src/main/resources/static/commentsSection.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
