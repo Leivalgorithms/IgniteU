@@ -1,8 +1,5 @@
 package com.example.igniteu.models;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,22 +11,18 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "comentarios")
-public class Comentario {
+@Table(name = "likes")
+public class Like {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idcomentario;
-
-    @Column(name = "post_id")
-    private Integer postId;
-    private Integer usuario_id;
+    private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", insertable = false, updatable = false)
-
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usertable usuario;
-    private String contenido;
-    private LocalDateTime fecha_comentario;
 
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 }

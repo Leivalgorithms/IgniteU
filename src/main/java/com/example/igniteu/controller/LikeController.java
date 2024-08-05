@@ -5,38 +5,35 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.igniteu.Services.ComentarioService;
+import com.example.igniteu.Services.LikeService;
 import com.example.igniteu.Services.UserService;
-import com.example.igniteu.models.Comentario;
 import com.example.igniteu.models.Usertable;
 
 @Controller
-public class ComentarioController {
+public class LikeController {
+    @Autowired
+    private LikeService likeService;
 
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private ComentarioService comentarioService;
-
-    @PostMapping("/createComment")
-    public String createPost(@ModelAttribute Comentario comentario, Model model) {
-
+    @PostMapping("/like")
+    public String likePost(@RequestParam ("postId") Integer postId, Model model) {
+        // Obtener el nombre de usuario del contexto de seguridad
         String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+
+        // Obtener el usuario usando el correo (nombre de usuario)
         Usertable usertable = userService.findByCorreo(username);
 
         if (usertable == null) {
             model.addAttribute("error", "User not found");
-            return "errorPage";
+            return "errorPage"; // Redirige a una página de error o muestra un mensaje en la vista actual
         }
 
-        Integer userId = usertable.getId();
-        comentario.setUsuario_id(userId);
-
-        comentarioService.saveComentario(comentario);
+        likeService.toggleLike(postId, username);
 
         return "redirect:/home";
     }
