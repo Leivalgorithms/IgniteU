@@ -80,6 +80,15 @@ public class HomeController {
         // Obtener los posts de los amigos
         List<Post> friendPosts = postService.getPostsByUserIds(friendIds);
 
+        List<Post> userPostsList = new ArrayList<>();
+        userPostsList.addAll(posts);
+
+        Map<Integer, List<Comentario>> userpostCommentsMap = new HashMap<>();
+        for (Post post : userPostsList) {
+            List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
+            userpostCommentsMap.put(post.getIdpost(), comentarios);
+        }
+
         // Combinar las listas
         List<Post> combinedPosts = new ArrayList<>();
         combinedPosts.addAll(posts);
@@ -95,6 +104,8 @@ public class HomeController {
         List<Amistades> requests = amistadesService.getFriendRequests(currentUserOpt.get());
 
         model.addAttribute("postCommentsMap", postCommentsMap);
+
+        model.addAttribute("userpostCommentsMap", userpostCommentsMap);
 
         model.addAttribute("requests", requests);
 
@@ -139,6 +150,15 @@ public class HomeController {
 
         List<Post> posts = postService.getPostUserId(userId);
 
+        List<Post> userPostsList = new ArrayList<>();
+        userPostsList.addAll(posts);
+
+        Map<Integer, List<Comentario>> userpostCommentsMap = new HashMap<>();
+        for (Post post : userPostsList) {
+            List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
+            userpostCommentsMap.put(post.getIdpost(), comentarios);
+        }
+
         // Imprimir los valores de los posts en la consola
         for (Post post : posts) {
             System.out.println("Post ID: " + post.getIdpost());
@@ -147,6 +167,8 @@ public class HomeController {
         }
 
         model.addAttribute("userposts", posts);
+
+        model.addAttribute("userpostCommentsMap", userpostCommentsMap);
 
         Optional<Usertable> currentUserOpt = amistadesService.findUserBycorreo(username);
 

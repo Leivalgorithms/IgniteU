@@ -4,21 +4,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.userdetails.User;
 import com.example.igniteu.Services.PostService;
@@ -97,5 +93,21 @@ public class PostController {
 
         // Devuelve el fragmento de posts actualizado
         return "redirect:/home";
+    }
+
+    @PostMapping("/sharePost")
+    public String sharePost(@RequestParam("postId") Integer postId) {
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Usertable usertable = userService.findByCorreo(username);
+        // Obtener el user_id del usuario autenticado
+        Integer userId = usertable.getId();
+
+        Post sharedPost = postService.sharePost(postId, userId);
+
+        if (sharedPost != null) {
+            return "redirect:/home"; // Redirige al perfil del usuario o a una vista de posts compartidos
+        } else {
+            return "error"; // Maneja el error si el post no se pudo compartir
+        }
     }
 }

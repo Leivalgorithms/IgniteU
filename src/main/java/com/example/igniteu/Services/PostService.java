@@ -8,6 +8,7 @@ import com.example.igniteu.Repository.PostRepository;
 import com.example.igniteu.Repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,6 +42,24 @@ public class PostService {
 
     public Optional<Post> findById(Integer id) {
         return postRepository.findById(id);
+    }
+
+    public Post sharePost(Integer postId, Integer userId) {
+        // Encuentra el post original
+        Post originalPost = postRepository.findById(postId).orElse(null);
+        if (originalPost != null) {
+            // Crea un nuevo post compartido
+            Post sharedPost = new Post();
+            sharedPost.setUsuario_id(userId);
+            sharedPost.setContenido(originalPost.getContenido());
+            sharedPost.setImageURL(originalPost.getImageURL());
+            sharedPost.setFecha_publicacion(LocalDateTime.now());
+            sharedPost.setIsShared(1); // Marca el post como compartido
+
+            // Guarda el nuevo post compartido
+            return postRepository.save(sharedPost);
+        }
+        return null; // Retorna null si no se encontró el post original
     }
 
 }
