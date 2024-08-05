@@ -21,7 +21,7 @@ public class LikeController {
     private UserService userService;
 
     @PostMapping("/like")
-    public String likePost(@RequestParam ("postId") Integer postId, Model model) {
+    public String likePost(@RequestParam("postId") Integer postId, Model model) {
         // Obtener el nombre de usuario del contexto de seguridad
         String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 

@@ -22,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,7 +48,7 @@ public class HomeController {
     @Autowired
     PostService postService;
     @Autowired
-    private ComentarioService comentarioService;
+    ComentarioService comentarioService;
 
     @Autowired
     AmistadesService amistadService;
@@ -61,90 +62,98 @@ public class HomeController {
     }
 
     @GetMapping("/home")
-public String homeinitString(Model model) {
-    String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-    Usertable usertable = userService.findByCorreo(username);
-    model.addAttribute("pfp", usertable.getPfp());
+    public String homeinitString(Model model) {
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Usertable usertable = userService.findByCorreo(username);
+        model.addAttribute("pfp",
+                usertable.getPfp());
 
-    Post postx = new Post();
-    // Obtener el user_id del usuario autenticado
-    Integer userId = usertable.getId();
+        Post postx = new Post();
+        // Obtener el user_id del usuario autenticado
+        Integer userId = usertable.getId();
 
-    List<Post> posts = postService.getPostUserId(userId);
+        List<Post> posts = postService.getPostUserId(userId);
 
-    List<Usertable> amistades = amistadesService.getAmistadesAceptadas(usertable);
+        List<Usertable> amistades = amistadesService.getAmistadesAceptadas(usertable);
 
-    // Obtener los IDs de los amigos
-    List<Integer> friendIds = amistades.stream()
-            .map(Usertable::getId)
-            .collect(Collectors.toList());
+        // Obtener los IDs de los amigos
+        List<Integer> friendIds = amistades.stream()
+                .map(Usertable::getId)
+                .collect(Collectors.toList());
 
-    // Obtener los posts de los amigos
-    List<Post> friendPosts = postService.getPostsByUserIds(friendIds);
-    List<Post> userPostsList = new ArrayList<>();
-    userPostsList.addAll(posts);
+        // Obtener los posts de los amigos
+        List<Post> friendPosts = postService.getPostsByUserIds(friendIds);
 
-    Map<Integer, List<Comentario>> userpostCommentsMap = new HashMap<>();
-    for (Post post : userPostsList) {
-        List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
-        userpostCommentsMap.put(post.getIdpost(), comentarios);
+        List<Post> userPostsList = new ArrayList<>();
+        userPostsList.addAll(posts);
+
+        Map<Integer, List<Comentario>> userpostCommentsMap = new HashMap<>();
+        for (Post post : userPostsList) {
+            List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
+            userpostCommentsMap.put(post.getIdpost(), comentarios);
+        }
+
+        // Combinar las listas
+        List<Post> combinedPosts = new ArrayList<>();
+        combinedPosts.addAll(posts);
+        combinedPosts.addAll(friendPosts);
+
+        Map<Integer, List<Comentario>> postCommentsMap = new HashMap<>();
+        for (Post post : combinedPosts) {
+            List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
+            postCommentsMap.put(post.getIdpost(), comentarios);
+        }
+
+        Optional<Usertable> currentUserOpt = amistadesService.findUserBycorreo(username);
+        List<Amistades> requests = amistadesService.getFriendRequests(currentUserOpt.get());
+
+        // Manejo de likes
+        Map<Integer, Boolean> likesMap = new HashMap<>();
+        Map<Integer, Integer> likesCountMap = new HashMap<>();
+        Map<Integer, Integer> commentsCountMap = new HashMap<>();
+
+        for (Post post : combinedPosts) {
+            boolean isLiked = likeService.isLikedByUser(post, usertable);
+            likesMap.put(post.getIdpost(), isLiked);
+
+            Integer likesCount = likeService.countLikesByPost(post);
+            likesCountMap.put(post.getIdpost(), likesCount);
+
+            Integer commentsCount = comentarioService.countCommentsByPostId(post.getIdpost());
+            commentsCountMap.put(post.getIdpost(), commentsCount);
+        }
+
+        // Añadir el mapa al modelo para usarlo en la vista
+        model.addAttribute("likesMap", likesMap);
+        model.addAttribute("likesCountMap", likesCountMap);
+        model.addAttribute("commentsCountMap", commentsCountMap);
+        model.addAttribute("postCommentsMap", postCommentsMap);
+
+        model.addAttribute("userpostCommentsMap", userpostCommentsMap);
+
+        model.addAttribute("requests", requests);
+
+        model.addAttribute("username", usertable.getUsername());
+
+        model.addAttribute("userposts", posts);
+
+        model.addAttribute("friendPosts", friendPosts);
+
+        model.addAttribute("combinedPosts", combinedPosts);
+
+        model.addAttribute("amistades", amistades);
+
+        model.addAttribute("postimage", postx.getImageURL());
+
+        // Imprimir los valores de los posts en la consola
+        for (Post post : friendPosts) {
+            System.out.println("Post ID: " + post.getIdpost());
+            System.out.println("Contenido: " + post.getContenido());
+            System.out.println("Fecha de Publicación: " + post.getFecha_publicacion());
+        }
+
+        return "home";
     }
-
-    // Combinar las listas
-    List<Post> combinedPosts = new ArrayList<>();
-    combinedPosts.addAll(posts);
-    combinedPosts.addAll(friendPosts);
-
-    Map<Integer, List<Comentario>> postCommentsMap = new HashMap<>();
-    for (Post post : combinedPosts) {
-        List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
-        postCommentsMap.put(post.getIdpost(), comentarios);
-    }
-
-    Optional<Usertable> currentUserOpt = amistadesService.findUserBycorreo(username);
-    List<Amistades> requests = amistadesService.getFriendRequests(currentUserOpt.get());
-
-    // Manejo de likes
-    Map<Integer, Boolean> likesMap = new HashMap<>();
-    Map<Integer, Integer> likesCountMap = new HashMap<>();
-    Map<Integer, Integer> commentsCountMap = new HashMap<>();
-
-    for (Post post : combinedPosts) {
-        boolean isLiked = likeService.isLikedByUser(post, usertable);
-        likesMap.put(post.getIdpost(), isLiked);
-
-        Integer likesCount = likeService.countLikesByPost(post);
-        likesCountMap.put(post.getIdpost(), likesCount);
-
-        Integer commentsCount = comentarioService.countCommentsByPostId(post.getIdpost());
-        commentsCountMap.put(post.getIdpost(), commentsCount);
-    }
-
-    // Añadir el mapa al modelo para usarlo en la vista
-    model.addAttribute("likesMap", likesMap);
-    model.addAttribute("likesCountMap", likesCountMap);
-    model.addAttribute("commentsCountMap", commentsCountMap);
-
-    model.addAttribute("postCommentsMap", postCommentsMap);
-    model.addAttribute("userpostCommentsMap", userpostCommentsMap);
-    model.addAttribute("requests", requests);
-    model.addAttribute("username", usertable.getUsername());
-    model.addAttribute("userposts", posts);
-    model.addAttribute("friendPosts", friendPosts);
-    model.addAttribute("combinedPosts", combinedPosts);
-    model.addAttribute("amistades", amistades);
-    model.addAttribute("postimage", postx.getImageURL());
-
-    // Imprimir los valores de los posts en la consola
-    for (Post post : friendPosts) {
-        System.out.println("Post ID: " + post.getIdpost());
-        System.out.println("Contenido: " + post.getContenido());
-        System.out.println("Fecha de Publicación: " + post.getFecha_publicacion());
-    }
-
-    return "home";
-}
-
 
     @GetMapping("/profile")
     public String profileinitString(Model model) {
@@ -241,18 +250,34 @@ public String homeinitString(Model model) {
     @GetMapping("/profile-search/{username}")
     public String viewProfile(@PathVariable String username, Model model, Authentication authentication) {
         Usertable usertable = userService.findByUsername(username);
+        Usertable profileUser = userService.findByUsername(username);
 
-        if (usertable != null) {
-            model.addAttribute("profileUser", usertable);
+        if (profileUser != null) {
+            model.addAttribute("profileUser", profileUser);
+
+            if (usertable != null) {
+                String loggedInUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                        .getUsername();
+                Usertable loggedInUser = userService.findByCorreo(loggedInUsername);
+                List<Usertable> amistades = amistadesService.getAmistadesAceptadas(loggedInUser);
+                model.addAttribute("amistades", amistades);
+
+                model.addAttribute("profileUser", usertable);
+                boolean isOwnProfile = authentication != null &&
+                        authentication.getName().equals(usertable.getCorreo());
+                model.addAttribute("isOwnProfile", isOwnProfile);
+
+                String currentUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                        .getUsername();
+                Usertable usertable2 = userService.findByCorreo(currentUsername);
+                boolean sonAmigos = amistadesService.sonAmigos(usertable2, usertable);
+                model.addAttribute("profileUserTieneSolicitud", sonAmigos);
+                return "profile-search";
+            }
+
             boolean isOwnProfile = authentication != null &&
-                    authentication.getName().equals(usertable.getCorreo());
+                    authentication.getName().equals(profileUser.getCorreo());
             model.addAttribute("isOwnProfile", isOwnProfile);
-
-            String currentUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                    .getUsername();
-            Usertable usertable2 = userService.findByCorreo(currentUsername);
-            boolean sonAmigos = amistadesService.sonAmigos(usertable2, usertable);
-            model.addAttribute("profileUserTieneSolicitud", sonAmigos);
             return "profile-search";
         } else {
             return "error";

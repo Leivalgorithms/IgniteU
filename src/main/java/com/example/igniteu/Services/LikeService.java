@@ -23,7 +23,8 @@ public class LikeService {
     private UserService userService;
 
     public void toggleLike(Integer postId, String username) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post no ha sido encontrado"));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post no ha sido encontrado"));
         Usertable usertable = userService.findByCorreo(username);
         Optional<Like> existingLike = likeRepository.findByUsuarioAndPost(usertable, post);
         if (existingLike.isPresent()) {
@@ -43,5 +44,5 @@ public class LikeService {
     public boolean isLikedByUser(Post post, Usertable user) {
         return likeRepository.findByUsuarioAndPost(user, post).isPresent();
     }
-    
+
 }

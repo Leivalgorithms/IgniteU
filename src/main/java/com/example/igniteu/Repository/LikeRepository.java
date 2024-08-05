@@ -12,6 +12,8 @@ import com.example.igniteu.models.Usertable;
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Integer> {
     Optional<Like> findByUsuarioAndPost(Usertable usuario, Post post);
+
     Integer countByPost(Post post);
+
     void deleteByUsuarioAndPost(Usertable usuario, Post post);
 }
