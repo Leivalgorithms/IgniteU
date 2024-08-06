@@ -22,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -189,6 +188,27 @@ public class HomeController {
             System.out.println("Contenido: " + post.getContenido());
             System.out.println("Fecha de Publicación: " + post.getFecha_publicacion());
         }
+
+        Map<Integer, Boolean> likesMap = new HashMap<>();
+        Map<Integer, Integer> likesCountMap = new HashMap<>();
+        Map<Integer, Integer> commentsCountMap = new HashMap<>();
+
+        for (Post post : userPostsList) {
+            boolean isLiked = likeService.isLikedByUser(post, usertable);
+            likesMap.put(post.getIdpost(), isLiked);
+
+            Integer likesCount = likeService.countLikesByPost(post);
+            likesCountMap.put(post.getIdpost(), likesCount);
+
+            Integer commentsCount = comentarioService.countCommentsByPostId(post.getIdpost());
+            commentsCountMap.put(post.getIdpost(), commentsCount);
+        }
+
+        // Añadir el mapa al modelo para usarlo en la vista
+        model.addAttribute("likesMap", likesMap);
+        model.addAttribute("likesCountMap", likesCountMap);
+        model.addAttribute("commentsCountMap", commentsCountMap);
+        model.addAttribute("userpostCommentsMap", userpostCommentsMap);
 
         model.addAttribute("userposts", posts);
 
