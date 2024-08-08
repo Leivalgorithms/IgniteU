@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,11 +32,13 @@ import com.example.igniteu.Repository.UserRepository;
 import com.example.igniteu.Services.AmistadesService;
 import com.example.igniteu.Services.ComentarioService;
 import com.example.igniteu.Services.LikeService;
+import com.example.igniteu.Services.PostCompartidoService;
 import com.example.igniteu.Services.PostService;
 import com.example.igniteu.Services.UserService;
 import com.example.igniteu.models.Amistades;
 import com.example.igniteu.models.Comentario;
 import com.example.igniteu.models.Post;
+import com.example.igniteu.models.PostCompartido;
 import com.example.igniteu.models.Usertable;
 
 @Controller
@@ -55,6 +59,9 @@ public class HomeController {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private PostCompartidoService postCompartidoService;
 
     @GetMapping({ "", "/" })
     public String home() {
@@ -123,6 +130,9 @@ public class HomeController {
             commentsCountMap.put(post.getIdpost(), commentsCount);
         }
 
+        PostCompartido postCompartido = new PostCompartido();
+        model.addAttribute("postCompartido", postCompartido);
+
         // Añadir el mapa al modelo para usarlo en la vista
         model.addAttribute("likesMap", likesMap);
         model.addAttribute("likesCountMap", likesCountMap);
@@ -173,6 +183,7 @@ public class HomeController {
         Integer userId = usertable.getId();
 
         List<Post> posts = postService.getPostUserId(userId);
+        List<PostCompartido> postsCompartidos = postCompartidoService.getPostsCompartidosByUser(userId);
 
         List<Post> userPostsList = new ArrayList<>();
         userPostsList.addAll(posts);
@@ -182,6 +193,8 @@ public class HomeController {
             List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
             userpostCommentsMap.put(post.getIdpost(), comentarios);
         }
+
+        model.addAttribute("postsCompartidos", postsCompartidos);
 
         // Imprimir los valores de los posts en la consola
         for (Post post : posts) {
@@ -251,6 +264,25 @@ public class HomeController {
     public String viewProfile(@PathVariable String username, Model model, Authentication authentication) {
         Usertable usertable = userService.findByUsername(username);
         Usertable profileUser = userService.findByUsername(username);
+
+        Integer userId = usertable.getId();
+
+        List<Post> posts = postService.getPostUserId(userId);
+        List<PostCompartido> postsCompartidos = postCompartidoService.getPostsCompartidosByUser(userId);
+
+        List<Post> userPostsList = new ArrayList<>();
+        userPostsList.addAll(posts);
+
+        Map<Integer, List<Comentario>> userpostCommentsMap = new HashMap<>();
+        for (Post post : userPostsList) {
+            List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
+            userpostCommentsMap.put(post.getIdpost(), comentarios);
+        }
+
+        model.addAttribute("pfp", usertable.getPfp());
+        model.addAttribute("userposts", posts);
+        model.addAttribute("postsCompartidos", postsCompartidos);
+        model.addAttribute("userpostCommentsMap", userpostCommentsMap);
 
         if (profileUser != null) {
             model.addAttribute("profileUser", profileUser);

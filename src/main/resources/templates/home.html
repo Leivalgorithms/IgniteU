@@ -489,14 +489,11 @@
                 <li class="nav-item">
                   <a class="nav-link text-dark" href="/profile">Perfil</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/verpost">Posts</a>
-                </li>
             </ul>
             <h6 class="mt-4">Comunidades</h6>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <button class="btn btn-light btn-block mt-4">Crear Post</button>
+                    <button class="btn btn-light btn-block mt-4">Crear Comunidad</button>
                 </li>
             </ul>
         </div>
@@ -617,19 +614,18 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title comment-author" th:id="${'postModalLabel-' + post.idpost}"
+                                            <h5 class="modal-title comment-author" th:id="${'shareModalLabel-' + post.idpost}"
                                                 th:text="'Compartir post de ' + ${post.usuario.username}">Post Title</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form id="comment-form" th:action="@{/sharePost}" method="post">
-                                                <input type="hidden" name="postId" th:value="${post.idpost}" />
+                                            <form id="share-form" th:action="@{/compartirPost}" method="post">
+                                                <input type="hidden" name="originalPost.idpost" th:value="${post.idpost}" />
                                                 <div class="d-flex align-items-center mb-3 comment-form mt-2">
                                                     <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
-                                                    <textarea id="contenido" name="contenido" th:placeholder="'Introduce un comentario, ' + ${username}" class="form-control"></textarea>
-                                                    
+                                                    <textarea id="contenido" name="comentario" th:placeholder="'Introduce un comentario, ' + ${username}" class="form-control"></textarea>               
                                                 </div>
                                                 <p class="comment-text" th:text="${post.contenido}">Post content goes here.</p>
                                                 <div>
