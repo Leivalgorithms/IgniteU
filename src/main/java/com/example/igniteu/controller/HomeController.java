@@ -265,24 +265,7 @@ public class HomeController {
         Usertable usertable = userService.findByUsername(username);
         Usertable profileUser = userService.findByUsername(username);
 
-        Integer userId = usertable.getId();
-
-        List<Post> posts = postService.getPostUserId(userId);
-        List<PostCompartido> postsCompartidos = postCompartidoService.getPostsCompartidosByUser(userId);
-
-        List<Post> userPostsList = new ArrayList<>();
-        userPostsList.addAll(posts);
-
-        Map<Integer, List<Comentario>> userpostCommentsMap = new HashMap<>();
-        for (Post post : userPostsList) {
-            List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
-            userpostCommentsMap.put(post.getIdpost(), comentarios);
-        }
-
         model.addAttribute("pfp", usertable.getPfp());
-        model.addAttribute("userposts", posts);
-        model.addAttribute("postsCompartidos", postsCompartidos);
-        model.addAttribute("userpostCommentsMap", userpostCommentsMap);
 
         if (profileUser != null) {
             model.addAttribute("profileUser", profileUser);
@@ -304,6 +287,24 @@ public class HomeController {
                 Usertable usertable2 = userService.findByCorreo(currentUsername);
                 boolean sonAmigos = amistadesService.sonAmigos(usertable2, usertable);
                 model.addAttribute("profileUserTieneSolicitud", sonAmigos);
+                model.addAttribute("sonAmigos", sonAmigos);
+
+                if (isOwnProfile || sonAmigos) {
+                    Integer userId = usertable.getId();
+                    List<Post> posts = postService.getPostUserId(userId);
+                    List<PostCompartido> postsCompartidos = postCompartidoService.getPostsCompartidosByUser(userId);
+
+                    Map<Integer, List<Comentario>> userpostCommentsMap = new HashMap<>();
+                    for (Post post : posts) {
+                        List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
+                        userpostCommentsMap.put(post.getIdpost(), comentarios);
+                    }
+
+                    model.addAttribute("userposts", posts);
+                    model.addAttribute("postsCompartidos", postsCompartidos);
+                    model.addAttribute("userpostCommentsMap", userpostCommentsMap);
+                }
+
                 return "profile-search";
             }
 
