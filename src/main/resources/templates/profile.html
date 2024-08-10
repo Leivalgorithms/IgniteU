@@ -583,6 +583,25 @@
                                     <div th:if="${postCompartido.originalPost.imageURL != null and !postCompartido.originalPost.imageURL.isEmpty()}">
                                         <img th:src="@{'/images/' + ${postCompartido.originalPost.imageURL}}" alt="Imagen del post original" class="img-fluid">
                                     </div>
+                                    <!-- Botón de like -->
+                                    <div class="d-flex align-items-center">
+                                        <form th:action="@{/like}" method="post" class="mr-3">
+                                            <input type="hidden" name="postId" th:value="${postCompartido.originalPost.idpost}">
+                                            <button type="submit" class="flame-btn d-inline" th:classappend="${likesMap[postCompartido.originalPost.idpost]} ? 'active' : ''">
+                                                <svg class="flame" viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
+                                                    <path transform="translate(987,603)" d="m0 0 10 5 17 12 15 13 11 9 8 7v2l4 2 12 12 7 8 9 10 10 13 12 17 13 20 9 16 11 22 11 27 6 18 8 33 4 23 3 31v37l-4 40-5 26-7 27-12 35-10 25-12 25-1 2 7-4 13-11 10-10 9-11 10-14 10-19 8-20 7-23 4-1 8 9 13 18 10 16 10 19 10 25 6 20 5 24 3 22 1 12v23l-4 29-6 25-6 18-9 20-9 17-8 12-12 17-13 16-7 7-7 8-8 7-12 11-18 13-5 2v-28l-2-22-5-20-6-15-8-15-13-17-7-6v17l-3 17-6 17-9 16-9 12-9 9-6 4h-2l4-20 3-23v-28l-5-25-6-18-9-20-16-31-7-16-7-19-5-19-3-18-1-11v-21l2-22 2-14-15 9-14 10-11 9-15 14-11 11-11 14-14 19-9 15-11 21-9 24-6 21-5 27-3 30v18l3 29 5 26 7 25 4 11v3l-6-2-13-9-15-12-11-9-10-9-12-12-7-6-7-8-9-10-14-19-9-13-9-15-8-16-10-25-5-16-4-21-3-23v-28l4-29 6-25 8-22 10-23 10-19 13-21 12-17 11-14 9-11 9-10 12-13 63-63 7-8 15-16 18-22 11-14 13-17 19-29 9-15 10-22 6-20 2-13v-19l-3-21-5-18-8-19-9-17z"/>
+                                                </svg>
+                                            </button>
+                                            <span th:text="${likesCountMap[postCompartido.originalPost.idpost]}"></span>
+                                        </form>
+
+                                        <!-- Botón de comentarios -->
+                                        <button class="btn btn-link btn-sm svg-button-bubble d-inline"
+                                                data-toggle="modal" 
+                                                th:data-target="${'#postModal-' + postCompartido.originalPost.idpost}">   
+                                        </button>
+                                        <span class="comment-count" th:text="${commentsCountMap[postCompartido.originalPost.idpost]}"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
