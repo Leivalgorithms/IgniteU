@@ -34,7 +34,14 @@ public class SecurityConfig {
                                                 .requestMatchers("/accept-request").permitAll()
                                                 .requestMatchers("/deny-request").permitAll()
                                                 .requestMatchers("/remove-friend").permitAll()
-                                                .requestMatchers("/profile-search/**").permitAll()
+                                                .requestMatchers("/bandeja").permitAll()
+                                                .requestMatchers("/app").permitAll()
+                                                .requestMatchers("/chat/**").permitAll()
+                                                .requestMatchers("/topic").permitAll()
+                                                
+                                              
+                                               
+
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")

@@ -509,13 +509,17 @@
                 </div>
                 <div th:if="${not #lists.isEmpty(amistades)}">
                     <div th:each="amistad, iterStat : ${amistades}" class="contact-item mb-3">
-                        <div class="d-flex align-items-center">
-                            <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}" 
-                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
-                            <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25" 
-                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
-                            <span th:text="${amistad.username}">Nombre del contacto</span>
-                        </div>
+                        <a th:href="@{'/bandeja/' + ${amistad.id}}"
+                            class="d-flex align-items-center text-decoration-none">
+                            <div class="d-flex align-items-center">
+                                <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}"
+                                    class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
+                                <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25"
+                                    class="rounded-circle mr-2" style="width: 40px; height: 40px;"
+                                    alt="Foto de perfil por defecto">
+                                <span th:text="${amistad.username}">Nombre del contacto</span>
+                            </div>
+                        </a>
                         <hr th:if="${!iterStat.last}" class="my-2">
                     </div>
                 </div>
