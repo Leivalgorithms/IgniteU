@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Home Page IgniteU</title>
+    <title>IgniteU</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
       body {
@@ -131,7 +131,8 @@
 
 
         .comments-section {
-            height: 80vh;
+            flex: 1;
+            height: calc(100vh - 250px);
             overflow-y: scroll;
             box-sizing: border-box;
             scrollbar-width: none;
@@ -196,9 +197,8 @@
         }
 
         .comments-container {
-        max-height: 200px; /* Ajusta según tus necesidades */
-        overflow-y: hidden;
-        position: relative;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         .profile-pic {
@@ -232,9 +232,50 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
+            margin-left: -2vh;
         }
 
         .svg-button-bubble:hover ,.svg-button-bubble:focus, .svg-button-bubble:active{
+            outline: none;
+            box-shadow: none;
+            background-color: transparent !important;
+            color: inherit !important;
+            
+        }
+
+
+        .svg-button-share {
+            background-image: url('data:image/svg+xml,<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="512" height="512"><path d="M0 0 C3.03033302 2.87493132 5.05720897 5.53712041 5.94346619 9.67459106 C6.19254669 20.49485039 2.53986214 30.46511408 -0.62109375 40.6796875 C-1.27130435 42.82451227 -1.91999159 44.96979935 -2.567276 47.11550903 C-3.96073544 51.72353491 -5.36445282 56.32825964 -6.77636719 60.93066406 C-9.03790146 68.30299015 -11.27654451 75.68214596 -13.51171875 83.0625 C-15.84650562 90.76747464 -18.18288982 98.471942 -20.52804565 106.17376709 C-25.70302181 123.16984489 -30.84232868 140.1762847 -35.94140625 157.1953125 C-36.27787611 158.31827602 -36.61434597 159.44123955 -36.96101189 160.59823227 C-38.6523898 166.24402874 -40.34298986 171.89005775 -42.03323364 177.53619385 C-45.11076325 187.81507433 -48.19528199 198.09185831 -51.2791729 208.36883163 C-52.99889194 214.09997142 -54.7181742 219.83124223 -56.4375 225.5625 C-57.1249979 227.8541673 -57.8124979 230.14583396 -58.5 232.4375 C-58.8403125 233.571875 -59.180625 234.70625 -59.53125 235.875 C-60.5625 239.3125 -61.59375 242.75 -62.625 246.1875 C-62.96532068 247.32190269 -63.30564137 248.45630539 -63.6562748 249.62508392 C-64.34369121 251.91647113 -65.03110856 254.20785805 -65.71852684 256.49924469 C-67.43856335 262.23268487 -69.15858358 267.96612993 -70.87857056 273.69958496 C-73.95694124 283.96105933 -77.03541752 294.22250194 -80.11451912 304.48375702 C-81.81340721 310.14539675 -83.51219765 315.80706579 -85.2109375 321.46875 C-85.71666857 323.15427727 -85.71666857 323.15427727 -86.23261642 324.87385559 C-91.15780727 341.289508 -96.07777564 357.70672088 -100.99489617 374.1247921 C-103.45928451 382.35305743 -105.92493839 390.58094358 -108.39066696 398.80880737 C-110.54998116 406.01460962 -112.70769514 413.22088836 -114.86416054 420.42754364 C-116.2008994 424.89332101 -117.53921608 429.35862445 -118.87794113 433.82380676 C-119.49097364 435.86965887 -120.10337579 437.9157 -120.71504593 439.96195984 C-123.84602116 450.43504281 -127.02446524 460.89201579 -130.30810547 471.31835938 C-130.59242495 472.22929604 -130.87674442 473.1402327 -131.16967964 474.0787735 C-135.16656703 486.67372037 -141.05691391 497.07912664 -152.62890625 504.19921875 C-165.48849327 510.84628939 -180.12889932 513.02992492 -194.1875 508.6875 C-206.61040939 503.72870307 -216.39843673 495.01673669 -222.21075058 482.9469986 C-224.5619166 476.62533168 -225.21498616 470.1419345 -225.97130346 463.47039247 C-226.50930621 458.80594903 -227.14404194 454.15457638 -227.7762146 449.50210571 C-227.91021337 448.51221409 -228.04421214 447.52232247 -228.18227148 446.50243413 C-231.07763939 425.52491477 -235.20469096 404.75213781 -239.6875 384.0625 C-239.93177294 382.92954341 -240.17604588 381.79658682 -240.42772102 380.62929821 C-252.937113 321.14474719 -252.937113 321.14474719 -289.73352051 275.30554199 C-316.82508846 258.03701418 -349.25880412 250.13288232 -380.3125 243.4375 C-381.44826634 243.19141432 -382.58403269 242.94532864 -383.75421619 242.69178581 C-404.29644696 238.27297132 -424.92589076 234.34539919 -445.75210571 231.5262146 C-447.20785096 231.32840952 -447.20785096 231.32840952 -448.6930052 231.12660837 C-453.20919909 230.52066589 -457.72568733 229.9474326 -462.25335884 229.43415451 C-475.27900347 227.87446101 -486.68536732 224.39759211 -495.51953125 214.01171875 C-505.61264992 201.07230316 -508.27745253 188.37600326 -506.5625 172.3125 C-504.22940919 160.19085503 -496.99458334 149.33808535 -486.9370575 142.1509552 C-481.7026413 138.71133806 -476.54851185 136.70787906 -470.57421875 134.90234375 C-469.51764572 134.57362778 -468.46107269 134.2449118 -467.3724823 133.90623474 C-463.44074658 132.69160005 -459.50241631 131.50025635 -455.5625 130.3125 C-453.91895438 129.81556871 -452.2754206 129.31859826 -450.63189697 128.82159424 C-437.37590664 124.81753106 -424.10600364 120.86031618 -410.83501816 116.90629959 C-404.92432221 115.14454632 -399.01453131 113.37976303 -393.10473633 111.61499023 C-391.90172347 111.2557525 -390.69871061 110.89651476 -389.45924282 110.52639103 C-387.0051279 109.79354211 -384.55101714 109.06067924 -382.09691048 108.32780266 C-378.36190697 107.21250748 -374.62681533 106.09750786 -370.89170837 104.9825592 C-346.30376036 97.64217708 -321.72487025 90.27170484 -297.14784241 82.8948555 C-291.46156393 81.18813056 -285.77520834 79.48166259 -280.08886719 77.77514648 C-273.2179483 75.71310284 -266.34704654 73.65100219 -259.47619629 71.58872986 C-244.00315795 66.94462717 -228.52936807 62.30303498 -213.05513573 57.66291237 C-156.05508202 40.57894958 -156.05508202 40.57894958 -99.07572365 23.42614269 C-94.7136151 22.10965066 -90.35065857 20.79600063 -85.98730469 19.48364258 C-75.55099533 16.34267474 -65.12109108 13.18446087 -54.71078491 9.95819092 C-50.03468751 8.51083026 -45.35492452 7.07555654 -40.67468262 5.6416626 C-38.51935701 4.97758693 -36.36585523 4.30755457 -34.21447754 3.63079834 C-9.04716879 -4.28550101 -9.04716879 -4.28550101 0 0 Z " fill="%2322B0FF" transform="translate(506.5625,1.6875)"/><path d="M0 0 C0.7425 0.66 1.485 1.32 2.25 2 C1.16423079 2.84207601 1.16423079 2.84207601 0.05652684 3.70116365 C-2.67766147 5.94074725 -5.15664193 8.28245467 -7.65442944 10.78138161 C-8.12390223 11.24970055 -8.59337502 11.7180195 -9.07707426 12.20052993 C-10.64638739 13.7672005 -12.21211418 15.33740587 -13.77787781 16.90762329 C-14.91487443 18.04418372 -16.05209082 19.18052433 -17.18950778 20.3166641 C-20.31203334 23.43695395 -23.43143274 26.5603528 -26.55033219 29.68426657 C-29.91523964 33.05349167 -33.2830357 36.41982721 -36.65048218 39.78651428 C-42.48409065 45.61959833 -48.3158649 51.45451101 -54.14639854 57.29066849 C-62.57855563 65.73095334 -71.01347335 74.16847485 -79.44906697 82.60532491 C-93.13800467 96.29645148 -106.82470768 109.98980975 -120.51000977 123.68457031 C-133.79920467 136.98294036 -147.08944641 150.28026277 -160.38110352 163.57617188 C-161.20008288 164.39541396 -162.01906224 165.21465604 -162.86285915 166.05872364 C-166.97172608 170.16889568 -171.0806137 174.27904703 -175.18951166 178.38918805 C-206.90164458 210.11096384 -238.61081213 241.83570226 -270.3175413 273.5628792 C-270.81126122 274.05691622 -271.30498113 274.55095324 -271.81366226 275.05996108 C-273.12379407 276.3709368 -274.43392137 277.68191703 -275.7440483 278.99289763 C-277.07917434 280.32878953 -278.41449097 281.66449097 -279.75 283 C-305.10212203 275.81668526 -330.45031383 268.61964951 -355.79393387 261.40639305 C-367.56228914 258.05724807 -379.33187508 254.71255421 -391.10449219 251.37841797 C-401.36904936 248.47136878 -411.6311671 245.55588576 -421.89047885 242.63037646 C-427.31954742 241.08255753 -432.74972057 239.53890264 -438.18283844 238.00535202 C-443.30422781 236.5596454 -448.42226385 235.10262078 -453.5380249 233.63712692 C-455.40881237 233.10331943 -457.28075421 232.57353717 -459.15395355 232.04825592 C-477.14786768 226.99768969 -491.41128973 221.62260809 -501.75 205 C-508.04929102 193.72199222 -508.45695438 180.86853393 -506.05078125 168.3671875 C-502.02187327 155.07349114 -492.8611636 144.59210564 -480.75 138 C-477.48426896 136.64203417 -474.14562099 135.61251788 -470.76171875 134.58984375 C-469.70514572 134.26112778 -468.64857269 133.9324118 -467.5599823 133.59373474 C-463.62824658 132.37910005 -459.68991631 131.18775635 -455.75 130 C-454.10645438 129.50306871 -452.4629206 129.00609826 -450.81939697 128.50909424 C-437.56340664 124.50503106 -424.29350364 120.54781618 -411.02251816 116.59379959 C-405.11182221 114.83204632 -399.20203131 113.06726303 -393.29223633 111.30249023 C-392.08922347 110.9432525 -390.88621061 110.58401476 -389.64674282 110.21389103 C-387.1926279 109.48104211 -384.73851714 108.74817924 -382.28441048 108.01530266 C-378.54940697 106.90000748 -374.81431533 105.78500786 -371.07920837 104.6700592 C-346.49126036 97.32967708 -321.91237025 89.95920484 -297.33534241 82.5823555 C-291.64906393 80.87563056 -285.96270834 79.16916259 -280.27636719 77.46264648 C-273.4054483 75.40060284 -266.53454654 73.33850219 -259.66369629 71.27622986 C-244.19065795 66.63212717 -228.71686807 61.99053498 -213.24263573 57.35041237 C-156.24258202 40.26644958 -156.24258202 40.26644958 -99.26322365 23.11364269 C-94.9011151 21.79715066 -90.53815857 20.48350063 -86.17480469 19.17114258 C-75.73849533 16.03017474 -65.30859108 12.87196087 -54.89828491 9.64569092 C-50.22218751 8.19833026 -45.54242452 6.76305654 -40.86218262 5.3291626 C-38.70685701 4.66508693 -36.55335523 3.99505457 -34.40197754 3.31829834 C-7.87266014 -5.02641663 -7.87266014 -5.02641663 0 0 Z " fill="%2301D9FF" transform="translate(506.75,2)"/></svg>');
+            background-size: cover; 
+            background-position: center;
+            border: none; 
+            width: 20px; 
+            height: 20px; 
+            color: white; 
+            font-size: 16px; 
+            text-align: center; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            margin-left: 1vh;
+        }
+
+        .svg-button-share:hover ,.svg-button-share:focus, .svg-button-share:active{
+            outline: none;
+            box-shadow: none;
+            background-color: transparent !important;
+            color: inherit !important;
+            
+        }
+
+        .svg-button-picture {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            
+        }
+
+        .svg-button-picture:hover ,.svg-button-picture:focus, .svg-button-picture:active{
             outline: none;
             box-shadow: none;
             background-color: transparent !important;
@@ -283,32 +324,90 @@
         /* Estilos para el modal */
         .modal-content {
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-
         .modal-header {
             background-color: #1c1c1c;
             border-bottom: 1px solid #1c1c1c;
             padding: 15px 20px;
         }
-
         .modal-title {
             font-weight: bold;
+        }
+        .close {
+            font-size: 1.5rem;
+            color: #ffffff44;
+            opacity: 0.5;
+        }
+        .close:hover {
+            opacity: 0.65;
         }
 
         .modal-body {
             background-color: #272829;
             padding: 20px;
         }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+
         .modal-footer {
             border-top: 1px solid #1c1c1c;
-            padding: 15px 20px;
+            padding: 5px 10px;
             background-color: #1c1c1c;
+
+            display: flex;
+            justify-content: flex-end;
         }
+        .bttn {
+            border-radius: 5px;
+            padding: 10px 20px;
+        }
+        .btn-primary {
+            background-color: #272829;
+            color: #fff;
+        }
+        .btn-secondary {
+            background-color: #272829;
+            color: #fff;
+        }
+        .btn-secondary:hover, .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .modal-body .btn{
+            background-color: black;
+            color: white;
+        }
+
+        .post-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .comment-count {
+            margin-left: -1vh;
+        }
+
   </style>
 
   </head>
-  <body>
     <nav class="navbar navbar-expand-lg">
         <div class="toolbar"> 
             <svg version="1.1" viewBox="0 0 2048 778" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
@@ -343,73 +442,69 @@
 
                 <li class="nav-item">
                     <a class="nav-link text-dark" data-toggle="modal" data-target="#notificaciones" href="#">Notificaciones</a>
+                        <!--Modal para solicitudes de Amistad-->
+                        <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
+                            aria-labelledby="notificationLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="notificationLabel">Solicitudes de amistad</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div th:if="${#lists.isEmpty(requests)}">
+                                                <p>No tienes solicitudes de amistad pendientes.</p>
+                                            </div>
+                                            <div>
+                                                <ul>
+                                                    <li th:each="request : ${requests}">
+                                                        <p>Enviado por: <span th:text="${request.usuario.username}">Username</span></p>
+                                                        <p>Fecha: <span th:text="${request.fechaAmistad}">Date</span></p>
+                                                        <p>Estado: <span th:text="${request.estado}">Status</span></p>
+                                                        
+                                                            <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
+                                                                <input type="hidden" name="requestId" th:value="${request.id}">
+                                                                <button type="button" class="btn btn-aceptar btn-sm accept-request-button">Aceptar</button>
+                                                            </div>
+
+                                                            <div class="Denegar" th:data-send-request-url="@{/deny-request}" th:data-csrf-token="${_csrf.token}">
+                                                                <input type="hidden" name="requestId" th:value="${request.id}">
+                                                                <button type="button" class="btn btn-denegar btn-sm deny-request-button">Denegar</button>
+                                                            </div>
+                                                        
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                 </li>
 
                 <li class="nav-item">
                   <a class="nav-link text-dark" href="/profile">Perfil</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/verpost">Posts</a>
-                </li>
             </ul>
-            <button class="btn btn-light btn-block mt-4">Crear Post</button>
-            <h6 class="mt-4">Communities</h6>
+            <h6 class="mt-4">Comunidades</h6>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">Crear una comunidad</a>
+                    <button class="btn btn-light btn-block mt-4">Crear Comunidad</button>
                 </li>
             </ul>
         </div>
-        
-        <!--Modal para mandar Solicitudes-->
-        <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
-        aria-labelledby="notificationLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="notificationLabel">Solicitudes de amistad</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div th:if="${#lists.isEmpty(requests)}">
-                            <p>No tienes solicitudes de amistad pendientes.</p>
-                        </div>
-                        <div>
-                            <ul>
-                                <li th:each="request : ${requests}">
-                                    <p>Sender: <span th:text="${request.usuario.username}">Username</span></p>
-                                    <p>Friend: <span th:text="${request.amistad.username}">Username</span></p>
-                                    <p>Date: <span th:text="${request.fechaAmistad}">Date</span></p>
-                                    <p>Status: <span th:text="${request.estado}">Status</span></p>
-                                    
-                                        <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
-                                            <input type="hidden" name="requestId" th:value="${request.id}">
-                                            <button type="button" class="btn btn-aceptar btn-sm accept-request-button">Aceptar</button>
-                                        </div>
-
-                                        <div class="Denegar" th:data-send-request-url="@{/deny-request}" th:data-csrf-token="${_csrf.token}">
-                                            <input type="hidden" name="requestId" th:value="${request.id}">
-                                            <button type="button" class="btn btn-denegar btn-sm deny-request-button">Denegar</button>
-                                        </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        </div>
-
+         
 
         <div class="col-md-4 content">
             <div class="post-box">
-                <form id="post-form" th:action="@{/createPost}" th:object="${post}" method="post">
+                <form id="post-form" th:action="@{/createPost}" th:object="${post}" method="post" enctype="multipart/form-data">
                     <div class="d-flex align-items-center mb-3">
                         <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pict" alt="User Profile Picture">
-                        <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control"></textarea>
+                        <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control" th:required="true" title="Por favor, escribe algo antes de publicar."></textarea>
                         <button type="submit" class="btn btn-primary post-button">Publicar</button>
                     </div>
                     <div class="post-actions d-flex justify-content-around">
@@ -417,20 +512,24 @@
                             <img src="https://via.placeholder.com/30" alt="Video">
                             <span>Subir Video</span>
                         </div>
-                        <div class="action-item">
+                        <div class="action-item" onclick="triggerFileUpload();">
                             <img src="https://via.placeholder.com/30" alt="Foto">
                             <span>Subir Foto</span>
                         </div>
+                        <input type="file" id="pfp-upload" name="pfp" accept="image/*" style="display: none;" onchange="previewImage(event)">            
                     </div>
-                </form> 
+                    <div class="preview-box mt-3">
+                        <img id="preview-img" src="" alt="Image Preview" style="max-width: 100%; display: none;">
+                    </div>
+                </form>
             </div>
 
-          <!-- Posts -->
+          <!-- VER Posts -->
     <div class="container my-4">
             <div class="row">
                 <div class="col-12">
                     <div class="comments-section rounded p-3" id="comments-section">   
-                        <div  th:each="post : ${friendPosts}" class="comment mb-3">
+                        <div  th:each="post : ${combinedPosts}" class="comment mb-3">
                             <div class="d-flex align-items-start mb-1">
                                 <img th:if="${post.usuario.pfp != null}" th:src="@{'/images/' + ${post.usuario.pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
                                 <img th:if="${post.usuario.pfp == null}" src="https://via.placeholder.com/25" 
@@ -441,17 +540,29 @@
                                 </div>
                             </div> 
                             <div class="comment-text" th:text="${post.contenido}"></div>
-                            <button class="flame-btn d-inline" onclick="this.classList.toggle('active')">
-                                <svg class="flame" viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
-                                    <path transform="translate(987,603)" d="m0 0 10 5 17 12 15 13 11 9 8 7v2l4 2 12 12 7 8 9 10 10 13 12 17 13 20 9 16 11 22 11 27 6 18 8 33 4 23 3 31v37l-4 40-5 26-7 27-12 35-10 25-12 25-1 2 7-4 13-11 10-10 9-11 10-14 10-19 8-20 7-23 4-1 8 9 13 18 10 16 10 19 10 25 6 20 5 24 3 22 1 12v23l-4 29-6 25-6 18-9 20-9 17-8 12-12 17-13 16-7 7-7 8-8 7-12 11-18 13-5 2v-28l-2-22-5-20-6-15-8-15-13-17-7-6v17l-3 17-6 17-9 16-9 12-9 9-6 4h-2l4-20 3-23v-28l-5-25-6-18-9-20-16-31-7-16-7-19-5-19-3-18-1-11v-21l2-22 2-14-15 9-14 10-11 9-15 14-11 11-11 14-14 19-9 15-11 21-9 24-6 21-5 27-3 30v18l3 29 5 26 7 25 4 11v3l-6-2-13-9-15-12-11-9-10-9-12-12-7-6-7-8-9-10-14-19-9-13-9-15-8-16-10-25-5-16-4-21-3-23v-28l4-29 6-25 8-22 10-23 10-19 13-21 12-17 11-14 9-11 9-10 12-13 63-63 7-8 15-16 18-22 11-14 13-17 19-29 9-15 10-22 6-20 2-13v-19l-3-21-5-18-8-19-9-17z"/>
-                                </svg>
-                            </button>
-                        
+                            <div>
+                                    <img th:if="${post.imageURL != null}" th:src="@{'/images/' + ${post.imageURL}}" class="post-image" alt="Post Image">  
+                            </div>
+                            <div class="d-flex align-items-center">
+                            <form th:action="@{/like}" method="post" class="mr-3">
+                                <input type="hidden" name="postId" th:value="${post.idpost}">
+                                <button type="submit" class="flame-btn d-inline" th:classappend="${likesMap[post.idpost]} ? 'active' : ''">
+                                    <svg class="flame" viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
+                                        <path transform="translate(987,603)" d="m0 0 10 5 17 12 15 13 11 9 8 7v2l4 2 12 12 7 8 9 10 10 13 12 17 13 20 9 16 11 22 11 27 6 18 8 33 4 23 3 31v37l-4 40-5 26-7 27-12 35-10 25-12 25-1 2 7-4 13-11 10-10 9-11 10-14 10-19 8-20 7-23 4-1 8 9 13 18 10 16 10 19 10 25 6 20 5 24 3 22 1 12v23l-4 29-6 25-6 18-9 20-9 17-8 12-12 17-13 16-7 7-7 8-8 7-12 11-18 13-5 2v-28l-2-22-5-20-6-15-8-15-13-17-7-6v17l-3 17-6 17-9 16-9 12-9 9-6 4h-2l4-20 3-23v-28l-5-25-6-18-9-20-16-31-7-16-7-19-5-19-3-18-1-11v-21l2-22 2-14-15 9-14 10-11 9-15 14-11 11-11 14-14 19-9 15-11 21-9 24-6 21-5 27-3 30v18l3 29 5 26 7 25 4 11v3l-6-2-13-9-15-12-11-9-10-9-12-12-7-6-7-8-9-10-14-19-9-13-9-15-8-16-10-25-5-16-4-21-3-23v-28l4-29 6-25 8-22 10-23 10-19 13-21 12-17 11-14 9-11 9-10 12-13 63-63 7-8 15-16 18-22 11-14 13-17 19-29 9-15 10-22 6-20 2-13v-19l-3-21-5-18-8-19-9-17z"/>
+                                    </svg>
+                                </button>
+                                <span th:text="${likesCountMap[post.idpost]}"></span>
+                            </form>
                             <button class="btn btn-link btn-sm svg-button-bubble d-inline"
                                 data-toggle="modal" 
                                 th:data-target="${'#postModal-' + post.idpost}">   
                             </button>
-
+                            <span class="comment-count" th:text="${commentsCountMap[post.idpost]}"></span>
+                                <button class="btn btn-link btn-sm svg-button-share d-inline"
+                                data-toggle="modal" 
+                                th:data-target="${'#shareModal-' + post.idpost}">
+                                </button>
+                            </div>
                             <!-- Modal para post específico -->
                             <div class="modal fade" th:id="${'postModal-' + post.idpost}" tabindex="-1" role="dialog"
                                 th:aria-labelledby="${'postModalLabel-' + post.idpost}" aria-hidden="true">
@@ -472,16 +583,62 @@
                                                 <h6>Comentarios</h6>
                                                 <div class="comments-list">
                                                     <!-- Los comentarios se insertarán aquí dinámicamente -->
+                                                    <div class="comments-list comments-container" th:each="comentario : ${postCommentsMap[post.idpost]}">
+                                                        <!-- Los comentarios se insertarán aquí dinámicamente -->
+                                                        <strong th:text="${comentario.usuario.username}"></strong>:
+                                                        <span th:text="${comentario.contenido}"></span>
+                                                        <span class="comment-time time-text" th:data-time="${comentario.fecha_comentario}"></span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                                <div class="comment-form mt-2 ">
-                                                    <textarea class="form-control" rows="2" placeholder="Escribe tu comentario"></textarea>
-                                                    <button class="btn btn-primary btn-sm submit-comment-btn">Enviar</button>
+                                            <form id="comment-form" th:action="@{/createComment}" th:object="${comentario}" method="post">
+                                                <input type="hidden" name="postId" th:value="${post.idpost}" />
+                                                <div class="d-flex align-items-center mb-3 comment-form mt-2">
+                                                    <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
+                                                    <textarea id="contenido" name="contenido" th:placeholder="'¿Comenta aqui, ' + ${username}" class="form-control"></textarea>
+                                                    <button type="submit" class="btn btn-primary post-button">Publicar</button>
                                                 </div>
+                                            </form>
+                                                
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal para compartir post-->
+                            <div class="modal fade" th:id="${'shareModal-' + post.idpost}" tabindex="-1" role="dialog"
+                                th:aria-labelledby="${'postModalLabel-' + post.idpost}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title comment-author" th:id="${'shareModalLabel-' + post.idpost}"
+                                                th:text="'Compartir post de ' + ${post.usuario.username}">Post Title</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="share-form" th:action="@{/compartirPost}" method="post">
+                                                <input type="hidden" name="originalPost.idpost" th:value="${post.idpost}" />
+                                                <div class="d-flex align-items-center mb-3 comment-form mt-2">
+                                                    <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pic" alt="User Profile Picture">
+                                                    <textarea id="contenido" name="comentario" th:placeholder="'Introduce un comentario, ' + ${username}" class="form-control"></textarea>               
+                                                </div>
+                                                <p class="comment-text" th:text="${post.contenido}">Post content goes here.</p>
+                                                <div>
+                                                    <img th:if="${post.imageURL != null}" th:src="@{'/images/' + ${post.imageURL}}" class="post-image" alt="Post Image">  
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-secondary post-button">Compartir</button>
+                                                </div>
+                                            </form>
+                                                        
+                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -509,13 +666,17 @@
                 </div>
                 <div th:if="${not #lists.isEmpty(amistades)}">
                     <div th:each="amistad, iterStat : ${amistades}" class="contact-item mb-3">
-                        <div class="d-flex align-items-center">
-                            <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}" 
-                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
-                            <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25" 
-                                class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil por defecto">
-                            <span th:text="${amistad.username}">Nombre del contacto</span>
-                        </div>
+                        <a th:href="@{'/bandeja/' + ${amistad.id}}"
+                            class="d-flex align-items-center text-decoration-none">
+                            <div class="d-flex align-items-center">
+                                <img th:if="${amistad.pfp != null}" th:src="@{'/images/' + ${amistad.pfp}}"
+                                    class="rounded-circle mr-2" style="width: 40px; height: 40px;" alt="Foto de perfil">
+                                <img th:if="${amistad.pfp == null}" src="https://via.placeholder.com/25"
+                                    class="rounded-circle mr-2" style="width: 40px; height: 40px;"
+                                    alt="Foto de perfil por defecto">
+                                <span th:text="${amistad.username}">Nombre del contacto</span>
+                            </div>
+                        </a>
                         <hr th:if="${!iterStat.last}" class="my-2">
                     </div>
                 </div>
@@ -523,17 +684,30 @@
     </div>
 </div>
 
-    
+
+    <!-- Función subir foto y vista previa -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var button = document.querySelector('.bubble-btn');
-            button.addEventListener('click', function() {
-                console.log('SVG clickeado!');
-                // Tu código aquí
-            });
-        });
+                function triggerFileUpload() {
+            document.getElementById('pfp-upload').click();
+        }
+
+        function previewImage(event) {
+            const previewBox = document.getElementById('preview-img');
+            const reader = new FileReader();
+            
+            reader.onload = function() {
+                if (reader.readyState === 2) {
+                    previewBox.src = reader.result;
+                    previewBox.style.display = 'block';
+                }
+            }
+            
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
     </script>
-    <!-- Función timeAgo en JavaScript -->
+
+    <!-- Función timeAgo y comentarios en JavaScript -->
     <script>
         function timeAgo(dateString) {
             const now = new Date();
@@ -620,28 +794,8 @@
 
     </script>
 
-    <script>
-        $(document).ready(function() {
-            $('#post-form').on('submit', function(event) {
-                event.preventDefault(); // Previene el envío normal del formulario
-        
-                $.ajax({
-                    type: $(this).attr('method'),
-                    url: $(this).attr('action'),
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        // Actualiza la lista de posts con la respuesta del servidor
-                        $('#comments-section').html(response);
-                        $('#contenido').val(''); // Limpia el textarea después de publicar
-                    },
-                    error: function(xhr, status, error) {
-                    console.error('Error al publicar el post:', error);
-                }
-                });
-            });
-        });
-        </script>
-
+    
+    <!--COMMENT MODAL-->
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 var commentModal = document.getElementById('commentModal');
@@ -662,10 +816,97 @@
             });
         </script>
 
-            
+    <!--FRIEND REQUEST MODAL-->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('accept-request-button') || event.target.classList.contains('deny-request-button')) {
+                        event.preventDefault(); // Prevenir el comportamiento predeterminado del botón
 
-    <script src="/src/main/resources/static/commentsSection.js"></script>
+                        // Determinar si es una solicitud de aceptación o de denegación
+                        const isAccept = event.target.classList.contains('accept-request-button');
+                        const sendRequestUrl = isAccept ? event.target.closest('.Aceptar').getAttribute('data-send-request-url') 
+                                                        : event.target.closest('.Denegar').getAttribute('data-send-request-url');
+
+                        // Obtener el ID de solicitud, URL y token CSRF desde los atributos data-* del elemento padre
+                        const cardBody = event.target.closest(isAccept ? '.Aceptar' : '.Denegar');
+                        if (!cardBody) {
+                            console.error('Elemento correspondiente no encontrado');
+                            return;
+                        }
+
+                        const requestId = cardBody.querySelector('input[name="requestId"]').value;
+                        const csrfToken = cardBody.getAttribute('data-csrf-token');
+                        
+                        if (!requestId || !sendRequestUrl || !csrfToken) {
+                            console.error('Faltan datos necesarios para enviar la solicitud');
+                            return;
+                        }
+
+                        // Crear los parámetros del formulario
+                        var formData = new URLSearchParams();
+                        formData.append('requestId', requestId);
+                        formData.append('_csrf', csrfToken);
+
+                        // Enviar la solicitud POST
+                        fetch(sendRequestUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: formData.toString()
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                alert(isAccept ? 'Solicitud de amistad aceptada' : 'Solicitud de amistad denegada');
+                                // Eliminar la solicitud del DOM
+                                const listItem = cardBody.closest('li');
+                                if (listItem) {
+                                    listItem.remove();
+                                }
+                            } else {
+                                alert('Error al procesar la solicitud de amistad');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+                });
+            });
+
+            function updatePostsSection() {
+                fetch('/home')
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newPostsSection = doc.querySelector('#comments-section');
+                        const currentPostsSection = document.querySelector('#comments-section');
+                        if (newPostsSection && currentPostsSection) {
+                            currentPostsSection.innerHTML = newPostsSection.innerHTML;
+                        }
+                    })
+                    .catch(error => console.error('Error updating posts section:', error));
+            }
+        </script>
+
+        <script>
+            function toggleLike(postId, username) {
+                fetch('/toggleLike?postId=' + postId + '&username=' + username, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Actualiza la interfaz según la respuesta
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        </script>
+
+            
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/src/main/resources/static/commentsSection.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ignite U</title>
+    <title>Perfil Ignite U</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -86,7 +86,8 @@
             object-fit: cover;
         }
         .comments-section {
-            max-height: 500px;
+            flex: 1;
+            height: calc(100vh - 460px);
             width: 100%;
             overflow-y: auto;
             box-sizing: border-box;
@@ -101,7 +102,6 @@
             border-radius: 5px;
             padding: 10px;
             margin-bottom: 10px;
-            height: auto;
             overflow: auto;
         }
         .comment-author {
@@ -229,6 +229,94 @@
         .modal-content.bg-dark {
         background-color: #222 !important;
           }
+
+          .post-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .flame-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            color: #333;
+        }
+        .flame {
+            width: 50px;
+            height: 50px;
+            margin-right: -20px;
+        }
+        .flame path {
+            fill: #ccc;
+            transition: fill 0.3s ease;
+        }
+        .flame-btn:hover .flame path {
+            fill: #ffaa33;
+        }
+        .flame-btn.active .flame path {
+            fill: #ff4400;
+        }
+        .flame-btn.active .flame {
+            animation: flicker 0.5s;
+        }
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-1deg); }
+            100% { transform: scale(1.05) rotate(1deg); }
+        }
+
+        .flame-btn:focus, .flame:focus {
+            outline: none;
+            box-shadow: none;
+            box-shadow: none;
+        }
+        .svg-button-bubble {
+            background-image: url('data:image/svg+xml,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%202000%202000%22%20width%3D%2250%22%20height%3D%2250%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20transform%3D%22translate(701%2C700)%22%20d%3D%22m0%200h598l1%201v458l-1%201-257%201-11%206-23%2014-24%2015-20%2012-22%2014-26%2016-18%2011-24%2015-42%2026-14%208-2-2v-136h-115l-1-1v-458z%22%20fill%3D%22%23FEFEFE%22/%3E%3C/svg%3E');
+            background-size: cover; 
+            background-position: center;
+            border: none; 
+            width: 50px; 
+            height: 50px; 
+            color: white; 
+            font-size: 16px; 
+            text-align: center; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .svg-button-bubble:hover ,.svg-button-bubble:focus, .svg-button-bubble:active{
+            outline: none;
+            box-shadow: none;
+            background-color: transparent !important;
+            color: inherit !important;
+            
+        }
+
+        .post-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .profile-pict{
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+        }
+
+        .post-compartido {
+            background-color: #242526;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 
@@ -265,7 +353,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" data-toggle="modal" data-target="#notificaciones" href="#">Notificaciones</a>
-                        <!--Modal para editar Perfil-->
+                        <!--Modal para solicitudes de Amistad-->
                         <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
                             aria-labelledby="notificationLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -284,10 +372,9 @@
                                             <div>
                                                 <ul>
                                                     <li th:each="request : ${requests}">
-                                                        <p>Sender: <span th:text="${request.usuario.username}">Username</span></p>
-                                                        <p>Friend: <span th:text="${request.amistad.username}">Username</span></p>
-                                                        <p>Date: <span th:text="${request.fechaAmistad}">Date</span></p>
-                                                        <p>Status: <span th:text="${request.estado}">Status</span></p>
+                                                        <p>Enviado por: <span th:text="${request.usuario.username}">Username</span></p>
+                                                        <p>Fecha: <span th:text="${request.fechaAmistad}">Date</span></p>
+                                                        <p>Estado: <span th:text="${request.estado}">Status</span></p>
                                                         
                                                             <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
                                                                 <input type="hidden" name="requestId" th:value="${request.id}">
@@ -309,14 +396,13 @@
                         </div>
                     </li>
                 </ul>
-                <button class="btn btn-light btn-block mt-4">Crear Post</button>
                 <h6 class="mt-4">Comunidades</h6>
-                <div class="mr-3">
+                <hr class="hr" />
+                <div class="mr-3 mb-3">
                     <img src="https://via.placeholder.com/30" class="rounded-circle">
                     <span>Elden ring</span>
                 </div>
-                <hr class="hr" />
-                <div class="mr-3">
+                <div class="mr-3 mb-3">
                     <img src="https://via.placeholder.com/30" class="rounded-circle">
                     <span>Sticks</span>
                 </div>
@@ -333,7 +419,7 @@
                         <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" 
                              class="rounded-circle" 
                              style="width: 100%; height: 100%; object-fit: cover; border: 2px solid white;" 
-                             alt="Foto de perfil actual">s
+                             alt="Foto de perfil actual">
                     </div>
                 </div>
 
@@ -391,7 +477,7 @@
                         <a class="nav-link active " id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Posts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="replies-tab" data-toggle="tab" href="#replies" role="tab" aria-controls="replies" aria-selected="false">Replies</a>
+                        <a class="nav-link" id="replies-tab" data-toggle="tab" href="#replies" role="tab" aria-controls="replies" aria-selected="false">Compartidos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="likes-tab" data-toggle="tab" href="#likes" role="tab" aria-controls="likes" aria-selected="false">Likes</a>
@@ -399,11 +485,11 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
-                        <h5>Mis posts</h5>
                         <div class="container my-4">
                             <div class="row">
                                 <div class="col-12">
-                                    <div class="comments-section rounded p-2" id="comments-section">   
+                                    <div class="comments-section rounded p-2" id="comments-section"> 
+                                          
                                         <div  th:each="post : ${userposts}" class="comment mb-3">
                                             <div class="d-flex align-items-start mb-1">
                                                 <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-2 post-profile-pic" alt="User Profile Picture">
@@ -412,17 +498,114 @@
                                                     <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
                                                 </div>
                                             </div> 
-                                            <div class="comment-text" th:text="${post.contenido}"></div>                     
+                                            <div class="comment-text" th:text="${post.contenido}"></div>
+                                            <div>
+                                                <img th:if="${post.imageURL != null}" th:src="@{'/images/' + ${post.imageURL}}" class="post-image" alt="Post Image">  
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                        <form th:action="@{/like}" method="post" class="mr-3">
+                                            <input type="hidden" name="postId" th:value="${post.idpost}">
+                                            <button type="submit" class="flame-btn d-inline" th:classappend="${likesMap[post.idpost]} ? 'active' : ''">
+                                                <svg class="flame" viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
+                                                    <path transform="translate(987,603)" d="m0 0 10 5 17 12 15 13 11 9 8 7v2l4 2 12 12 7 8 9 10 10 13 12 17 13 20 9 16 11 22 11 27 6 18 8 33 4 23 3 31v37l-4 40-5 26-7 27-12 35-10 25-12 25-1 2 7-4 13-11 10-10 9-11 10-14 10-19 8-20 7-23 4-1 8 9 13 18 10 16 10 19 10 25 6 20 5 24 3 22 1 12v23l-4 29-6 25-6 18-9 20-9 17-8 12-12 17-13 16-7 7-7 8-8 7-12 11-18 13-5 2v-28l-2-22-5-20-6-15-8-15-13-17-7-6v17l-3 17-6 17-9 16-9 12-9 9-6 4h-2l4-20 3-23v-28l-5-25-6-18-9-20-16-31-7-16-7-19-5-19-3-18-1-11v-21l2-22 2-14-15 9-14 10-11 9-15 14-11 11-11 14-14 19-9 15-11 21-9 24-6 21-5 27-3 30v18l3 29 5 26 7 25 4 11v3l-6-2-13-9-15-12-11-9-10-9-12-12-7-6-7-8-9-10-14-19-9-13-9-15-8-16-10-25-5-16-4-21-3-23v-28l4-29 6-25 8-22 10-23 10-19 13-21 12-17 11-14 9-11 9-10 12-13 63-63 7-8 15-16 18-22 11-14 13-17 19-29 9-15 10-22 6-20 2-13v-19l-3-21-5-18-8-19-9-17z"/>
+                                                </svg>
+                                            </button>
+                                            <span th:text="${likesCountMap[post.idpost]}"></span>
+                                        </form>
+                                    
+                                        <button class="btn btn-link btn-sm svg-button-bubble d-inline"
+                                            data-toggle="modal" 
+                                            th:data-target="${'#postModal-' + post.idpost}">   
+                                        </button>
+                                        <span class="comment-count" th:text="${commentsCountMap[post.idpost]}"></span>
+                                        </div>
+
+                                        <!-- Modal para post específico -->
+                                            <div class="modal fade" th:id="${'postModal-' + post.idpost}" tabindex="-1" role="dialog"
+                                            th:aria-labelledby="${'postModalLabel-' + post.idpost}" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title comment-author" th:id="${'postModalLabel-' + post.idpost}"
+                                                            th:text="'Post de ' + ${post.usuario.username}">Post Title</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <span class="comment-time time-text" th:data-time="${post.fecha_publicacion}"></span>
+                                                        <p class="comment-text" th:text="${post.contenido}">Post content goes here.</p>
+                                                        <!-- Sección de comentarios -->
+                                                        <div class="comment mb-3 mt-4">
+                                                            <h6>Comentarios</h6>
+                                                            <div class="comments-list">
+                                                                <!-- Los comentarios se insertarán aquí dinámicamente -->
+                                                                <div class="comments-list comments-container" th:each="comentario : ${userpostCommentsMap[post.idpost]}">
+                                                                    <!-- Los comentarios se insertarán aquí dinámicamente -->
+                                                                    <strong th:text="${comentario.usuario.username}"></strong>:
+                                                                    <span th:text="${comentario.contenido}"></span>
+                                                                    <span class="comment-time time-text" th:data-time="${comentario.fecha_comentario}"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <form id="comment-form" th:action="@{/createComment}" th:object="${comentario}" method="post">
+                                                            <input type="hidden" name="postId" th:value="${post.idpost}" />
+                                                            <div class="d-flex align-items-center mb-3 comment-form mt-2">
+                                                                <img th:if="${pfp != null}" th:src="@{'/images/' + ${pfp}}" class="rounded-circle mr-3 profile-pict" alt="User Profile Picture">
+                                                                <textarea id="contenido" name="contenido" th:placeholder="'¿Comenta aqui, ' + ${username}" class="form-control"></textarea>
+                                                                <button type="submit" class="btn btn-primary post-button">Publicar</button>
+                                                            </div>
+                                                        </form>
+                                                            
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                                   
                             </div>
                         </div> 
                     </div>
                     <div class="tab-pane fade" id="replies" role="tabpanel" aria-labelledby="replies-tab">
-                        <h5>Mis replies</h5>
-                        <p>Contenido de los replies...</p>
+                        <div class="comments-section rounded p-2" id="comments-section">
+                            <div th:each="postCompartido : ${postsCompartidos}" class="post-compartido">
+                                <strong class="comment-author" th:text="${username}">Autor</strong>
+                                <span class="comment-time time-text" th:data-time="${postCompartido.fechahoracompartido}"></span>
+                                <p th:text="${postCompartido.contenidopostcompartido}"></p>
+                                <div class="comment mb-3">
+                                    <strong class="comment-author" th:text="${postCompartido.originalPost.usuario.username}">Autor</strong>
+                                    <p th:text="${postCompartido.originalPost.contenido}"></p>
+                                    <div th:if="${postCompartido.originalPost.imageURL != null and !postCompartido.originalPost.imageURL.isEmpty()}">
+                                        <img th:src="@{'/images/' + ${postCompartido.originalPost.imageURL}}" alt="Imagen del post original" class="img-fluid">
+                                    </div>
+                                    <!-- Botón de like -->
+                                    <div class="d-flex align-items-center">
+                                        <form th:action="@{/like}" method="post" class="mr-3">
+                                            <input type="hidden" name="postId" th:value="${postCompartido.originalPost.idpost}">
+                                            <button type="submit" class="flame-btn d-inline" th:classappend="${likesMap[postCompartido.originalPost.idpost]} ? 'active' : ''">
+                                                <svg class="flame" viewBox="0 0 2000 2000" xmlns="http://www.w3.org/2000/svg">
+                                                    <path transform="translate(987,603)" d="m0 0 10 5 17 12 15 13 11 9 8 7v2l4 2 12 12 7 8 9 10 10 13 12 17 13 20 9 16 11 22 11 27 6 18 8 33 4 23 3 31v37l-4 40-5 26-7 27-12 35-10 25-12 25-1 2 7-4 13-11 10-10 9-11 10-14 10-19 8-20 7-23 4-1 8 9 13 18 10 16 10 19 10 25 6 20 5 24 3 22 1 12v23l-4 29-6 25-6 18-9 20-9 17-8 12-12 17-13 16-7 7-7 8-8 7-12 11-18 13-5 2v-28l-2-22-5-20-6-15-8-15-13-17-7-6v17l-3 17-6 17-9 16-9 12-9 9-6 4h-2l4-20 3-23v-28l-5-25-6-18-9-20-16-31-7-16-7-19-5-19-3-18-1-11v-21l2-22 2-14-15 9-14 10-11 9-15 14-11 11-11 14-14 19-9 15-11 21-9 24-6 21-5 27-3 30v18l3 29 5 26 7 25 4 11v3l-6-2-13-9-15-12-11-9-10-9-12-12-7-6-7-8-9-10-14-19-9-13-9-15-8-16-10-25-5-16-4-21-3-23v-28l4-29 6-25 8-22 10-23 10-19 13-21 12-17 11-14 9-11 9-10 12-13 63-63 7-8 15-16 18-22 11-14 13-17 19-29 9-15 10-22 6-20 2-13v-19l-3-21-5-18-8-19-9-17z"/>
+                                                </svg>
+                                            </button>
+                                            <span th:text="${likesCountMap[postCompartido.originalPost.idpost]}"></span>
+                                        </form>
+
+                                        <!-- Botón de comentarios -->
+                                        <button class="btn btn-link btn-sm svg-button-bubble d-inline"
+                                                data-toggle="modal" 
+                                                th:data-target="${'#postModal-' + postCompartido.originalPost.idpost}">   
+                                        </button>
+                                        <span class="comment-count" th:text="${commentsCountMap[postCompartido.originalPost.idpost]}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
                     <div class="tab-pane fade" id="likes" role="tabpanel" aria-labelledby="likes-tab">
                         <h5>Mis likes</h5>
@@ -474,16 +657,79 @@
             return `hace ${Math.floor(diff / 29030400)} año${Math.floor(diff / 29030400) === 1 ? '' : 's'}`;
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        function updateTimestamps() {
             document.querySelectorAll('.comment-time').forEach(function(element) {
                 const dateTime = element.getAttribute('data-time');
                 const timeAgoText = timeAgo(dateTime);
                 element.textContent = timeAgoText;
-            });     
-         });
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+            updateTimestamps();
+            setInterval(updateTimestamps, 60000); // Actualizar cada minuto
+
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('comment-btn')) {
+                    const commentForm = event.target.nextElementSibling;
+                    commentForm.style.display = commentForm.style.display === 'none' ? 'block' : 'none';
+                }
+            });
+                
+                
+            document.addEventListener('click', async function(event) {
+                if (event.target.classList.contains('submit-comment-btn')) {
+                    const commentForm = event.target.closest('.comment-form');
+                    const textarea = commentForm.querySelector('textarea');
+                    const commentContent = textarea.value.trim();
+
+                    if (commentContent) {
+                        const modal = event.target.closest('.modal');
+                        const postElement = modal ? modal.querySelector('.comments-list') : commentForm.closest('.comment');
+
+                        // Aquí deberías enviar el comentario al servidor
+                        // Por ejemplo:
+                        // const postId = event.target.getAttribute('data-post-id');
+                        // const response = await fetch('/comment', {
+                        //     method: 'POST',
+                        //     body: JSON.stringify({ postId, content: commentContent }),
+                        //     headers: {
+                        //         'Content-Type': 'application/json',
+                        //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        //     }
+                        // });
+
+                        const newComment = document.createElement('div');
+                        newComment.className = 'comment mb-3';
+                        newComment.innerHTML = `
+                            <div class="d-flex align-items-start mb-1">
+                                <img src="https://via.placeholder.com/25" class="rounded-circle mr-2" alt="User Profile Picture">
+                                <div>
+                                    <strong class="comment-author">Tú</strong>
+                                    <span class="comment-time time-text" data-time="${new Date().toISOString()}"></span>
+                                </div>
+                            </div>
+                            <div class="comment-text">${commentContent}</div>
+                        `;
+
+                        if (modal) {
+                            postElement.insertBefore(newComment, postElement.firstChild);
+                        } else {
+                            postElement.appendChild(newComment);
+                            commentForm.style.display = 'none';
+                        }
+
+                        textarea.value = '';
+                        updateTimestamps();
+                    }
+                }
+            });
+        });
+
     </script>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/src/main/resources/static/commentsSection.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
