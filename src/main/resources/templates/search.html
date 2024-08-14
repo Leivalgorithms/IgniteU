@@ -116,50 +116,7 @@
             border-radius: 10px;
             text-align: center;
         }
-        /* Estilos para el modal */
-        .modal-content {
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
 
-        .modal-header {
-            background-color: #1c1c1c;
-            border-bottom: 1px solid #1c1c1c;
-            padding: 15px 20px;
-        }
-
-        .modal-title {
-            font-weight: bold;
-        }
-
-        .close {
-            font-size: 1.5rem;
-            color: #ffffff44;
-            opacity: 0.5;
-        }
-
-        .close:hover {
-            opacity: 0.65;
-        }
-
-        .modal-body {
-            background-color: #272829;
-            padding: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-control {
-            border-radius: 5px;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #1c1c1c;
-            padding: 15px 20px;
-            background-color: #1c1c1c;
-        }
 
         .btn-primary:hover {
             background-color: #007bff;
@@ -190,6 +147,78 @@
             height: 50px;
             object-fit: cover;
         }
+
+
+    
+        /* Estilos para el modal */
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            background-color: #1c1c1c;
+            border-bottom: 1px solid #1c1c1c;
+            padding: 15px 20px;
+        }
+        .modal-title {
+            font-weight: bold;
+        }
+        .close {
+            font-size: 1.5rem;
+            color: #ffffff44;
+            opacity: 0.5;
+        }
+        .close:hover {
+            opacity: 0.65;
+        }
+
+        .modal-body {
+            background-color: #272829;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+
+        .modal-footer {
+            border-top: 1px solid #1c1c1c;
+            padding: 15px 20px;
+            background-color: #1c1c1c;
+
+            display: flex;
+            justify-content: flex-end;
+        }
+        .bttn {
+            border-radius: 5px;
+            padding: 10px 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .btn-secondary:hover, .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .modal-body .btn{
+            background-color: #28a745;
+            color: white;
+        }
+
     </style>
 </head>
     <body>
@@ -269,10 +298,9 @@
                             <div>
                                 <ul>
                                     <li th:each="request : ${requests}">
-                                        <p>Sender: <span th:text="${request.usuario.username}">Username</span></p>
-                                        <p>Friend: <span th:text="${request.amistad.username}">Username</span></p>
-                                        <p>Date: <span th:text="${request.fechaAmistad}">Date</span></p>
-                                        <p>Status: <span th:text="${request.estado}">Status</span></p>
+                                        <p>Enviado por: <span th:text="${request.usuario.username}">Username</span></p>
+                                        <p>Fecha: <span th:text="${request.fechaAmistad}">Date</span></p>
+                                        <p>Estado: <span th:text="${request.estado}">Status</span></p>
                                         
                                             <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
                                                 <input type="hidden" name="requestId" th:value="${request.id}">
