@@ -116,28 +116,24 @@
             border-radius: 10px;
             text-align: center;
         }
-        /* Estilos para el modal */
-        .modal-content {
+         /* Estilos para el modal */
+         .modal-content {
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-
         .modal-header {
             background-color: #1c1c1c;
             border-bottom: 1px solid #1c1c1c;
             padding: 15px 20px;
         }
-
         .modal-title {
             font-weight: bold;
         }
-
         .close {
             font-size: 1.5rem;
             color: #ffffff44;
             opacity: 0.5;
         }
-
         .close:hover {
             opacity: 0.65;
         }
@@ -150,25 +146,48 @@
         .form-group {
             margin-bottom: 15px;
         }
+        .form-control {
+            border-radius: 5px;
+        }
+
+
+        .form-group {
+            margin-bottom: 15px;
+        }
 
         .form-control {
             border-radius: 5px;
         }
 
+
         .modal-footer {
             border-top: 1px solid #1c1c1c;
             padding: 15px 20px;
             background-color: #1c1c1c;
-        }
 
-        .btn-primary:hover {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .bttn {
+            border-radius: 5px;
+            padding: 10px 20px;
+        }
+        .btn-primary {
             background-color: #007bff;
             color: #fff;
         }
-
-        .btn-primary:hover {
+        .btn-secondary:hover, .btn-primary:hover {
             opacity: 0.9;
         }
+
+        .modal-body .btn{
+            background-color: #28a745;
+            color: white;
+        }
+
+        .modal-content.bg-dark {
+        background-color: #222 !important;
+          }
 
         .navbar {
           background-color: #1c1c1c;

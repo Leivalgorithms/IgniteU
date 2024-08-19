@@ -25,7 +25,7 @@ public class MensajeService {
     @Autowired
     private UserRepository usertableRepository;
 
-    public Mensaje enviarMensaje(int remitenteId, int destinatarioId, String contenido, LocalTime localTime) {
+    public Mensaje enviarMensaje(int remitenteId, int destinatarioId, String contenido, LocalDateTime localDateTime) {
 
         Optional<Usertable> remitenteOpt = usertableRepository.findById(remitenteId);
         Optional<Usertable> destinatarioOpt = usertableRepository.findById(destinatarioId);
@@ -45,7 +45,7 @@ public class MensajeService {
         mensaje.setRemitente(remitente);
         mensaje.setDestinatario(destinatario);
         mensaje.setContenido(contenido);
-        mensaje.setFechaEnvio(LocalTime.now());
+        mensaje.setFechaEnvio(LocalDateTime.now());
 
         return mensajeRepository.save(mensaje);
     }
