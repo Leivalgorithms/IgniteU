@@ -108,6 +108,16 @@
         left: 50px;
         list-style: none;
     }
+
+    .time-text {
+            background-color: #3A3B3C;
+            color:#D8D9DA;
+            font-size: 10px;
+            text-decoration: none;
+            position: relative;
+            margin-left: 4px;
+            margin-top: -4px;
+        }
 </style>
 
 <body>
@@ -126,7 +136,7 @@
         <div th:each="mensaje : ${mensajes}" class="mensaje-item"
             th:classappend="${mensaje.remitente.id == usuarioActual.id ? 'sent' : 'received'}">
             <p th:text="${mensaje.contenido}"></p>
-            <small th:text="${mensaje.fechaEnvio}"></small>
+            <small class="comment-time time-text" th:data-time="${mensaje.fechaEnvio}"></small>
         </div>
     </div>
 
@@ -248,6 +258,93 @@
             subscribeToConversation();
         }
     </script>
+
+    <!-- Función timeAgo y comentarios en JavaScript -->
+    <script>
+            function timeAgo(dateString) {
+                const now = new Date();
+                const date = new Date(dateString);
+                const diff = Math.floor((now - date) / 1000); // Diferencia en segundos
+
+                if (diff < 60) return `hace ${diff} segundo${diff === 1 ? '' : 's'}`;
+                if (diff < 3600) return `hace ${Math.floor(diff / 60)} minuto${Math.floor(diff / 60) === 1 ? '' : 's'}`;
+                if (diff < 7200) return `hace ${Math.floor(diff / 3600)} hora${Math.floor(diff / 3600) === 1 ? '' : 's'}`;
+                if (diff < 604800) return `hace ${Math.floor(diff / 86400)} día${Math.floor(diff / 86400) === 1 ? '' : 's'}`;
+                if (diff < 2419200) return `hace ${Math.floor(diff / 604800)} semana${Math.floor(diff / 604800) === 1 ? '' : 's'}`;
+                if (diff < 29030400) return `hace ${Math.floor(diff / 2419200)} mes${Math.floor(diff / 2419200) === 1 ? '' : 'es'}`;
+                return `hace ${Math.floor(diff / 29030400)} año${Math.floor(diff / 29030400) === 1 ? '' : 's'}`;
+            }
+
+            function updateTimestamps() {
+        document.querySelectorAll('.comment-time').forEach(function(element) {
+            const dateTime = element.getAttribute('data-time');
+            const timeAgoText = timeAgo(dateTime);
+            element.textContent = timeAgoText;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+        updateTimestamps();
+        setInterval(updateTimestamps, 60000); // Actualizar cada minuto
+
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('comment-btn')) {
+                const commentForm = event.target.nextElementSibling;
+                commentForm.style.display = commentForm.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+            
+            
+        document.addEventListener('click', async function(event) {
+            if (event.target.classList.contains('submit-comment-btn')) {
+                const commentForm = event.target.closest('.comment-form');
+                const textarea = commentForm.querySelector('textarea');
+                const commentContent = textarea.value.trim();
+
+                if (commentContent) {
+                    const modal = event.target.closest('.modal');
+                    const postElement = modal ? modal.querySelector('.comments-list') : commentForm.closest('.comment');
+
+                    // Aquí deberías enviar el comentario al servidor
+                    // Por ejemplo:
+                    // const postId = event.target.getAttribute('data-post-id');
+                    // const response = await fetch('/comment', {
+                    //     method: 'POST',
+                    //     body: JSON.stringify({ postId, content: commentContent }),
+                    //     headers: {
+                    //         'Content-Type': 'application/json',
+                    //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    //     }
+                    // });
+
+                    const newComment = document.createElement('div');
+                    newComment.className = 'comment mb-3';
+                    newComment.innerHTML = `
+                        <div class="d-flex align-items-start mb-1">
+                            <img src="https://via.placeholder.com/25" class="rounded-circle mr-2" alt="User Profile Picture">
+                            <div>
+                                <strong class="comment-author">Tú</strong>
+                                <span class="comment-time time-text" data-time="${new Date().toISOString()}"></span>
+                            </div>
+                        </div>
+                        <div class="comment-text">${commentContent}</div>
+                    `;
+
+                    if (modal) {
+                        postElement.insertBefore(newComment, postElement.firstChild);
+                    } else {
+                        postElement.appendChild(newComment);
+                        commentForm.style.display = 'none';
+                    }
+
+                    textarea.value = '';
+                    updateTimestamps();
+                }
+            }
+        });
+    });
+
+        </script>
 </body>
 
 </html>

@@ -1,4 +1,5 @@
 package com.example.igniteu.Services;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -59,14 +60,15 @@ public class MensajeService {
     }
 
     public List<Mensaje> obtenerMensajesEntreUsuarios(Usertable usuario1, Usertable usuario2) {
-    List<Mensaje> mensajesEnviados = mensajeRepository.findByRemitenteAndDestinatarioOrderByFechaEnvioAsc(usuario1, usuario2);
-    List<Mensaje> mensajesRecibidos = mensajeRepository.findByDestinatarioAndRemitenteOrderByFechaEnvioAsc(usuario1, usuario2);
-    List<Mensaje> todosLosMensajes = new ArrayList<>();
-    todosLosMensajes.addAll(mensajesEnviados);
-    todosLosMensajes.addAll(mensajesRecibidos);
-    // Ordenar todos los mensajes en la lista por fecha
-    todosLosMensajes.sort(Comparator.comparing(Mensaje::getFechaEnvio));
-    return todosLosMensajes;
+        List<Mensaje> mensajesEnviados = mensajeRepository.findByRemitenteAndDestinatarioOrderByFechaEnvioAsc(usuario1,
+                usuario2);
+        List<Mensaje> mensajesRecibidos = mensajeRepository.findByDestinatarioAndRemitenteOrderByFechaEnvioAsc(usuario1,
+                usuario2);
+        List<Mensaje> todosLosMensajes = new ArrayList<>();
+        todosLosMensajes.addAll(mensajesEnviados);
+        todosLosMensajes.addAll(mensajesRecibidos);
+        // Ordenar todos los mensajes en la lista por fecha
+        todosLosMensajes.sort(Comparator.comparing(Mensaje::getFechaEnvio));
+        return todosLosMensajes;
+    }
 }
-}
-
