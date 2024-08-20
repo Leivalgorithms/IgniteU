@@ -1,6 +1,5 @@
 package com.example.igniteu.Repository;
 
-
 import jakarta.transaction.Transactional;
 
 import java.util.List;
@@ -21,13 +20,17 @@ public interface AmistadesRepository extends JpaRepository<Amistades, Long> {
 
     List<Amistades> findByUsuario(Usertable usuario);
 
+    List<Amistades> findAllByEstado(Amistades.EstadoAmistad estado);
+
     Optional<Amistades> findByUsuarioAndAmistad(Usertable usuario, Usertable amistad);
+
     Optional<Amistades> findByAmistadAndUsuario(Usertable amistad, Usertable usuario);
 
+    Optional<Amistades> findByUsuarioAndAmistadAndEstado(Usertable usuario, Usertable amistad,
+            Amistades.EstadoAmistad estado);
 
-
-    Optional<Amistades> findByUsuarioAndAmistadAndEstado(Usertable usuario, Usertable amistad, Amistades.EstadoAmistad estado);
-    Optional<Amistades> findByAmistadAndUsuarioAndEstado(Usertable amistad, Usertable usuario, Amistades.EstadoAmistad estado);
+    Optional<Amistades> findByAmistadAndUsuarioAndEstado(Usertable amistad, Usertable usuario,
+            Amistades.EstadoAmistad estado);
 
     List<Amistades> findByUsuarioAndEstado(Usertable usuario, Amistades.EstadoAmistad estado);
 
