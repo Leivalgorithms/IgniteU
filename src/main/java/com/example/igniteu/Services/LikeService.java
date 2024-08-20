@@ -22,6 +22,9 @@ public class LikeService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private NotificacionService notificacionService;
+
     public void toggleLike(Integer postId, String username) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post no ha sido encontrado"));
@@ -34,6 +37,16 @@ public class LikeService {
             like.setUsuario(usertable);
             like.setPost(post);
             likeRepository.save(like);
+        }
+
+        if (!usertable.equals(post.getUsuario())) {
+            notificacionService.crearNotificacion(
+                    usertable,
+                    post.getUsuario(),
+                    "like",
+                    "le dio like a tu post: "
+                            + (post.getContenido().length() > 30 ? post.getContenido().substring(0, 30) + "..."
+                                    : post.getContenido()));
         }
     }
 

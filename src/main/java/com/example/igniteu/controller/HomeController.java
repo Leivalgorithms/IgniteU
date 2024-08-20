@@ -23,17 +23,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.igniteu.Repository.UserRepository;
 import com.example.igniteu.Services.AmistadesService;
 import com.example.igniteu.Services.ComentarioService;
 import com.example.igniteu.Services.LikeService;
+import com.example.igniteu.Services.NotificacionService;
 import com.example.igniteu.Services.PostCompartidoService;
 import com.example.igniteu.Services.PostService;
 import com.example.igniteu.Services.UserService;
 import com.example.igniteu.models.Amistades;
 import com.example.igniteu.models.Comentario;
+import com.example.igniteu.models.Notificaciones;
 import com.example.igniteu.models.Post;
 import com.example.igniteu.models.PostCompartido;
 import com.example.igniteu.models.Usertable;
@@ -59,6 +62,9 @@ public class HomeController {
 
     @Autowired
     private PostCompartidoService postCompartidoService;
+
+    @Autowired
+    private NotificacionService notificacionService;
 
     @GetMapping({ "", "/" })
     public String home() {
@@ -129,6 +135,15 @@ public class HomeController {
 
         PostCompartido postCompartido = new PostCompartido();
         model.addAttribute("postCompartido", postCompartido);
+
+        // Obtén todas las notificaciones, no solo las no leídas
+        List<Notificaciones> notificacionesleidas = notificacionService.findAllByUsuarioDestino(usertable);
+        model.addAttribute("notificacionesleidas", notificacionesleidas);
+        List<Notificaciones> notificaciones = notificacionService.obtenerNotificacionesNoLeidas(usertable);
+        long notificacionesCount = notificaciones.size();
+
+        model.addAttribute("notificaciones", notificaciones);
+        model.addAttribute("notificacionesCount", notificacionesCount);
 
         // Añadir el mapa al modelo para usarlo en la vista
         model.addAttribute("likesMap", likesMap);
@@ -217,13 +232,13 @@ public class HomeController {
 
         for (PostCompartido postCompartido : postsCompartidos) {
             Post originalPost = postCompartido.getOriginalPost();
-    
+
             boolean isLiked = likeService.isLikedByUser(originalPost, usertable);
             likesMap.put(originalPost.getIdpost(), isLiked);
-    
+
             Integer likesCount = likeService.countLikesByPost(originalPost);
             likesCountMap.put(originalPost.getIdpost(), likesCount);
-    
+
             Integer commentsCount = comentarioService.countCommentsByPostId(originalPost.getIdpost());
             commentsCountMap.put(originalPost.getIdpost(), commentsCount);
         }
@@ -324,39 +339,39 @@ public class HomeController {
                     Integer userId = usertable.getId();
                     List<Post> posts = postService.getPostUserId(userId);
                     List<PostCompartido> postsCompartidos = postCompartidoService.getPostsCompartidosByUser(userId);
-    
+
                     Map<Integer, List<Comentario>> userpostCommentsMap = new HashMap<>();
                     Map<Integer, Boolean> likesMap = new HashMap<>();
                     Map<Integer, Integer> likesCountMap = new HashMap<>();
                     Map<Integer, Integer> commentsCountMap = new HashMap<>();
-    
+
                     for (Post post : posts) {
                         List<Comentario> comentarios = comentarioService.getCommentsByPostId(post.getIdpost());
                         userpostCommentsMap.put(post.getIdpost(), comentarios);
-    
+
                         boolean isLiked = likeService.isLikedByUser(post, loggedInUser);
                         likesMap.put(post.getIdpost(), isLiked);
-    
+
                         Integer likesCount = likeService.countLikesByPost(post);
                         likesCountMap.put(post.getIdpost(), likesCount);
-    
+
                         Integer commentsCount = comentarioService.countCommentsByPostId(post.getIdpost());
                         commentsCountMap.put(post.getIdpost(), commentsCount);
                     }
-    
+
                     for (PostCompartido postCompartido : postsCompartidos) {
                         Post originalPost = postCompartido.getOriginalPost();
-    
+
                         boolean isLiked = likeService.isLikedByUser(originalPost, loggedInUser);
                         likesMap.put(originalPost.getIdpost(), isLiked);
-    
+
                         Integer likesCount = likeService.countLikesByPost(originalPost);
                         likesCountMap.put(originalPost.getIdpost(), likesCount);
-    
+
                         Integer commentsCount = comentarioService.countCommentsByPostId(originalPost.getIdpost());
                         commentsCountMap.put(originalPost.getIdpost(), commentsCount);
                     }
-    
+
                     model.addAttribute("userposts", posts);
                     model.addAttribute("postsCompartidos", postsCompartidos);
                     model.addAttribute("userpostCommentsMap", userpostCommentsMap);
@@ -382,6 +397,16 @@ public class HomeController {
         Optional<Post> post = postService.findById(id);
         return post.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/marcarNotificacionLeida/{id}")
+    public String marcarNotificacionLeida(@PathVariable("id") Long id) {
+        String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Usertable usertable = userService.findByCorreo(username);
+
+        notificacionService.marcarComoLeida(id, usertable);
+
+        return "redirect:/home";
     }
 
 }
