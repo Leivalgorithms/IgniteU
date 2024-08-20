@@ -116,42 +116,8 @@
             border-radius: 10px;
             text-align: center;
         }
-
-
-        .btn-primary:hover {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-        }
-
-        .navbar {
-          background-color: #1c1c1c;
-      }
-      .navbar-brand, .nav-link {
-          color: #fff !important;
-      }
-      .nav-link:hover, .btn:hover {
-          background-color: #5a5a5a !important;
-          color: #fff !important;
-      }
-      .nav-link:active, .btn:active {
-          background-color: blue !important;
-          color: black !important;
-      }
-
-      .profile-pic {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-        }
-
-
-    
-        /* Estilos para el modal */
-        .modal-content {
+         /* Estilos para el modal */
+         .modal-content {
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
@@ -219,6 +185,30 @@
             color: white;
         }
 
+        .modal-content.bg-dark {
+        background-color: #222 !important;
+          }
+
+        .navbar {
+          background-color: #1c1c1c;
+      }
+      .navbar-brand, .nav-link {
+          color: #fff !important;
+      }
+      .nav-link:hover, .btn:hover {
+          background-color: #5a5a5a !important;
+          color: #fff !important;
+      }
+      .nav-link:active, .btn:active {
+          background-color: blue !important;
+          color: black !important;
+      }
+
+      .profile-pic {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
     </style>
 </head>
     <body>
@@ -298,9 +288,10 @@
                             <div>
                                 <ul>
                                     <li th:each="request : ${requests}">
-                                        <p>Enviado por: <span th:text="${request.usuario.username}">Username</span></p>
-                                        <p>Fecha: <span th:text="${request.fechaAmistad}">Date</span></p>
-                                        <p>Estado: <span th:text="${request.estado}">Status</span></p>
+                                        <p>Sender: <span th:text="${request.usuario.username}">Username</span></p>
+                                        <p>Friend: <span th:text="${request.amistad.username}">Username</span></p>
+                                        <p>Date: <span th:text="${request.fechaAmistad}">Date</span></p>
+                                        <p>Status: <span th:text="${request.estado}">Status</span></p>
                                         
                                             <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
                                                 <input type="hidden" name="requestId" th:value="${request.id}">

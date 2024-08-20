@@ -1,5 +1,6 @@
 package com.example.igniteu.models;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import jakarta.persistence.Column;
@@ -33,5 +34,5 @@ public class Mensaje {
     private String contenido;
 
     @Column(unique = false, nullable = false)
-    private LocalTime fechaEnvio;
+    private LocalDateTime fechaEnvio;
 }
