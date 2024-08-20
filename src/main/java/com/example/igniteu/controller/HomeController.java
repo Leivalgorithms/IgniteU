@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.igniteu.Repository.UserRepository;
@@ -262,6 +261,13 @@ public class HomeController {
         List<Usertable> amistades = amistadesService.getAmistadesAceptadas(usertable);
         model.addAttribute("amistades", amistades);
 
+        List<Notificaciones> notificacionesleidas = notificacionService.findAllByUsuarioDestino(usertable);
+        model.addAttribute("notificacionesleidas", notificacionesleidas);
+        List<Notificaciones> notificaciones = notificacionService.obtenerNotificacionesNoLeidas(usertable);
+        long notificacionesCount = notificaciones.size();
+        model.addAttribute("notificaciones", notificaciones);
+        model.addAttribute("notificacionesCount", notificacionesCount);
+
         return "profile";
     }
 
@@ -378,6 +384,14 @@ public class HomeController {
                     model.addAttribute("likesMap", likesMap);
                     model.addAttribute("likesCountMap", likesCountMap);
                     model.addAttribute("commentsCountMap", commentsCountMap);
+
+                    Usertable currentUser = userService.findByCorreo(currentUsername);
+                    List<Notificaciones> notificacionesleidas = notificacionService.findAllByUsuarioDestino(currentUser);
+                    model.addAttribute("notificacionesleidas", notificacionesleidas);
+                    List<Notificaciones> notificaciones = notificacionService.obtenerNotificacionesNoLeidas(currentUser);
+                    long notificacionesCount = notificaciones.size();
+                    model.addAttribute("notificaciones", notificaciones);
+                    model.addAttribute("notificacionesCount", notificacionesCount);
                 }
 
                 return "profile-search";
