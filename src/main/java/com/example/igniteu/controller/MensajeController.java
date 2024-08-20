@@ -1,4 +1,5 @@
 package com.example.igniteu.controller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -19,6 +20,8 @@ import com.example.igniteu.models.Mensaje;
 import com.example.igniteu.models.Usertable;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import java.util.Optional;
@@ -40,8 +43,6 @@ public class MensajeController {
     @Autowired
     private AmistadesService amistadesService;
 
-    
-
     @GetMapping("/bandeja/{contactoId}")
     public String bandejaEntrada(@PathVariable("contactoId") int contactoId, Principal principal, Model model) {
         String username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
@@ -49,44 +50,71 @@ public class MensajeController {
         Optional<Usertable> contactoOpt = usertableRepository.findById(contactoId);
 
         if (currentUserOpt.isPresent() && contactoOpt.isPresent()) {
-            List<Mensaje> mensajes = mensajeService.obtenerMensajesEntreUsuarios(currentUserOpt.get(), contactoOpt.get()); 
+            List<Mensaje> mensajes = mensajeService.obtenerMensajesEntreUsuarios(currentUserOpt.get(),contactoOpt.get());
+            Usertable currentUser = currentUserOpt.get();
             model.addAttribute("mensajes", mensajes);
             model.addAttribute("contacto", contactoOpt.get());
             model.addAttribute("usuarioActual", currentUserOpt.get());
+            model.addAttribute("currentUsername", currentUser.getUsername());
         }
 
         return "/bandeja";
     }
 
 
+
+
+    @MessageMapping("/chat.send")
+public void enviarMensaje(@Payload Mensaje mensaje, Principal principal) {
+    System.out.println("Mensaje recibido en el servidor: " + mensaje);
     
-    
-   @MessageMapping("/chat.send")
-    @SendTo("/topic/messages")
-public Mensaje enviarMensaje(@Payload Mensaje mensaje, Principal principal) {
-    if (principal == null) {
-        throw new IllegalStateException("El usuario no está autenticado");
-    }
 
     String username = principal.getName();
-    if (username == null || username.isEmpty()) {
-        throw new IllegalStateException("El nombre de usuario no puede ser null o vacío");
-    }
-
+    
     Optional<Usertable> remitenteOpt = amistadesService.findUserBycorreo(username);
-    if (!remitenteOpt.isPresent()) {
-        throw new IllegalStateException("El remitente no se encuentra en la base de datos");
-    }
-
+    
     Usertable remitente = remitenteOpt.get();
-    if (mensaje.getDestinatario() == null || mensaje.getDestinatario().getId() <= 0) {
-        throw new IllegalStateException("El destinatario o su correo no pueden ser null");
-    }
-
-    mensajeService.enviarMensaje(remitente.getId(), mensaje.getDestinatario().getId(), mensaje.getContenido(),mensaje.getFechaEnvio());
 
     
-    return mensaje;
+    Optional<Usertable> destinatarioOpt = usertableRepository.findById(mensaje.getDestinatario().getId());
+    
+    Usertable destinatario = destinatarioOpt.get();
+
+    mensaje.setRemitente(remitente);
+    mensaje.setDestinatario(destinatario);
+    mensaje.setFechaEnvio(LocalDateTime.now());
+
+    mensajeService.enviarMensaje(remitente.getId(), destinatario.getId(), mensaje.getContenido(), mensaje.getFechaEnvio());
+
+    String conversationId = getConversationId(remitente.getId(), destinatario.getId());
+
+
+
+
+    // Enviar el mensaje al destinatario
+   
+        System.out.println("Enviando mensaje a: " + destinatario.getUsername());
+        simpMessagingTemplate.convertAndSendToUser(
+            destinatario.getUsername(),
+            "/queue/messages/" + conversationId,
+            mensaje
+        );
+
+
+
+    System.out.println("Mensaje enviado a: " + destinatario.getUsername());
+    // Enviar una copia del mensaje al remitente
+    simpMessagingTemplate.convertAndSendToUser(
+        remitente.getUsername(),
+        "/queue/messages/" + conversationId,
+        mensaje
+    );
 }
     
+
+
+private String getConversationId(int userId1, int userId2) {
+    
+    return userId1 < userId2 ? userId1 + "-" + userId2 : userId2 + "-" + userId1;
+}
 }

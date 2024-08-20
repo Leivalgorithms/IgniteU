@@ -1,107 +1,130 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Bandeja de Entrada</title>
 </head>
 <style>
     body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #272829;
-}
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #272829;
+    }
 
-h1 {
-    text-align: center;
-    margin-top: 20px;
-    color: white;
-}
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        color: white;
+    }
 
-h5 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: white;
-}
 
-#messages {
-    display: flex;
-    flex-direction: column;
-    height: 70vh; /* Ajusta la altura del área de mensajes */
-    overflow-y: auto;
-    padding: 10px;
-    
-    background-color: #3A3B3C;
-    margin-bottom: 20px; /* Espacio adicional en la parte inferior del área de mensajes */
-}
+    #messages {
+        display: flex;
+        flex-direction: column;
+        height: 70vh;
+        /* Ajusta la altura del área de mensajes */
+        overflow-y: auto;
+        padding: 10px;
 
-.mensaje-item {
-    max-width: 70%;
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    background-color: #272829;
-}
+        background-color: #3A3B3C;
+        margin-bottom: 20px;
+        /* Espacio adicional en la parte inferior del área de mensajes */
+    }
 
-.mensaje-item.sent {
-    align-self: flex-end;
-    background-color: #007bff;
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    max-width: 80%;
-}
+    .mensaje-item {
+        max-width: 70%;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background-color: #272829;
+    }
 
-.mensaje-item.received {
-    align-self: flex-start;
-    background-color: #272829;
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    max-width: 80%;
-}
+    .mensaje-item.sent {
+        align-self: flex-end;
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        max-width: 80%;
+    }
 
-.input-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    
-    background-color: #3A3B3C;
-}
+    .mensaje-item.received {
+        align-self: flex-start;
+        background-color: #272829;
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        max-width: 80%;
+    }
 
-input[type="text"] {
-    flex: 1;
-    padding: 10px;
-    background-color: #272829;
-    border-radius: 4px;
-}
+    .input-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
 
-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    margin-left: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
+        background-color: #3A3B3C;
+    }
 
-button:hover {
-    background-color: #0056b3;
-}
+    input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        background-color: white;
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        margin-left: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+    .home-button {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 16px;
+        
+    }
+
+    .home-button:hover {
+        background-color: #0056b3;
+    }
+    .nav-item {
+        position: absolute;
+        top: 30px;
+        left: 50px;
+        list-style: none;
+    }
 </style>
+
 <body>
-    <h1>Bandeja de Entrada</h1>
-    <h5>Chat con <span th:text="${contacto.username}">Nombre del contacto</span></h5>
+     
+    <h1>Chat con <span th:text="${contacto.username}">Nombre del contacto</span></h1>
     <input type="hidden" id="contactId" th:value="${contacto.id}">
     <input type="hidden" id="currentUserId" th:value="${usuarioActual.id}">
+    <input type="hidden" id="currentUsername" th:value="${usuarioActual.username}">
+
+    <li class="nav-item">
+        <a class="nav-link home-button" href="/home">Volver a Home</a>
+    </li>
 
     <div id="messages">
         <!-- Aquí se mostrarán los mensajes -->
         <div th:each="mensaje : ${mensajes}" class="mensaje-item"
-             th:classappend="${mensaje.remitente.id == usuarioActual.id ? 'sent' : 'received'}">
+            th:classappend="${mensaje.remitente.id == usuarioActual.id ? 'sent' : 'received'}">
             <p th:text="${mensaje.contenido}"></p>
             <small th:text="${mensaje.fechaEnvio}"></small>
         </div>
@@ -112,7 +135,7 @@ button:hover {
         <button id="sendMessageButton">Enviar</button>
     </div>
 
-    
+
 
 
 
@@ -123,39 +146,68 @@ button:hover {
         let stompClient = null;
         let contactId = document.getElementById('contactId').value;
         let currentUserId = document.getElementById('currentUserId').value;
-        
+        let currentUsername = document.getElementById('currentUsername').value;
+        let subscription = null;
+
         function connect() {
             let socket = new SockJS('/chat');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
                 console.log('Connected: ' + frame);
-
-                stompClient.subscribe('/topic/messages', function (messageOutput) {
-                    let message = JSON.parse(messageOutput.body);
-                    console.log('Message received:', message);
-                    showMessage(message);
-                });
+                subscribeToConversation();
             }, function (error) {
                 console.error('STOMP error:', error);
+                setTimeout(connect, 5000);
             });
+        }
+
+        function subscribeToConversation() {
+            let currentUserId = document.getElementById('currentUserId').value;
+            let contactId = document.getElementById('contactId').value;
+            let username = document.getElementById('currentUsername').value;
+
+
+            let conversationId = getConversationId(currentUserId, contactId);
+
+            console.log('Subscribing to conversation:', conversationId);
+
+            if (subscription) {
+                subscription.unsubscribe();
+            }
+
+            subscription = stompClient.subscribe('/user/' + username + '/queue/messages/' + conversationId, function (messageOutput) {
+                console.log('Received message:', messageOutput.body);
+                let message = JSON.parse(messageOutput.body);
+                showMessage(message);
+            });
+        }
+
+        function getConversationId(userId1, userId2) {
+            
+            return parseInt(userId1) < parseInt(userId2) ? userId1 + "-" + userId2 : userId2 + "-" + userId1;
         }
 
         function sendMessage() {
             let messageContent = document.getElementById('messageInput').value;
+            let contactId = document.getElementById('contactId').value;
+            let currentUserId = document.getElementById('currentUserId').value;
+
+            if (!messageContent.trim()) {
+                console.log('Mensaje vacío, no se enviará');
+                return;
+            }
+
             let message = {
                 contenido: messageContent,
                 destinatario: { id: contactId },
-                remitente: { id: currentUserId } 
+                remitente: { id: currentUserId }
             };
-        
-            if (!message.destinatario) {
-                console.error("El destinatario no está definido.");
-                return;
-            }
-        
+
+            console.log('Sending message:', message);
             stompClient.send("/app/chat.send", {}, JSON.stringify(message));
+            document.getElementById('messageInput').value = '';
         }
-        
+
         function showMessage(message) {
             console.log('Showing message:', message);
             let messagesDiv = document.getElementById('messages');
@@ -164,10 +216,38 @@ button:hover {
             messageElement.classList.add(message.remitente.id === parseInt(currentUserId) ? 'sent' : 'received');
             messageElement.innerHTML = `<p>${message.contenido}</p><small>${message.fechaEnvio || 'Hace un momento'}</small>`;
             messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
-        
+
+
+        function disconnect() {
+            if (stompClient !== null) {
+                if (subscription !== null) {
+                    subscription.unsubscribe();
+                }
+                stompClient.disconnect();
+            }
+            console.log("Disconnected");
+        }
+
+        // Llamar a disconnect cuando el usuario sale de la página
+        window.addEventListener('beforeunload', function (e) {
+            disconnect();
+        });
         document.getElementById('sendMessageButton').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
         connect();
+
+
+        function changeConversation(newContactId) {
+            document.getElementById('contactId').value = newContactId;
+            subscribeToConversation();
+        }
     </script>
 </body>
+
 </html>
