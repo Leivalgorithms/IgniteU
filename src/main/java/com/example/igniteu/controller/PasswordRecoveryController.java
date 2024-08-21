@@ -1,8 +1,7 @@
 package com.example.igniteu.controller;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-
 
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,31 +34,28 @@ public class PasswordRecoveryController {
     @PostMapping("/send-otp")
     public String sendOTP(@RequestParam("email") String email, Model model) {
         // Verificar si el correo existe en la base de datos
-        
+
         String sql = "SELECT * FROM usuarios WHERE correo = ?";
         @SuppressWarnings("unused")
         Usertable usuario;
-        
+
         try {
 
-       
-         usuario = jdbcTemplate.queryForObject(sql, new Object[]{email}, (rs, rowNum) -> {
-            Usertable u = new Usertable();
-            u.setUsername(rs.getString("username"));
-            u.setCorreo(rs.getString("correo"));
-            u.setContrasena(rs.getString("contrasena"));
-            return u;
-        });
-    } catch(EmptyResultDataAccessException e) {
-        model.addAttribute("error", "Correo electrónico no encontrado");
+            usuario = jdbcTemplate.queryForObject(sql, new Object[] { email }, (rs, rowNum) -> {
+                Usertable u = new Usertable();
+                u.setUsername(rs.getString("username"));
+                u.setCorreo(rs.getString("correo"));
+                u.setContrasena(rs.getString("contrasena"));
+                return u;
+            });
+        } catch (EmptyResultDataAccessException e) {
+            model.addAttribute("error", "Correo electrónico no encontrado");
             return "forgot-password";
-    }
-        
+        }
 
         // Generar OTP aleatorio
         int otp = new Random().nextInt(900000) + 100000;
-        
-        
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("Recuperación de contraseña - OTP");
@@ -82,24 +78,27 @@ public class PasswordRecoveryController {
 
     // Procesar OTP ingresado por el usuario
     @SuppressWarnings("deprecation")
-    @PostMapping("/verify-otp")
-    public String verifyOTP(@RequestParam("otp") int otp, @RequestParam("email") String email, Model model) {
-        String sql = "SELECT otp FROM otp_table WHERE correo = ?";
-        @SuppressWarnings("unused")
+    @PostMapping("/validate-otp")
+    public String verifyOTP(
+            @RequestParam("email") String email,
+            @RequestParam("otp") int otp,
+            Model model) {
+        String sql = "SELECT otp FROM otp_table WHERE correo = ? and otp = ?";
         Integer storedOtp;
-       
-        try {
-        
-        storedOtp = jdbcTemplate.queryForObject(sql, new Object[]{email}, Integer.class);
 
-    } catch(EmptyResultDataAccessException e) {
+        try {
+            // Consulta para verificar que el OTP ingresado coincida con el almacenado
+            storedOtp = jdbcTemplate.queryForObject(sql, new Object[] { email, otp }, Integer.class);
+
+            // Si el OTP coincide, procede al cambio de contraseña
+            model.addAttribute("email", email);
+            return "change-password";
+
+        } catch (EmptyResultDataAccessException e) {
+            // Si no se encuentra el OTP o es incorrecto, muestra un mensaje de error
             model.addAttribute("error", "OTP inválido");
             return "verify-otp";
         }
-
-        // OTP válido, proceder al cambio de contraseña
-        model.addAttribute("email", email);
-        return "change-password";
     }
 
     // Página para cambiar la contraseña
@@ -110,29 +109,31 @@ public class PasswordRecoveryController {
 
     // Procesar el cambio de contraseña
     @PostMapping("/change-password")
-public String changePassword(@RequestParam("password") String newPassword,@RequestParam("password-confirm") String passwordConfirm,@RequestParam("email") String email, Model model) {
+    public String changePassword(@RequestParam("password") String newPassword,
+            @RequestParam("password-confirm") String passwordConfirm, @RequestParam("email") String email,
+            Model model) {
 
-    if (newPassword.length() < 6) {
-        model.addAttribute("error", "La contraseña debe tener al menos 6 caracteres");
-        return "change-password";
+        if (newPassword.length() < 6) {
+            model.addAttribute("error", "La contraseña debe tener al menos 6 caracteres");
+            return "change-password";
+        }
+
+        if (newPassword.equals(passwordConfirm)) {
+            BCryptPasswordEncoder bCryptEncoder = new BCryptPasswordEncoder();
+            String encodedPassword = bCryptEncoder.encode(newPassword);
+
+            String sql = "UPDATE usuarios SET contrasena = ? WHERE correo = ?";
+            jdbcTemplate.update(sql, encodedPassword, email);
+
+            // Eliminar el OTP de la base de datos
+            String deleteOtpSql = "DELETE FROM otp_table WHERE correo = ?";
+            jdbcTemplate.update(deleteOtpSql, email);
+
+            model.addAttribute("message", "Contraseña cambiada exitosamente");
+            return "login";
+        } else {
+            model.addAttribute("error", "Las contraseñas no coinciden");
+            return "change-password";
+        }
     }
-
-    if (newPassword.equals(passwordConfirm)) {
-        BCryptPasswordEncoder bCryptEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = bCryptEncoder.encode(newPassword);
-
-        String sql = "UPDATE usuarios SET contrasena = ? WHERE correo = ?";
-        jdbcTemplate.update(sql, encodedPassword, email);
-
-        // Eliminar el OTP de la base de datos
-        String deleteOtpSql = "DELETE FROM otp_table WHERE correo = ?";
-        jdbcTemplate.update(deleteOtpSql, email);
-
-        model.addAttribute("message", "Contraseña cambiada exitosamente");
-        return "login";
-    } else {
-        model.addAttribute("error", "Las contraseñas no coinciden");
-        return "change-password";
-    }
-}
 }

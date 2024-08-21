@@ -118,7 +118,7 @@ position: relative;
                 <h2 class="title">Verificacion de OTP</h2>
                 <p class="para">Por favor, ingrese el código OTP que ha recibido en su correo electrónico para continuar con la actualización de su contraseña.</p>
             </div>
-            <form action="#" th:action="@{/verify-otp}" method="post" class="form">
+            <form action="#" th:action="@{/validate-otp}" method="post" class="form">
                 <div th:if="${error}" class="alert alert-danger" role="alert">
                     <span th:text="${error}"></span>
                 </div>

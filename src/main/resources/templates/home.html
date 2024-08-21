@@ -44,7 +44,7 @@
       }
       .nav-link:active, .btn:active {
           background-color: blue !important;
-          color: black !important;
+          color: rgb(255, 255, 255) !important;
       }
       .dropdown-menu {
           background-color: #1c1c1c;
@@ -489,7 +489,7 @@
             <ul class="nav flex-column">
 
                 <li class="nav-item">
-                    <a class="nav-link text-dark" data-toggle="modal" data-target="#notificaciones" href="#">
+                    <a class="nav-link" data-toggle="modal" data-target="#notificaciones" href="#">
                         Notificaciones 
                         <span th:if="${notificacionesCount > 0}" th:text="'(' + ${notificacionesCount} + ')'" class="badge badge-light"></span>
                     </a>
@@ -573,7 +573,7 @@
                 </li>
 
                 <li class="nav-item">
-                  <a class="nav-link text-dark" href="/profile">Perfil</a>
+                  <a class="nav-link" href="/profile">Perfil</a>
                 </li>
             </ul>
         </div>

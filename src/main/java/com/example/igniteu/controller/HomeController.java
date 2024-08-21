@@ -314,10 +314,13 @@ public class HomeController {
 
     @GetMapping("/profile-search/{username}")
     public String viewProfile(@PathVariable String username, Model model, Authentication authentication) {
+        String loggeduser = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUsername();
+        Usertable usertablelogged = userService.findByCorreo(loggeduser);
         Usertable usertable = userService.findByUsername(username);
         Usertable profileUser = userService.findByUsername(username);
 
-        model.addAttribute("pfp", usertable.getPfp());
+        model.addAttribute("pfp", usertablelogged.getPfp());
 
         if (profileUser != null) {
             model.addAttribute("profileUser", profileUser);
@@ -337,7 +340,7 @@ public class HomeController {
                 String currentUsername = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                         .getUsername();
                 Usertable usertable2 = userService.findByCorreo(currentUsername);
-                boolean sonAmigos = amistadesService.sonAmigos(usertable2, usertable);
+                boolean sonAmigos = amistadesService.sonAmigosAceptados(usertable2, usertable);
                 model.addAttribute("profileUserTieneSolicitud", sonAmigos);
                 model.addAttribute("sonAmigos", sonAmigos);
 
@@ -386,9 +389,11 @@ public class HomeController {
                     model.addAttribute("commentsCountMap", commentsCountMap);
 
                     Usertable currentUser = userService.findByCorreo(currentUsername);
-                    List<Notificaciones> notificacionesleidas = notificacionService.findAllByUsuarioDestino(currentUser);
+                    List<Notificaciones> notificacionesleidas = notificacionService
+                            .findAllByUsuarioDestino(currentUser);
                     model.addAttribute("notificacionesleidas", notificacionesleidas);
-                    List<Notificaciones> notificaciones = notificacionService.obtenerNotificacionesNoLeidas(currentUser);
+                    List<Notificaciones> notificaciones = notificacionService
+                            .obtenerNotificacionesNoLeidas(currentUser);
                     long notificacionesCount = notificaciones.size();
                     model.addAttribute("notificaciones", notificaciones);
                     model.addAttribute("notificacionesCount", notificacionesCount);

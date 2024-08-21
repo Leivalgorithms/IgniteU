@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.example.igniteu.Repository.AmistadesRepository;
 import com.example.igniteu.Repository.UserRepository;
 import com.example.igniteu.models.Amistades;
+import com.example.igniteu.models.Amistades.EstadoAmistad;
 import com.example.igniteu.models.Usertable;
 
 @Service
@@ -132,6 +133,16 @@ public class AmistadesService {
 
     public List<Amistades> getPendingRequests() {
         return amistadesRepository.findAllByEstado(Amistades.EstadoAmistad.PENDIENTE);
+    }
+
+    public boolean sonAmigosAceptados(Usertable user1, Usertable user2) {
+        Optional<Amistades> amistadOptional = amistadesRepository.findByUsuarioAndAmistad(user1, user2);
+        if (!amistadOptional.isPresent()) {
+            amistadOptional = amistadesRepository.findByUsuarioAndAmistad(user2, user1);
+        }
+
+        return amistadOptional.map(amistad -> EstadoAmistad.ACEPTADA.equals(amistad.getEstado()))
+                .orElse(false);
     }
 
 }

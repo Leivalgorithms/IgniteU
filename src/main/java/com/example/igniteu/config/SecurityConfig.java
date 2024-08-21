@@ -24,6 +24,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/logout").permitAll()
                                                 .requestMatchers("/forgot-password").permitAll()
                                                 .requestMatchers("/verify-otp").permitAll()
+                                                .requestMatchers("/validate-otp").permitAll()
                                                 .requestMatchers("/change-password").permitAll()
                                                 .requestMatchers("/send-otp").permitAll()
                                                 .requestMatchers("/home").permitAll()
@@ -38,9 +39,6 @@ public class SecurityConfig {
                                                 .requestMatchers("/app").permitAll()
                                                 .requestMatchers("/chat/**").permitAll()
                                                 .requestMatchers("/topic").permitAll()
-                                                
-                                              
-                                               
 
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
