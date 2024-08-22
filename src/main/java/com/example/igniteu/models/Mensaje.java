@@ -1,6 +1,6 @@
 package com.example.igniteu.models;
 
-
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import jakarta.persistence.Column;
@@ -17,23 +17,22 @@ import lombok.Data;
 @Entity
 @Table(name = "Mensajes")
 public class Mensaje {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-   @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "remitente_id", nullable = false)
     private Usertable remitente;
 
     @ManyToOne
     @JoinColumn(name = "destinatario_id", nullable = false)
     private Usertable destinatario;
-    
+
     @Column(unique = false, nullable = false)
     private String contenido;
 
     @Column(unique = false, nullable = false)
-    private LocalTime fechaEnvio;
+    private LocalDateTime fechaEnvio;
 }
-

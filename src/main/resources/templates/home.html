@@ -44,7 +44,7 @@
       }
       .nav-link:active, .btn:active {
           background-color: blue !important;
-          color: black !important;
+          color: rgb(255, 255, 255) !important;
       }
       .dropdown-menu {
           background-color: #1c1c1c;
@@ -74,8 +74,8 @@
       .post-box {
             background-color: #242526;
             color: white;
-            border-radius: 10px;
-            padding: 15px;
+            border-radius: 5px;
+            padding: 10px;
             max-width: 600px;
             margin: auto;
         }
@@ -118,7 +118,7 @@
         }
 
         .post-button {
-            background-color:rgb(116, 116, 116); 
+            background-color:rgb(0, 0, 0); 
             color: white; 
             border: none; 
             padding: 10px 20px; 
@@ -233,6 +233,7 @@
             align-items: center; 
             justify-content: center; 
             margin-left: -2vh;
+            margin-top: 3px;
         }
 
         .svg-button-bubble:hover ,.svg-button-bubble:focus, .svg-button-bubble:active{
@@ -333,6 +334,25 @@
         }
         .modal-title {
             font-weight: bold;
+            color: white;
+        }
+
+        .modal-header .modal-title:focus,
+        .modal-header .modal-title:active {
+            color: white;
+        }
+
+        .modal-header .close {
+            color: white;
+        }
+
+        .modal-header .close:focus,
+        .modal-header .close:active {
+            color: white;
+        }
+
+        .modal-title:active{
+            color: #61677A;
         }
         .close {
             font-size: 1.5rem;
@@ -378,7 +398,7 @@
             padding: 10px 20px;
         }
         .btn-primary {
-            background-color: #272829;
+            background-color: #000000;
             color: #fff;
         }
         .btn-secondary {
@@ -403,6 +423,34 @@
 
         .comment-count {
             margin-left: -1vh;
+    
+        }
+
+        .notification-item {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .notification-item.unread {
+            background-color: #505050; /* Fondo gris para no leídas */
+            color: white;
+        }
+
+        .notification-item.read {
+            background-color: #202020; /* Fondo negro para leídas */
+            color: gray;
+        }
+
+        .unread-indicator {
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
         }
 
   </style>
@@ -441,59 +489,91 @@
             <ul class="nav flex-column">
 
                 <li class="nav-item">
-                    <a class="nav-link text-dark" data-toggle="modal" data-target="#notificaciones" href="#">Notificaciones</a>
-                        <!--Modal para solicitudes de Amistad-->
-                        <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
-                            aria-labelledby="notificationLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="notificationLabel">Solicitudes de amistad</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                    <a class="nav-link" data-toggle="modal" data-target="#notificaciones" href="#">
+                        Notificaciones 
+                        <span th:if="${notificacionesCount > 0}" th:text="'(' + ${notificacionesCount} + ')'" class="badge badge-light"></span>
+                    </a>
+                    <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
+                        aria-labelledby="notificationLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document" style="max-width: 30%;">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="notificationLabel">Notificaciones</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div th:if="${#lists.isEmpty(notificacionesleidas)}">
+                                        <p>No tienes notificaciones nuevas.</p>
                                     </div>
-                                    <div class="modal-body">
-                                        <form>
-                                            <div th:if="${#lists.isEmpty(requests)}">
-                                                <p>No tienes solicitudes de amistad pendientes.</p>
+                                    <div th:each="notificacion : ${notificacionesleidas}" 
+                                         th:classappend="${notificacion.leida} ? 'notification-item read' : 'notification-item unread'"
+                                         class="notification-item position-relative">
+                                        <form th:href="@{/marcarNotificacionLeida/{id}(id=${notificacion.id})}"
+                                           th:onclick="event.preventDefault(); document.getElementById('marcar-notificacion-' + [[${notificacion.id}]]).submit();"
+                                           class="d-block text-decoration-none position-relative">
+                                
+                                            <!-- Punto blanco para indicar notificación no leída -->
+                                            <div th:if="${!notificacion.leida}" class="unread-indicator"></div>
+                                
+                                            <div th:if="${notificacion.tipo == 'like'}">
+                                                <img th:src="@{'/images/' + ${notificacion.usuarioOrigen.pfp}}"  class="rounded-circle mr-3 profile-pic" alt="Foto de perfil" width="50">    
+                                                <span th:text="${notificacion.usuarioOrigen.username}"></span> le dio like a tu post: 
+                                                <span th:text="${notificacion.contenido}"></span>
                                             </div>
-                                            <div>
-                                                <ul>
-                                                    <li th:each="request : ${requests}">
-                                                        <p>Enviado por: <span th:text="${request.usuario.username}">Username</span></p>
-                                                        <p>Fecha: <span th:text="${request.fechaAmistad}">Date</span></p>
-                                                        <p>Estado: <span th:text="${request.estado}">Status</span></p>
-                                                        
+                                            <div th:if="${notificacion.tipo == 'comentario'}">
+                                                <img th:src="@{'/images/' + ${notificacion.usuarioOrigen.pfp}}"  class="rounded-circle mr-3 profile-pic" alt="Foto de perfil" width="50">
+                                                <span th:text="${notificacion.usuarioOrigen.username}"></span>
+                                                <span th:text="${notificacion.contenido}"></span>
+                                                <!--AQUI VA LA IMAGEN EN MINIATURA DEL POST-->
+                                            </div>
+                                                <div th:if="${notificacion.tipo == 'solicitud_amistad'}">
+                                                    <img th:src="@{'/images/' + ${notificacion.usuarioOrigen.pfp}}"  class="rounded-circle mr-3 profile-pic" alt="Foto de perfil" width="50">
+                                                    <span th:text="${notificacion.usuarioOrigen.username}"></span> te ha enviado una solicitud de amistad
+                                                    <ul>
+                                                        <li th:each="request : ${requests}" th:if="${request.usuario.username == notificacion.usuarioOrigen.username}">
+                                                            <p>Enviado por: <span th:text="${request.usuario.username}">Username</span></p>
+                                                            <p>Fecha: <span th:text="${request.fechaAmistad}">Date</span></p>
+                                                            <p>Estado: <span th:text="${request.estado}">Status</span></p>
+                                                            
                                                             <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
                                                                 <input type="hidden" name="requestId" th:value="${request.id}">
                                                                 <button type="button" class="btn btn-aceptar btn-sm accept-request-button">Aceptar</button>
                                                             </div>
-
+                                        
                                                             <div class="Denegar" th:data-send-request-url="@{/deny-request}" th:data-csrf-token="${_csrf.token}">
                                                                 <input type="hidden" name="requestId" th:value="${request.id}">
                                                                 <button type="button" class="btn btn-denegar btn-sm deny-request-button">Denegar</button>
-                                                            </div>
-                                                        
-                                                    </li>
-                                                </ul>
+                                                            </div>     
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            
+                                            
+                                            <div th:if="${notificacion.tipo == 'solicitud_aceptada'}">
+                                                <img th:src="@{'/images/' + ${notificacion.usuarioOrigen.pfp}}"  class="rounded-circle mr-3 profile-pic" alt="Foto de perfil" width="50">
+                                                <span th:text="${notificacion.usuarioOrigen.username}"></span> ha aceptado tu solicitud de amistad
                                             </div>
+                                            <span class="comment-time time-text" th:data-time="${notificacion.fecha}"></span>
+                                        </form>
+                                
+                                        <!-- Formulario oculto para enviar la solicitud POST -->
+                                        <form th:id="'marcar-notificacion-' + ${notificacion.id}"
+                                              th:action="@{/marcarNotificacionLeida/{id}(id=${notificacion.id})}"
+                                              method="post" style="display:none;">
                                         </form>
                                     </div>
-                                </div>
+                                </div>                                
+                                
                             </div>
                         </div>
+                    </div>
 
                 </li>
 
                 <li class="nav-item">
-                  <a class="nav-link text-dark" href="/profile">Perfil</a>
-                </li>
-            </ul>
-            <h6 class="mt-4">Comunidades</h6>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <button class="btn btn-light btn-block mt-4">Crear Comunidad</button>
+                  <a class="nav-link" href="/profile">Perfil</a>
                 </li>
             </ul>
         </div>
@@ -507,14 +587,22 @@
                         <textarea id="contenido" name="contenido" th:placeholder="'¿Qué estás pensando, ' + ${username} + '?'" class="form-control" th:required="true" title="Por favor, escribe algo antes de publicar."></textarea>
                         <button type="submit" class="btn btn-primary post-button">Publicar</button>
                     </div>
-                    <div class="post-actions d-flex justify-content-around">
-                        <div class="action-item">
-                            <img src="https://via.placeholder.com/30" alt="Video">
-                            <span>Subir Video</span>
-                        </div>
-                        <div class="action-item" onclick="triggerFileUpload();">
-                            <img src="https://via.placeholder.com/30" alt="Foto">
-                            <span>Subir Foto</span>
+                    <div class="post-actions d-flex justify-content-start">
+                        <div class="action-item" onclick="triggerFileUpload();" style="cursor: pointer; margin-top: 10px;">
+                            <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                                 width="30px" height="30px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+                                <g>
+                                    <path fill="#45AAB8" d="M56,54H8V18h8c1.062,0,2.078-0.422,2.828-1.172L25.656,10h12.688l6.828,6.828
+                                        C45.922,17.578,46.938,18,48,18h8V54z"/>
+                                    <path fill="#394240" d="M60,10H49.656l-6.828-6.828C42.078,2.422,41.062,2,40,2H24c-1.062,0-2.078,0.422-2.828,1.172L14.344,10H4
+                                        c-2.211,0-4,1.789-4,4v44c0,2.211,1.789,4,4,4h56c2.211,0,4-1.789,4-4V14C64,11.789,62.211,10,60,10z M56,54H8V18h8
+                                        c1.062,0,2.078-0.422,2.828-1.172L25.656,10h12.688l6.828,6.828C45.922,17.578,46.938,18,48,18h8V54z"/>
+                                    <path fill="#394240" d="M32,18c-8.824,0-16,7.18-16,16c0,8.824,7.176,16,16,16s16-7.176,16-16C48,25.18,40.824,18,32,18z M32,42
+                                        c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8S36.41,42,32,42z"/>
+                                    <circle fill="#F9EBB2" cx="32" cy="34" r="8"/>
+                                </g>
+                            </svg>
+                            <span style="margin-left: 5px;">Subir Foto</span>
                         </div>
                         <input type="file" id="pfp-upload" name="pfp" accept="image/*" style="display: none;" onchange="previewImage(event)">            
                     </div>
@@ -684,7 +772,6 @@
     </div>
 </div>
 
-
     <!-- Función subir foto y vista previa -->
     <script>
                 function triggerFileUpload() {
@@ -837,7 +924,7 @@
 
                         const requestId = cardBody.querySelector('input[name="requestId"]').value;
                         const csrfToken = cardBody.getAttribute('data-csrf-token');
-                        
+
                         if (!requestId || !sendRequestUrl || !csrfToken) {
                             console.error('Faltan datos necesarios para enviar la solicitud');
                             return;
@@ -858,15 +945,15 @@
                         })
                         .then(response => {
                             if (response.ok) {
-                                alert(isAccept ? 'Solicitud de amistad aceptada' : 'Solicitud de amistad denegada');
-                                // Eliminar la solicitud del DOM
-                                const listItem = cardBody.closest('li');
-                                if (listItem) {
-                                    listItem.remove();
-                                }
+                                return response.json(); // Esperar la lista actualizada de solicitudes
                             } else {
                                 alert('Error al procesar la solicitud de amistad');
+                                throw new Error('Error al procesar la solicitud de amistad');
                             }
+                        })
+                        .then(data => {
+                            // Actualizar el modal con las solicitudes restantes
+                            actualizarSolicitudes(data);
                         })
                         .catch(error => {
                             console.error('Error:', error);
@@ -875,20 +962,29 @@
                 });
             });
 
-            function updatePostsSection() {
-                fetch('/home')
-                    .then(response => response.text())
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        const newPostsSection = doc.querySelector('#comments-section');
-                        const currentPostsSection = document.querySelector('#comments-section');
-                        if (newPostsSection && currentPostsSection) {
-                            currentPostsSection.innerHTML = newPostsSection.innerHTML;
-                        }
-                    })
-                    .catch(error => console.error('Error updating posts section:', error));
+            function actualizarSolicitudes(requests) {
+                const solicitudesContainer = document.querySelector('#solicitudes .modal-body ul');
+                solicitudesContainer.innerHTML = '';
+
+                requests.forEach(request => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <p>Enviado por: <span>${request.usuario.username}</span></p>
+                        <p>Fecha: <span>${request.fechaAmistad}</span></p>
+                        <p>Estado: <span>${request.estado}</span></p>
+                        <div class="Aceptar" data-send-request-url="/accept-request" data-csrf-token="${request.csrfToken}">
+                            <input type="hidden" name="requestId" value="${request.id}">
+                            <button type="button" class="btn btn-aceptar btn-sm accept-request-button">Aceptar</button>
+                        </div>
+                        <div class="Denegar" data-send-request-url="/deny-request" data-csrf-token="${request.csrfToken}">
+                            <input type="hidden" name="requestId" value="${request.id}">
+                            <button type="button" class="btn btn-denegar btn-sm deny-request-button">Denegar</button>
+                        </div>
+                    `;
+                    solicitudesContainer.appendChild(li);
+                });
             }
+
         </script>
 
         <script>
@@ -903,7 +999,33 @@
                 .catch(error => console.error('Error:', error));
             }
         </script>
-
+        <script>
+            $(document).ready(function() {
+                $('form[id^="marcar-notificacion-"]').on('submit', function(e) {
+                    e.preventDefault();
+                    var form = $(this);
+                    var notificationItem = form.closest('.notification-item');
+                    
+                    $.post(form.attr('action'), form.serialize(), function(response) {
+                        if (response === "OK") {
+                            notificationItem.removeClass('unread').addClass('read');
+                            notificationItem.find('.unread-indicator').remove();
+                            updateNotificationCount();
+                        }
+                    });
+                });
+            
+                function updateNotificationCount() {
+                    var count = $('.notification-item.unread').length;
+                    var $badge = $('.nav-link .badge');
+                    if (count > 0) {
+                        $badge.text('(' + count + ')');
+                    } else {
+                        $badge.remove();
+                    }
+                }
+            });
+            </script>
             
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/src/main/resources/static/commentsSection.js"></script>

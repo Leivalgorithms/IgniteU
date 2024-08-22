@@ -116,42 +116,8 @@
             border-radius: 10px;
             text-align: center;
         }
-
-
-        .btn-primary:hover {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-        }
-
-        .navbar {
-          background-color: #1c1c1c;
-      }
-      .navbar-brand, .nav-link {
-          color: #fff !important;
-      }
-      .nav-link:hover, .btn:hover {
-          background-color: #5a5a5a !important;
-          color: #fff !important;
-      }
-      .nav-link:active, .btn:active {
-          background-color: blue !important;
-          color: black !important;
-      }
-
-      .profile-pic {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-        }
-
-
-    
-        /* Estilos para el modal */
-        .modal-content {
+         /* Estilos para el modal */
+         .modal-content {
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
@@ -219,6 +185,57 @@
             color: white;
         }
 
+        .modal-content.bg-dark {
+        background-color: #222 !important;
+          }
+
+        .navbar {
+          background-color: #1c1c1c;
+      }
+      .navbar-brand, .nav-link {
+          color: #fff !important;
+      }
+      .nav-link:hover, .btn:hover {
+          background-color: #5a5a5a !important;
+          color: #fff !important;
+      }
+      .nav-link:active, .btn:active {
+          background-color: blue !important;
+          color: black !important;
+      }
+
+      .profile-pic {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        .notification-item {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .notification-item.unread {
+            background-color: #505050; /* Fondo gris para no leídas */
+            color: white;
+        }
+
+        .notification-item.read {
+            background-color: #202020; /* Fondo negro para leídas */
+            color: gray;
+        }
+
+        .unread-indicator {
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+        }
     </style>
 </head>
     <body>
@@ -258,25 +275,92 @@
                             <a class="nav-link text-dark" href="/home">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" data-toggle="modal" data-target="#notificaciones" href="#">Notificaciones</a>
+                            <a class="nav-link text-dark" data-toggle="modal" data-target="#notificaciones" href="#">
+                                Notificaciones 
+                                <span th:if="${notificacionesCount > 0}" th:text="'(' + ${notificacionesCount} + ')'" class="badge badge-light"></span>
+                            </a>
+                            <div class="modal fade" id="notificaciones" tabindex="-1" role="dialog"
+                                aria-labelledby="notificationLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document" style="max-width: 30%;">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="notificationLabel">Notificaciones</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div th:if="${#lists.isEmpty(notificacionesleidas)}">
+                                                <p>No tienes notificaciones nuevas.</p>
+                                            </div>
+                                            <div th:each="notificacion : ${notificacionesleidas}" 
+                                                 th:classappend="${notificacion.leida} ? 'notification-item read' : 'notification-item unread'"
+                                                 class="notification-item position-relative">
+                                                <form th:href="@{/marcarNotificacionLeida/{id}(id=${notificacion.id})}"
+                                                   th:onclick="event.preventDefault(); document.getElementById('marcar-notificacion-' + [[${notificacion.id}]]).submit();"
+                                                   class="d-block text-decoration-none position-relative">
+                                        
+                                                    <!-- Punto blanco para indicar notificación no leída -->
+                                                    <div th:if="${!notificacion.leida}" class="unread-indicator"></div>
+                                        
+                                                    <div th:if="${notificacion.tipo == 'like'}">
+                                                        <img th:src="@{'/images/' + ${notificacion.usuarioOrigen.pfp}}"  class="rounded-circle mr-3 profile-pic" alt="Foto de perfil" width="50">    
+                                                        <span th:text="${notificacion.usuarioOrigen.username}"></span> le dio like a tu post: 
+                                                        <span th:text="${notificacion.contenido}"></span>
+                                                    </div>
+                                                    <div th:if="${notificacion.tipo == 'comentario'}">
+                                                        <img th:src="@{'/images/' + ${notificacion.usuarioOrigen.pfp}}"  class="rounded-circle mr-3 profile-pic" alt="Foto de perfil" width="50">
+                                                        <span th:text="${notificacion.usuarioOrigen.username}"></span>
+                                                        <span th:text="${notificacion.contenido}"></span>
+                                                        <!--AQUI VA LA IMAGEN EN MINIATURA DEL POST-->
+                                                    </div>
+                                                        <div th:if="${notificacion.tipo == 'solicitud_amistad'}">
+                                                            <img th:src="@{'/images/' + ${notificacion.usuarioOrigen.pfp}}"  class="rounded-circle mr-3 profile-pic" alt="Foto de perfil" width="50">
+                                                            <span th:text="${notificacion.usuarioOrigen.username}"></span> te ha enviado una solicitud de amistad
+                                                            <ul>
+                                                                <li th:each="request : ${requests}" th:if="${request.usuario.username == notificacion.usuarioOrigen.username}">
+                                                                    <p>Enviado por: <span th:text="${request.usuario.username}">Username</span></p>
+                                                                    <p>Fecha: <span th:text="${request.fechaAmistad}">Date</span></p>
+                                                                    <p>Estado: <span th:text="${request.estado}">Status</span></p>
+                                                                    
+                                                                    <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
+                                                                        <input type="hidden" name="requestId" th:value="${request.id}">
+                                                                        <button type="button" class="btn btn-aceptar btn-sm accept-request-button">Aceptar</button>
+                                                                    </div>
+                                                
+                                                                    <div class="Denegar" th:data-send-request-url="@{/deny-request}" th:data-csrf-token="${_csrf.token}">
+                                                                        <input type="hidden" name="requestId" th:value="${request.id}">
+                                                                        <button type="button" class="btn btn-denegar btn-sm deny-request-button">Denegar</button>
+                                                                    </div>     
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    
+                                                    
+                                                    <div th:if="${notificacion.tipo == 'solicitud_aceptada'}">
+                                                        <img th:src="@{'/images/' + ${notificacion.usuarioOrigen.pfp}}"  class="rounded-circle mr-3 profile-pic" alt="Foto de perfil" width="50">
+                                                        <span th:text="${notificacion.usuarioOrigen.username}"></span> ha aceptado tu solicitud de amistad
+                                                    </div>
+                                                    <span class="comment-time time-text" th:data-time="${notificacion.fecha}"></span>
+                                                </form>
+                                        
+                                                <!-- Formulario oculto para enviar la solicitud POST -->
+                                                <form th:id="'marcar-notificacion-' + ${notificacion.id}"
+                                                      th:action="@{/marcarNotificacionLeida/{id}(id=${notificacion.id})}"
+                                                      method="post" style="display:none;">
+                                                </form>
+                                            </div>
+                                        </div>                                
+                                        
+                                    </div>
+                                </div>
+                            </div>
+        
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="/profile">Perfil</a>
                         </li>
                         </ul>
-                        <button class="btn btn-light btn-block mt-4">Crear Post</button>
-                        <h6 class="mt-4">Communities</h6>
-                <div class="mr-3">
-                    <img src="https://via.placeholder.com/30" class="rounded-circle">
-                    <span>Elden ring</span>
-                </div>
-                <hr class="hr" />
-                <div class="mr-3">
-                    <img src="https://via.placeholder.com/30" class="rounded-circle">
-                    <span>Sticks</span>
-                </div>
-                <hr class="hr" />
-                        <button class="btn btn-light btn-block mt-3">Crear una comunidad</button> 
             </div>
 
             <!--Modal para editar Perfil-->
@@ -298,9 +382,10 @@
                             <div>
                                 <ul>
                                     <li th:each="request : ${requests}">
-                                        <p>Enviado por: <span th:text="${request.usuario.username}">Username</span></p>
-                                        <p>Fecha: <span th:text="${request.fechaAmistad}">Date</span></p>
-                                        <p>Estado: <span th:text="${request.estado}">Status</span></p>
+                                        <p>Sender: <span th:text="${request.usuario.username}">Username</span></p>
+                                        <p>Friend: <span th:text="${request.amistad.username}">Username</span></p>
+                                        <p>Date: <span th:text="${request.fechaAmistad}">Date</span></p>
+                                        <p>Status: <span th:text="${request.estado}">Status</span></p>
                                         
                                             <div class="Aceptar" th:data-send-request-url="@{/accept-request}" th:data-csrf-token="${_csrf.token}">
                                                 <input type="hidden" name="requestId" th:value="${request.id}">
@@ -479,6 +564,34 @@
                 }
             });
         });
+    </script>
+
+<script>
+    $(document).ready(function() {
+        $('form[id^="marcar-notificacion-"]').on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var notificationItem = form.closest('.notification-item');
+            
+            $.post(form.attr('action'), form.serialize(), function(response) {
+                if (response === "OK") {
+                    notificationItem.removeClass('unread').addClass('read');
+                    notificationItem.find('.unread-indicator').remove();
+                    updateNotificationCount();
+                }
+            });
+        });
+    
+        function updateNotificationCount() {
+            var count = $('.notification-item.unread').length;
+            var $badge = $('.nav-link .badge');
+            if (count > 0) {
+                $badge.text('(' + count + ')');
+            } else {
+                $badge.remove();
+            }
+        }
+    });
     </script>
 </body>
 </html>

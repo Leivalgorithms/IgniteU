@@ -39,7 +39,7 @@ public class ComentarioController {
         Integer userId = usertable.getId();
         comentario.setUsuario_id(userId);
 
-        comentarioService.saveComentario(comentario);
+        comentarioService.saveComentario(comentario, username);
 
         return "redirect:/home";
     }
